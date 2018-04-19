@@ -1,6 +1,6 @@
 # MoPho-V
 
-Community Supported Viewer
+Community Supported Viewer for Photos, Comics, Gifs, Videos
 
 * win: [![Build Status](https://ci.appveyor.com/api/projects/status/github/greggman/MoPho-V?branch=master&svg=true)](https://ci.appveyor.com/project/greggman/mopho-v)
 * macos/linux: [![Build Status](https://travis-ci.org/greggman/MoPho-V.svg?branch=master)](https://travis-ci.org/greggman/MoPho-V)
