@@ -1,0 +1,16 @@
+os:
+  - osx
+  - linux
+
+language: node_js
+
+node_js:
+  - stable
+
+script:
+  - set -e
+  - npm run lint
+  - npm run build
+  - npm run unit-tests
+  - npm run publish
+

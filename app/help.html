@@ -1,0 +1,581 @@
+<html lang="en">
+  <meta charset="utf8">
+  <title>Help</title>
+  <style>
+body {
+  margin: 0;
+  background: #444;
+  color: white;
+  font-family: sans-serif;
+  line-height: 1.6;
+}
+h1 {
+  margin-top: 1em;
+}
+a {
+  text-decoration: none;
+  color: #0FF;
+  cursor: pointer;
+}
+.button:hover {
+  background: red;
+}
+img {
+  max-width: 100%;
+}
+.right {
+  text-align: right;
+}
+.center {
+  text-align: center;
+}
+.centerflex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  font-weight: bold;
+}
+@media screen and (max-width: 600px) {
+  .centerflex {
+    font-size: 15vw;
+  }
+}
+.diagram {
+  padding: 25px;
+}
+.content {
+  margin: 0 auto;
+  max-width: 700px;
+  background: #444;
+  padding: 2em;
+}
+.logo {
+  background: #666;
+  padding: 2em 2em 0 2em;
+}
+.logo .byline {
+  padding: 1em;
+}
+.code {
+  font-family: monospace;
+  font-size: large;
+  display: block;
+  unicode-bidi: embed;
+  font-family: monospace;
+  white-space: pre;  
+  background: #666;
+  padding: 1em;
+  margin: 25px;
+  overflow: scroll;
+}
+.keys .section {
+  font-size: large;
+  font-weight: bold;
+  margin: 1em 0 1em 0;
+}
+.keys .key-groups .key-group {
+  display: flex;
+}
+.keys .key-groups .key-group:nth-child(odd) {
+  background: #666;
+  padding: .2em;
+}
+.keys .key-groups .key-group:nth-child(even) {
+  background: #555;
+  padding: .2em;
+}
+.keys .key-groups .key-group>div:nth-child(1) {
+  min-width: 7em;
+  font-family: monospace;
+  font-size: large;
+}
+.keys .key-groups .key-group>div:nth-child(2) {
+  flex: 1 1 auto;
+}
+
+.keys .key-groups,
+.keys .key-list {
+    margin-left: 2em;
+}
+.keys .key-list>div {
+  display: flex;
+}
+.keys .key-list>div {
+  padding: .2em;
+}
+.keys .key-list>div:nth-child(odd) {
+  background: #666;
+}
+.keys .key-list>div:nth-child(even) {
+  background: #555;
+}
+.keys .key-list>div>div:nth-child(1) {
+  min-width: 7em;
+  font-family: monospace;
+  font-size: large;
+}
+.keys .key-list>div>div:nth-child(2) {
+  flex: 1 1 auto;
+}
+.filter {
+  font-family: monospace;  
+  font-size: x-large;
+  color: #ADF;
+}
+.quote {
+  font-family: monospace;
+  font-size: large;
+  background: #678;
+  padding: 0.2em;
+  border-radius: 0.5em;
+}
+.modes>div {
+  display: flex;
+}
+.modes>div {
+  padding: .2em;
+}
+.modes>div:nth-child(odd) {
+  background: #666;
+}
+.modes>div:nth-child(even) {
+  background: #555;
+}
+.modes>div>div:nth-child(1) {
+  min-width: 7em;
+}
+.modes>div>div:nth-child(2) {
+  flex: 1 1 auto;  
+}
+    
+  </style>
+  <body>
+    <div class="logo">
+      <div class="center">
+        <div class="centerflex"><div><img src="images/logo.png" /></div></div>
+        <div class="byline">
+         Community Supported Movie and Photo Viewer<br/>
+         version: <span id="version"></span><br/>
+         &nbsp;<br/>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <p>
+      This is <b>alpha software</b> so expect bugs. You may be able to press Ctrl-R/Cmd-R to Refresh to get around some bugs.
+      Simple repos are welcome. Pull Requests with fixes even better.
+      </p>
+      <p>
+      For more info see <a href="http://mopho-v.org">online info</a>.
+      </p>
+      <h1>Getting Started</h1>
+      <p>
+        Go into preferences and add the folders that hold your media collections. MoPho-V will
+        scan the folders and generate thumbnails for your collection. NOTE: If you have a very large
+        collection you may want to choose one sub folder at a time. See tips below.
+      </p>
+      <p>
+        Note: Scanning is ssssllllooowww currently as MoPho-V has to load
+        every image and video to make thumbnails. Fortunately you should only
+        have to do this once after which MoPho-V will just use thumbnails
+        it previously created. Also you can quit and MoPho-V will scan
+        the rest next time you run it.
+      </p>
+      <h1>Password</h1>
+      <p>
+        You may enter a password in the preferences. If one exists
+        you'll be prompted for it when the program starts.
+      </p>
+      <h1>Hidden UI</h1>
+      <p>
+        When viewing an image much of the UI is hidden until you hover the mouse
+        over it. There are next and previous areas on the left and right. If
+        you're viewing a video there is a video control near the bottom. There are exit, zoom,
+        and rotate buttons on the top right. And there is the filename of the 
+        current item at the top.
+      </p>
+      <div class="diagram"><img src="images/hover.gif" /></div>
+      <h1>Keys</h1>
+      <p>
+        Learn the keys. Many people prefer using keys while viewing. You can customize the keys in preferences. 
+        The defaults are as follows:
+      </p>
+      <div class="keys">
+        <div class="section">Navigtaion:</div>
+        <div class="key-groups">
+          <div class="key-group">
+            <div>
+              <div>left right</div>
+              <div>tilda tab</div>
+              <div>q w</div>
+            </div>
+            <div>
+               are fast backward and fast forward. If you are on an image they go to the next previous image. 
+               If you are on a video they advance 10 seconds or rewind 5
+            </div>
+          </div>
+          <div class="key-group">
+            <div>
+              <div>shfit ctrl</div>
+              <div>[ \ ]</div>
+            </div>
+            <div>
+              are previous and next. These change to the next or previous image/video
+            </div>
+          </div>
+        </div>
+
+        <div class="section">Zoom and Rotation:</div>
+        <div class="key-list">
+          <div><div>Z  .   </div><div>Stretch mode. Cycles through the various <a href="#stretchmodes">stretch modes</a></div></div>
+          <div><div>x / a  </div><div>Rotate. If thumbnails have the focus then rotates the app. (see below). </div></div>
+          <div><div>       </div><div>If an image or video has the focus rotates the image.</div></div>
+          <div><div>F1     </div><div>zoom in</div></div>
+          <div><div>F2     </div><div>zoom out</div></div>
+          <div><div> </div><div>(note: moving around a zoomed image is TDB)</div></div>
+        </div>
+
+        <div class="section">Views:</div>
+        <div class="key-list">
+          <div><div>F6  </div><div>splits the current view horizontally</div></div>
+          <div><div>F7  </div><div>splits the current view vertically</div></div>
+          <div><div>F8  </div><div>deletes the current view</div></div>
+          <div><div>ESC </div><div>stops viewing an image/video and shows the thumbnails.</div></div>
+        </div>
+
+        <div class="section">UI:</div> 
+        <div class="key-list">
+          <div><div>F5  </div><div>cycles the toolbar and folder lists on/off</div></div>
+          <div><div>F11 </div><div>goes fullscreen. On Windows hover the mouse at the top to make the menus appear</div></div>
+        </div>
+
+        <div class="section">Playback:</div>
+        <div class="key-list">
+          <div><div>L           </div><div>loop. One press sets the start, a second press sets the end, a 3rd press clears the loop</div></div>
+          <div><div>P           </div><div>to pause</div></div>
+          <div><div>1,2,3,4,5   </div><div>set video playback speed to 1x, .66x, .5x, .33x, .25x</div></div>
+        </div>
+      </div>
+      <h1>App Rotation</h1>
+      <p>
+        There are 2 types of rotation in MoPho-V. One is the common "rotate an image"
+        type of rotation. If you are viewing an image and press the rotate icon or press
+        a rotate key the image will rotate.
+      </p><p>
+        The other type is <b>app rotation</b> which rotates the entire UI.
+      </p>
+      <div class="diagram"><img src="images/app-rotation.gif" /></div>
+      <p>
+        App Rotation is designed for laptops for viewing images in portrait mode.
+        To use it, first make sure a pane with thumbnails has the focus then
+        press a rotate key. The UI will rotate as above. Then hold your
+        laptop as below.
+      </p>
+      <div class="diagram"><img src="images/app-rotation.jpg" /></div>
+      <h1 id="stretchmodes">Zoom/Stretch Modes</h1>
+      <p>
+      Pressing zoom cycles though the following modes
+      </p>
+      <div class="modes">
+        <div>
+          <div>
+            constrain
+          </div>
+          <div>
+            scale down so the image fits the view but
+            never larger than its actual size
+          </div>
+        </div>
+        <div>
+          <div>
+            stretch
+          </div>
+          <div>
+            scale up or down to fit the view
+          </div>
+        </div>
+        <div>
+          <div>
+            cover
+          </div>
+          <div>
+            scales so that the entire view is covered by
+            the image even of part of that image ends up offscreen
+          </div>
+        </div>
+        <div>
+          <div>
+            actual size
+          </div>
+          <div>
+            Just what it says.
+          </div>
+        </div>
+        <div>
+          <div>
+            fit width
+          </div>
+          <div>
+            scale until the image fills the width of the view
+          </div>
+        </div>
+        <div>
+          <div>
+            fit height
+          </div>
+          <div>
+            scale until the image fills the height of the view
+          </div>
+        </div>
+      </div>
+      <h1>Filters</h1>
+      <p>
+        When a thumbnail pane has the focus you can type filters 
+        in the toolbar.
+        Just typing letters matches the entire path. So for example <span class="quote">gif</span>
+        matchs both <span class="quote">spinning-n.gif</span> and <span class="quote">gifs/nerf.jpg</span>. <span class="quote">.gif</span> would match
+        both <span class="quote">christmas.gifts/nuts.png</span> and <span class="quote">neptune.gif</span>
+      </p>
+      <p>
+        Words that end in a colon <span class="quote">:</span> are considered a special filter. 
+      </p> 
+      <div class="filter">width:</div>
+      <div class="filter">height:</div>
+      <div class="filter">aspect:</div>
+      <div class="filter">size:</div>
+      <p>
+        all of these take a comparision and a number. Examples
+      </p>
+      <div class="code">
+  width:&gt;1000
+  height:&lt;=512
+  aspect:&gt;
+  size:&lt;200k
+      </div>
+      <p>
+      <span class="quote">aspect</span> can also be <span class="quote">aspect:landscape</span> and <span class="quote">aspect:portrait</span>
+      which are just synomyms for <span class="quote">aspect:&gt;1</span> and <span class="quote">aspect:&lt;1</span> respectively.
+      </p>
+      <p>
+      <span class="quote">size</span> and can take the following case insensitive suffixes
+      </p>
+      <div class="code">
+  k, kb
+  m, mb
+  g, gb
+  t, tb
+      </div>
+      <p>
+examples
+      </p>
+      <div class="code">
+  size:&gt;100mb
+  size:&gt;1.5gb
+      </div>
+      <div class="filter">date:</div>
+      <p>
+        takes a date in <span class="quote">YYYY-MM-DD</span> format as in
+      </p>
+      <div class="code">
+  date:&lt;2015
+  date:&gt;2018-02-15
+      </div>
+      <div class="filter">folder:</div>
+      <div class="filter">dir:</div>
+      <div class="filter">dirname:</div>
+      <p>
+        work the same as above but only match the folder portion
+        so <span class="quote">folder:nuts</span> would match <span class="quote">nuts/almond.jpg</span> but not
+        <span class="quote">collections/nuts.gif</span>
+      </p>
+      <div class="filter">basename:</div>
+      <div class="filter">filename:</div>
+      <p>
+        Do the same for just the base name of the file so
+        <span class="quote">filename:new</span> would match <span class="quote">animals/newts.mp4</span> but
+        not <span class="quote">newspapers/post.png</span>.
+      </p>
+      <div class="filter">bad:</div> 
+      <p>
+        Will show files that could not be opened for some reason.
+      </p>
+      <div class="filter">type:</div>
+      <p>
+        Filters on mime-types so for example <span class="quote">type:video</span> would
+        show all videos and <span class="quote">type:image/gif</span> would show all gifs.
+      </p>
+      <h2>Comparision Operators</h2>
+      <div class="filter"><span class="quote">&gt;</span> greater than</div>
+      <div class="filter"><span class="quote">&gt;=</span> greater than or equal to</div>
+      <div class="filter"><span class="quote">&lt;</span> less than</div>
+      <div class="filter"><span class="quote">&lt;=</span> less than or equal to</div>
+      <div class="filter"><span class="quote">==</span> equal to</div>
+      <div class="filter"><span class="quote">===</span> equal to</div>
+      <div class="filter"><span class="quote">!=</span> not equal to </div>
+      <div class="filter"><span class="quote">!==</span> not equal to</div>
+      <p>
+        Comparison operators only work with <span class="quote">width:</span>, <span class="quote">height:</span>,
+        <span class="quote">aspect:</span>, <span class="quote">size:</span>, and <span class="quote">date:</span>.
+      </p>
+      <h1>Adding Folders in a Big Collection</h1>
+      <p>
+        MoPho-V is alpha software. Scanning can take a long time
+        and use too much memory. One way around this is to add subfolders.
+        For example maybe you have 1000 images in a folder called 'Newts'
+        and another 1000 in a folder called 'Nebulas' and both of those
+        folders in are a parent folder called 'N' something like
+      </p>
+      <div class="code">
+   N
+   |
+   +--Newts
+   |
+   +--Nebulas
+      </div>
+      <p>
+        In preferences you could add folder 'N' and all 2000 files would be
+        scanned. Or you could add separately first folder 'Newts' then 
+        later at some other time folder `Nebulas` and get effectively the
+        same result but only scanning half of your images at a time.
+      </p>
+      <p>
+        If later you want to add folder 'N' and remove folders 'Newts'
+        and 'Nebulas' it's important to add 'N' *before* removing
+        the other two folders. The moment you remove a folder all
+        thumbnails below will be removed if they are not covered
+        in some other way. By adding 'N' before removing the subfolders
+        MoPho-V can keep using your already scanned thumbnails.
+      </p>
+      <p>Note: really large collections can be hard to navigate. Hopefully
+        the planned organizing features will help. Until then see below
+        for other options.</p>
+      <h1>Launching from the Command Line</h1>
+      <p>You can launch MoPho-V from the command line and pass
+        in one or more folders to view. This is one simple way to
+        pair down your collection.
+      </p>
+      <p>
+        Example:
+      </p>
+      <div class="code">"<span id="exepath">path-to-electron</span>" path/to/newts path/to/nails</div>
+      <p>
+        Would view only files in those 2 folders. When running
+        Electron this way the folders specified in your preferences
+        are ignored.
+      </p>
+      <h1>Bugs and Workarounds</h1>
+      <div data-platform="darwin">
+        <h2>Adding network folders on MacOS</h2>
+        <p>
+          There is apparently a bug in Electron that prevents
+          browsing the contents of network shares. Until that
+          bug is fixed you'll need to add network shares by
+          manually editing your <a href="#preferences">preferences</a> file.
+        </p>
+        <p>
+          Inside you should see a folder's entry something like this if you have no folders
+        </p>
+        <div class="code">
+  "folders": [],
+        </div>
+        <p>
+          Or something like this if multiple folders exist
+        </p>
+        <div class="code">
+  "folders": [
+    "some/path/to/a/folder",
+    "some/path/to/another/folder"
+  ],
+        </div>
+        <p>To add a network share add a folder path on its own line surrounded by double quotes</p>
+        <div class="code">
+  "folders": [
+    "path/to/network/share/folder",
+    "some/path/to/a/folder",
+    "some/path/to/another/folder"
+  ],
+        </div>
+        <p>
+          Save the file and re-start MoPho-V.
+        </p>
+        <h2>Refreshing Network Shares</h2>
+        <p>
+          Watching for changes on local hard drive generally works but
+          watching for change on remote or network storages is often
+          problematic. If MoPho-V scans all your folders each time
+          you run it so if MoPho-V does not notice your changes live
+          try quiting and starting it again.
+        </p>
+      </div>
+      <h1 id="preferences">Preferences File</h1>
+      <p>Your preferences are stored in a file named <span class="quote">prefs.json</span> found here.</p>
+      <div class="code button" id="prefspath"></div>
+      <h1>Help Us Help You</h1>
+      <p>MoPho-V is open source software and community supported.</p>
+      <p>
+        <a href="https://github.com/greggman/MoPho-V"><img src="images/3rdparty/github.svg" height="60px"/></a>
+      </p>
+    </div>
+    <style>
+#fixongithub a {
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-family: arial,sans-serif;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 40px;
+    font-size: 12px;
+    line-height: 24px;
+    position: relative;
+    transition: 0.5s;
+    display: block;
+}
+#fixongithub a:hover {
+    background: #c11;
+    color: #fff;
+}
+#fixongithub a::before,#fixongithub a::after {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 1px;
+    background: #fff;
+}
+#fixongithub a::after {
+    bottom: 1px;
+    top: auto;
+}
+#fixongithub{
+    position: fixed;
+    display: block;
+    top: 0;
+    right: 0;
+    width: 200px;
+    overflow: hidden;
+    height: 200px;
+    z-index: 9999;
+}
+#fixongithub a{
+    width: 200px;
+    position: absolute;
+    top: 40px;
+    right: -80px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.8);
+}
+    </style>
+    <div id="fixongithub"><a href="https://github.com/greggman/MoPho-V">Fix me on GitHub</a></div>
+  </body>
+  <script>
+    require('../out/js/pages/help/help');
+  </script>
+</html>

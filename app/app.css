@@ -1,0 +1,903 @@
+* {
+    box-sizing: border-box;
+}
+html, body {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: small;
+    background-color: #444;
+    color: white;
+    height: 100vh;
+}
+video, img {
+    max-width: none;
+}
+button {
+    outline: none;
+}
+.spacer {
+}
+.hide {
+    display: none;
+}
+.fullsplit {
+    flex: 1 1 auto !important;
+}
+.error {
+    background: red !important;
+}
+.noop {
+    /* this is just here as a pair to hide */
+}
+.deg0 {
+    width: 100vw;
+    height: 100vh;
+}
+.deg90 {
+    width: 100vh;
+    height: 100vw;
+    transform-origin: 0 0;
+    transform: translate(100vw, 0px) rotate(90deg);
+}
+.deg180 {
+    width: 100vw;
+    height: 100vh;
+    transform-origin: 0 0;
+    transform: translate(100vw, 100vh) rotate(180deg);
+}
+.deg270 {
+    width: 100vh;
+    height: 100vw;
+    transform-origin: 0 0;
+    transform: translate(0, 100vh) rotate(270deg);
+}
+.disabled {
+    pointer-events: none;
+    opacity: 0.2;
+}
+.order2 {
+    order: 2;
+}
+.toolbar-error {
+    position: relative;
+}
+.toolbar-error>div {
+    position: absolute;
+    background: darkred;
+    color: white;
+    padding: .5em;
+    z-index: 1001;
+}
+.view .toolbar-holder {
+
+}
+.view .toolbar {
+    display: flex;
+    background: #222;
+    padding: 3px;
+    align-items: center;
+    user-select: none;
+}
+.view .toolbar>*,
+.view .toolbar .video-controls>*,
+.view .toolbar .collections>* {
+}
+
+.view .toolbar .filter {
+    flex: 1 1 auto;
+}
+
+.view .toolbar input[type=range],
+.view .toolbar range {
+    width: 100%;
+}
+.view .viewertoolbar .video-controls {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+}
+
+.view .viewertoolbar .video-controls .cue {
+    flex: 1 1 auto;
+}
+.view .viewertoolbar .video-controls .volume {
+    width: 50px;
+}
+
+.view .toolbar input[type=text] {
+    width: 100%;
+    display: block;
+    background: #444;
+    color: white;
+    border: none;
+    font-size: medium;
+    padding: .2em;
+    user-select: initial;
+}
+
+.view .toolbar button {
+    background: inherit;
+    color: #CCC;
+    width: 2.5em;
+    height: 2.5em;
+    padding: 3px;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+}
+.view .toolbar .button-group {
+    display: flex;
+}
+.view .toolbar select {
+    background: #444 linear-gradient(0deg, #222, #222 25%, #666);
+    border: none;
+    color: #CCC;
+    width: 10em;
+}
+.view .imagegrid .thumbnail-frame {
+    background: #666;
+    position: absolute;
+    display: block;
+}
+.view .imagegrid .thumbnail {
+    transition: box-shadow 0.2s linear;
+    background-color: #666;
+    position: absolute;
+    display: block;
+    text-shadow: 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black, 0 0 3px black;
+    overflow-wrap: break-word;
+    overflow: hidden;
+}
+.view .imagegrid .thumbnail.current-image {
+    box-shadow:
+        5px  5px yellow,
+        -5px  5px yellow,
+        5px -5px yellow,
+        -5px -5px yellow;
+}
+.view .imagegrid .thumbnail:hover {
+    transition: box-shadow 0s linear;
+    box-shadow:
+        5px  5px white,
+        -5px  5px white,
+        5px -5px white,
+        -5px -5px white;
+}
+
+.view .imagegrid .thumbnail:before {
+    position: relative;
+    left: 0.25em;
+    top: 0.25em;
+    font-size: smaller;
+}
+.view .imagegrid .thumbnail .thumbinfo {
+    text-align: center;
+    padding: 1em;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    position: absolute;
+}
+.view .imagegrid .thumbnail .thumbinfo .name {
+    visibility: hidden;
+    width: 100%;
+}
+.view .imagegrid .thumbnail:hover .thumbinfo .name {
+    visibility: visible;
+}
+
+
+div::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+}
+
+div::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0,0,0,0);
+}
+
+div::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+    background-color: #000;
+    border: 1px solid #222;
+}
+
+div::-webkit-scrollbar-corner {
+    background-color: rgba(0,0,0,0);
+}
+
+
+
+[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+}
+[data-tooltip]:before,
+[data-tooltip]:after {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  left: 50%;
+  white-space: nowrap;
+  transition:
+    opacity 0.1s ease-in-out,
+    visibility 0.1s ease-in-out,
+    transform 0.1s cubic-bezier(0.71, 1.7, 0.77, 1.24);
+  transition-delay: 0.0s;
+  transform: translate3d(-50%, calc(-100%), 0);
+  pointer-events: none;
+}
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  transform: translate3d(-50%, calc(-100% - 0.8em), 0);
+  transition-delay: 0.5s;
+  visibility: visible;
+  opacity: 1;
+}
+.tooltip-high:hover:before,
+.tooltip-high:hover:after {
+  transform: translate3d(-50%, calc(-100% - 2.5em), 0);
+}
+[data-tooltip]:before {
+  z-index: 1001;
+  border: 6px solid transparent;
+  background: transparent;
+  content: "";
+}
+[data-tooltip]:after {
+  z-index: 1000;
+  padding: .5em;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+
+.browser {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;  /* shoudn't need this. the fact that I do suggests a bug */
+}
+.folderContainer {
+}
+.gridContainer {
+}
+.view .folders {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: scroll;
+}
+.view .folders .folder {
+    display: flex;
+}
+.view .folders .folder>div {
+    flex: 1 1 auto;
+    white-space: pre;
+    word-break: keep-all;
+    overflow: hidden;
+    min-width: 5em;
+    padding: 0.25em;
+    cursor: pointer;
+}
+.view .folders>div:nth-child(odd) {
+    background-color: #505050;
+}
+.view .folders .scanning {
+    background: hsl(32, 100%, 50%);
+}
+.view .folders>div.scanning:nth-child(odd) {
+    background: hsl(32, 100%, 45%);
+}
+.view .folders .checking {
+    background: hsl(218, 100%, 63%);
+}
+.view .folders>div.checking:nth-child(odd) {
+   background: hsl(218, 100%, 57%);
+}
+
+.view .folders>div:before {
+    content: "📁 ";
+}
+.view .grid {
+    position: relative;
+}
+.imagegridhead {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    background: #666;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.flash {
+    transition: opacity 0.1s linear !important;
+    opacity: 1 !important;
+}
+.viewers {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+}
+.vpair {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+.vpair .tick {
+    position: absolute;
+    left: 0;
+    top: 0;
+    vertical-align: top;
+    color: rgba(0,255,255,0.3);
+    display: none;
+}
+.vpair.active {
+    background: repeating-linear-gradient(
+        45deg,
+        #333,
+        #333 10px,
+        #444 10px,
+        #444 20px
+    );
+}
+.vpair.active .tick {
+    display: block;
+}
+.viewer {
+    position: absolute;
+    gz-index: 2;
+    display: none;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    user-select: none;  /* make it so you can't select text in viewer */
+}
+/* make it so you can't drag UI images */
+.viewer img {
+    pointer-events: none;
+}
+.viewer .back {
+    position: absolute;
+    top: 0;
+    background-color: rgba(0,0,0,0.7);
+    width: 100%;
+    height: 100%;
+}
+.viewer .view-holder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    gz-index: 3;
+}
+.viewer .next,
+.viewer .prev {
+    transition: opacity 0.5s linear;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    font-size: 200px;
+    height: 100%;
+    width: 10%;
+    color: rgba(255,255,255,1);
+    background-color: rgba(0,0,0,1);
+    gz-index: 4;
+}
+.viewer .next:hover,
+.viewer .prev:hover {
+    transition: opacity 0s linear;
+    opacity: 0.2;
+}
+.viewer .prev {
+    left: 0;
+}
+.viewer .next {
+    right: 0;
+}
+.viewer .info {
+    transition: opacity 0.25s linear;
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    padding: 2em;
+    color: rgba(255,255,255,1);
+    background-color: rgba(0,0,0,.3);
+    text-align: center;
+    gz-index: 4;
+    user-select: initial;  /* allow selecting the info text */
+}
+.viewer .info:hover {
+    transition: opacity 0s linear;
+    opacity: 1;
+}
+.viewer .ui {
+    transition: opacity 0.5s linear;
+    opacity: 0;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    gz-index: 5;
+    font-family: monospace;
+    font-size: 20px;
+    color: rgba(255,255,255,0.3);
+    cursor: pointer;
+}
+.viewer .ui:hover {
+    transition: opacity 0s linear;
+    opacity: 1;
+}
+.h {
+    transform: rotate(90deg);
+}
+.w:hover, .h:hover {
+    color: rgba(255,255,255,0.8);
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.ui img {
+    width: 40px;
+    height: 40px;
+    opacity: 0.4;
+}
+.viewer .ui img:hover {
+    opacity: 0.8;
+}
+.viewer .pspot {
+    position: absolute;
+    left: 50%;
+    margin-left: -37%;
+    bottom: 5px;
+    width: 75%;
+    transition: opacity 0.5s linear;
+    opacity: 0;
+}
+.viewer .pspot:hover {
+    transition: opacity 0s linear;
+    opacity: 0.8;
+}
+
+.player {
+    width: 100%;
+    padding: 0.3em;
+    background-color: rgba(0,0,0,0.9);
+    color: white;
+
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+
+    /* FUCKING SAFARI >:( */
+    display: -webkit-flex;
+    -webkit-flex-flow: row;
+    -webkit-justify-content: center;
+    -webkit-align-content: center;
+    -webkit-align-items: center;
+
+    font-size: x-large;
+}
+.player .play {
+    cursor: pointer;
+}
+.player .que {
+    flex-grow: 1;
+}
+.player .vol {
+    width: 100px;
+}
+.player .play,
+.player .que,
+.player .time,
+.player .vol {
+    margin: 0.5em;
+}
+
+.player input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    margin: 5px 0;
+    background-color: #000;
+}
+
+.player input[type=range]:focus {
+    outline: none;
+}
+.player input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 12px;
+    cursor: pointer;
+    background: #000000;
+    border-radius: 12px;
+    border: 2px solid #404040;
+}
+.player input[type=range]::-webkit-slider-thumb {
+    height: 20px;
+    width: 30px;
+    border-radius: 15px;
+    background: #c8c8c8;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -6px;
+}
+.player input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #404040;
+}
+
+.player input[type=range].volume::-webkit-slider-thumb {
+    width: 20px;
+    background: #c8c8c8;
+}
+
+/* ------ ImageGrid ----- */
+
+.imagegrids {
+    height: 100%;
+    overflow-y: auto;
+}
+.imagegrid {
+    position: relative;
+}
+
+/* ---- ViewSplit ---- */
+
+.split-slider {
+    background-color: #888;
+}
+.split-slider-horizontal {
+    cursor: row-resize;
+}
+.split-slider-vertical {
+    cursor: col-resize;
+}
+
+/* ---- mime types ---- */
+
+.mime-image-gif:before {
+    content: "gif";
+}
+
+.mime-video:before {
+    content: "▶";
+}
+
+/* ----- react-contextmenu ----- */
+
+.react-contextmenu {
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 16px;
+    color: #fff;
+    text-align: left;
+    background-color: #666;
+    background-clip: padding-box;
+    border: 1px solid #000;
+    box-shadow: 5px 5px 15px #000;
+    border-radius: .25rem;
+    outline: none;
+    opacity: 0;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.react-contextmenu.react-contextmenu--visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.react-contextmenu-item {
+    padding: 3px 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: inherit;
+    background: 0 0;
+    border: 0;
+    cursor: pointer;
+}
+
+.react-contextmenu-item.react-contextmenu-item--active,
+.react-contextmenu-item:hover {
+    color: #fff;
+    background-color: #3f8ccf;
+    border-color: #0275d8;
+    text-decoration: none;
+}
+
+.react-contextmenu-item.react-contextmenu-submenu {
+    padding: 0;
+}
+
+.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item {
+}
+
+.react-contextmenu-item.react-contextmenu-submenu > .react-contextmenu-item:after {
+    content: "▶";
+    display: inline-block;
+    position: absolute;
+    right: 7px;
+}
+
+/* ------ SplitPane ----- */
+.Resizer {
+    background: #000;
+    opacity: .2;
+    z-index: 1;
+    background-clip: padding-box;
+}
+
+    .Resizer:hover {
+    transition: all 2s ease;
+}
+
+    .Resizer.horizontal {
+    height: 11px;
+    margin: -5px 0;
+    border-top: 5px solid rgba(255, 255, 255, 0);
+    border-bottom: 5px solid rgba(255, 255, 255, 0);
+    cursor: row-resize;
+    width: 100%;
+}
+
+.Resizer.horizontal:hover {
+    border-top: 5px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.Resizer.vertical {
+    width: 11px;
+    margin: 0 -5px;
+    border-left: 5px solid rgba(255, 255, 255, 0);
+    border-right: 5px solid rgba(255, 255, 255, 0);
+    cursor: col-resize;
+}
+
+.Resizer.vertical:hover {
+    border-left: 5px solid rgba(0, 0, 0, 0.5);
+    border-right: 5px solid rgba(0, 0, 0, 0.5);
+}
+Resizer.disabled {
+    cursor: not-allowed;
+}
+Resizer.disabled:hover {
+    border-color: transparent;
+}
+
+
+/* prefs */
+.prefs {
+    height: 100vh;
+    font-size: large;
+    background: #222;
+}
+.prefs>fieldset {
+    height: 100%;
+    overflow: auto;
+    border: none;
+}
+.prefs>fieldset>legend {
+    font-weight: bold;
+    padding: .5em;
+    margin: 0 0 .75em 0;
+}
+.prefs .error {
+    background: darkred;
+}
+.prefs .error legend {
+    background: red;
+}
+.prefs>fieldset>legend>div {
+    text-align: center;
+}
+
+.prefs fieldset>div>div {
+    padding: .5em;
+}
+.prefs fieldset>div>div:nth-child(odd) {
+    background: #505050;
+}
+.prefs fieldset>div>div:nth-child(even) {
+    background: #484848;
+}
+
+.prefs legend {
+     width: 100%;
+     background: #555;
+     padding: .5em 1em .5em 1em;
+     margin: 0 0 1em 0;
+}
+.prefs>fieldset fieldset {
+    padding: 0 0 1em 0;
+    margin: 0 0 1em 0;
+    background: #444;
+    border: none;
+}
+.prefs>fieldset fieldset>div {
+    padding: 0 1em 0 1em;
+}
+
+.prefs .basefolder {
+    display: flex;
+}
+
+.prefs .basefolder>div {
+    flex: 1 1 auto;
+    margin: .25em;
+    padding: .25em;
+    gborder: 1px solid #888;
+    border-radius: .25em;
+    width: 10px;
+    height: 2em;
+    display: flex;
+    align-items: center;
+}
+
+.prefs .basefolder.missing>div {
+    border: 1px solid red;
+    background: #800;
+}
+
+.prefs button {
+    display: block;
+    min-width: 4em;
+    padding: .5em;
+    margin: .25em;
+    border-radius: .25em;
+    font-weight: bold;
+}
+
+.prefs .basefolder pre {
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.prefs .range {
+    display: flex;
+    align-items: center;
+}
+.prefs .range label {
+    width: 50%;
+    order: 1;
+}
+.prefs .range input[type=range] {
+    width: 50%;
+    order: 2;
+}
+
+.prefs .key {
+    display: flex;
+    font-family: monospace;
+}
+.prefs .key button {
+    padding: 0;
+}
+.prefs .key>div {
+    flex: 1 1 auto;
+    display: flex;
+    gborder: 1px solid #888;
+    border-radius: .25em;
+    margin: 0 0 4px 0;
+    height: 1.75em;
+}
+.prefs .key.dup>div {
+    border: 1px solid red;
+    background: #800;
+}
+.prefs .key.dup .keycode:before {
+    content: "(conflict)";
+}
+
+.prefs .key .keycode {
+    flex: 1 1 40%;
+    padding: .25em;
+    order: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 10px;
+}
+.prefs select {
+    background-color: #444;
+    border: none;
+    color: inherit;
+    background: #444 linear-gradient(0deg, #222, #222 25%, #666);
+    margin: 2px;
+    border-radius: .25em;
+}
+
+.update {
+  min-width: 400px;
+}
+
+.modal .keypress {
+    background: #444;
+    padding: 3em;
+    font-size: large;
+    z-index: 1002;
+}
+
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002;
+}
+.modal>div {
+
+}
+.modal>div .msg {
+    padding: 1em;
+    font-size: large;
+    background: #666;
+    border-radius: .25em;
+    text-align: center;
+}
+.modal>div .fullscreen {
+    width: 100vw;
+    height: 100vh;
+    background: #666;
+    display: flex;
+    flex-direction: column;
+}
+.modal>div .fullscreen webview{
+    flex: 1 1 auto;
+    width: 100%;
+    border: none;
+    overflow: auto;
+}
+.modal>div .fullscreen div{
+    padding: 1em;
+}
+.modal .dialog {
+    max-width: 600px;
+    padding: 20px;
+    background: #666;
+}
+.modal .dialog .msg {
+    text-align: left;
+    background: #444;
+    margin-bottom: 1em;
+    overflow: scroll;
+    max-height: 70vh;
+}
+.modal .dialog .options {
+    text-align: right;
+}
+.modal .dialog button {
+    font-size: large;
+    padding: .5em;
+    background: #AAA;
+    cursor: pointer;
+    border: 1px solid black;
+    margin-left: 1em;
+}
+.modal .dialog button:hover {
+    background: #F00;
+}
