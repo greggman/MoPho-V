@@ -1,0 +1,267 @@
+<html lang="en">
+  <title>MoPho-V</title>
+
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <meta property="og:title" content="MoPho-V" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="http://mopho-v/images/preview.jpg" />
+  <meta property="og:description" content="MoPho-V. A Movie and Photo Viewer." />
+  <meta property="og:url" content="http://mopho-v.org" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:domain" content="mopho-v.org">
+  <meta name="twitter:title" content="MoPho-V">
+  <meta name="twitter:url" content="http://mopho-v.org">
+  <meta name="twitter:description" content="MoPho-V. A Movie and Photo Viewer">
+  <meta name="twitter:image:src" content="http://mopho-v/images/preview.jpg">
+
+  <link href="/images/logo.png" rel="shortcut icon" type="image/png">
+
+  <style>
+    html {
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+    a {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: #888;
+      padding: .5em;
+      border: 5px solid black;
+    }
+    a:hover {
+      text-decoration: none;
+      background: red;
+    }
+    body {
+        margin: 0;
+        background: #444;
+        color: #FFF;
+        font-family: sans-serif;
+        font-weight: bold;
+    }
+    li {
+      margin-bottom: 1em;
+    }
+    .center {
+      text-align: center;
+    }
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 100px;
+    }
+    .sections>div>div {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .sections>div {
+      padding-top: 20px;
+      padding-bottom: 50px;
+    }
+    .sections>div:nth-child(odd) {
+      background: #1958b7;
+    }
+    .sections>div:nth-child(even) {
+      background: #1a85d1;
+    }
+    .sections img,
+    .sections video {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%; /* calc(100% - 40px); */
+      border: 10px solid black;
+    }
+    .sections .caption {
+      text-align: center;
+      padding: .5em;
+    }
+    .sections .logo img {
+      border: none;
+    }
+    .logo {
+        margin-bottom: 20px;
+    }
+    .dl-button.main {
+        font-size: x-large;
+    }
+    .dl-button.main .plat {
+        font-size: medium;
+    }
+    .dl-button {
+        display: block;
+        padding: 20px;
+        color: white;
+        background: #666;
+        border: 5px solid black;
+        gborder-radius: .5em;
+        text-decoration: none;
+        margin-bottom: 1em;
+    }
+    .dl-button:hover {
+      background: #F00;
+    }
+
+    .dl-button .name {
+        font-weight: bold;
+        margin-bottom: .5em;
+    }
+    .dl-button .plat {
+        font-size: small;
+    }
+    @media screen and (max-width: 600px) {
+      .logo {
+        font-size: 15vw;
+      }
+    }
+  </style>
+  <meta charset="utf8">
+  <body>
+    <div class="sections">
+      <div><div>
+        <div class="logo">
+          <div><img src="images/logo.png" /></div>
+        </div>
+        <div class="center">Community Supported Movie and Photo Viewer</div>
+      </div></div>
+      <div><div>
+        <img src="images/basic.png" />
+      </div></div>
+      <div><div>
+        <h1>GET!</h1>
+        <div id="dl-main">
+
+        </div>
+        <div><a href="#download">Click for other platforms.</a></div>
+      </div></div>
+      <div><div>
+        <h1>Split Screen</h1>
+        <div class="caption">See more of your collection at once.</div>
+        <div>
+          <img src="images/split.png" />
+        </div>
+      </div></div>
+      <div><div>
+        <h1>Multiple Videos</h1>
+        <div class="caption">Because one video at a time is never enough.</div>
+        <div>
+          <img src="images/multiple-videos.gif" />
+        </div>
+      </div></div>
+      <div><div>
+        <h1>Portrait View</h1>
+        <div class="caption">Some photos look better in portrait.</div>
+        <div>
+          <img src="images/portrait.gif" />
+        </div>
+      </div></div>
+      <div><div>
+        <h1>Rotate Your Laptop</h1>
+        <div class="caption">Control from whatever orientation fits your needs.</div>
+        <div>
+          <img src="images/rotation.jpg" />
+        </div>
+      </div></div>
+      <div><div>
+        <h1>Coming RSN</h1>
+        <ul>
+          <li>
+               Layouts
+          </li>
+          <li>
+               Collections
+          </li>
+          <li>
+               Playlists
+          </li>
+        </ul>
+      </div></div>
+      <div><div id="download">
+        <h1>Download</h1>
+        <div id="dl-other">
+        </div>
+      </div></div>
+      <div><div>
+        <h1>Get Involved! Help us help you!</h1>
+        <div><a href="http://github.com/greggman/MoPho-V">Idea? Pull Request? DO IT!</a></div>
+      </div></div>
+    </div>
+    <style>
+#fixongithub a {
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-family: arial,sans-serif;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 40px;
+    font-size: 12px;
+    line-height: 24px;
+    position: relative;
+    transition: background-color 0.5s;
+    display: block;
+}
+#fixongithub a:hover {
+    background: #c11;
+    color: #fff;
+}
+#fixongithub a::before,#fixongithub a::after {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 1px;
+    background: #fff;
+}
+#fixongithub a::after {
+    bottom: 1px;
+    top: auto;
+}
+#fixongithub{
+    position: fixed;
+    display: block;
+    top: 0;
+    right: 0;
+    width: 400px;
+    overflow: hidden;
+    height: 200px;
+    z-index: 9999;
+}
+#fixongithub a{
+    width: 400px;
+    position: absolute;
+    top: 40px;
+    right: -140px;
+    transform: rotate(45deg);
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.25);
+}
+@media screen and (max-width: 600px) {
+  .logo {
+    font-size: 15vw;
+  }
+  #fixongithub {
+    position: relative;
+    width: 100%;
+  }
+  #fixongithub a {
+    transform: none;
+    width: 100%;
+    top: 0;
+    right: 0;
+  }
+}
+    </style>
+    <div id="fixongithub"><a href="https://github.com/greggman/MoPho-V">Fix me on GitHub</a></div>
+  </body>
+  <script src="js/get-links.js"></script>
+</html>
