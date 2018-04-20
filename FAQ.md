@@ -12,6 +12,16 @@ Portrait mode was hard as well. The controls don't
 rotate. You could rotate the entire OS but that
 was also tedious.
 
+Most Comic viewers also don't have a portrait mode.
+You can rotate an image but when you go to the next
+image you have to manually rotate that one as well.
+The rotation is not "sticky". Yet, reading a comic
+in portrait mode is often far closer to the real
+experience of reading a comic. Worse, the even if
+the rotation is sticky the UI is still in landscape.
+
+MoPho-V fixes those issues
+
 ## Why Electron?
 
 My hope was that by using Electron more people could contribute as more
@@ -20,11 +30,12 @@ or features I'm all ears although code speaks louder than words.
 
 ## Why is my mouse movement messed up when I rotate the app?
 
-First off let's be clear, there are 2 kinds of rotation. (1) the
-rotation of individual images and videos. When a video or image
+First off let's be clear, there are 2 kinds of rotation. 
+
+1. the rotation of individual images and videos. When a video or image
 is being viewed pressing the rotate key or button rotates that image.
 
-The 2nd type of rotation rotates the entire app. If you're viewing
+2. the type of rotation that rotates the entire app. If you're viewing
 a grid of images pressing the rotate key or button rotates the entire
 app. At that point it's assumed you rotated your laptop or monitor to
 match. 
@@ -38,12 +49,20 @@ For a desktop, using a mouse, if you rotate your monitor your
 mouse movement no longer matches your monitor. Handling that
 sitatuion is fairly hard.
 
+That's the long way of saying MoPho-V's app rotation support
+is very cool IMO but only meant for laptops.
+
 ## Why is the toolbar on the bottom?
 
 Because, at least on macOS, moving the mouse near the top
 of the screen pops up the OS menu and getting it to disappear
-is annoying. By moving the toolbar to the bottom that issue
-is fixed. You can choose to have the toolbar at the top in
+is annoying. This is important when in fullscreen mode.
+You'd move the mouse up to the toolbar to do something only to
+have macOS pop it down where you were not aiming. 
+By moving the toolbar to the bottom that issue
+is fixed. 
+
+You can choose to have the toolbar at the top in
 the preferences settings.
 
 ## Why does it show conflict when I assign keys like Shift-C or Ctrl-J
@@ -72,7 +91,9 @@ Other ideas for plugins would be
 
 *   Archive Plugins
 
-    Support more than .ZIP and .RAR. Is there really anything else out there in use?
+    Support more than .ZIP and .RAR. 
+    
+    Is there really anything else out there in use?
 
 *   Image, Video Plugins
 
@@ -87,7 +108,7 @@ Closely related to plugins would be themes. Other than colors I'm not
 really sure what a theme would provide since the UI is fairly dense.
 
 It's possible the current UI could be converted to various components
-and the code to glue those together so themes could then more easily
+and the code to glue those together separated out so themes could then more easily
 redesign the UI. Before spending time there some sketches or mockups
 of different UIs would be helpful just to see that it's worth while
 to spend the time.
@@ -97,7 +118,7 @@ to spend the time.
 The short answer is as soon as you provide the PR to enable it.
 
 MoPho-V is based on Electron which is based on Chromium which currently only supports mp4, ogv, webm, and some mkvs.
-Two possible paths to add support are 
+Two possible paths to add other format support are 
 
 1. enabling more codecs in Chromium
 
