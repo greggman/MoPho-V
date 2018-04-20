@@ -9,6 +9,16 @@ TODO
     it's a display issue, sizing the window makes them appear on the right
 
 [ ] fix flashing playback, scrollbars (not sure how to repo)
+
+    sometimes when playing a video the display flashes some elements
+    in and out. It seems like some strange CSS bug where something is
+    fitting on the screen then not. The range slider and the current
+    time are updated. The time seems more likely the issue as in
+    as the numbers change one the width of that cell changes.
+    Why it only happens somtimes though is unclear. Maybe just
+    giving the time a fixed width would fix it but I can't repo
+    the issue on demand so I can't check the fix works.
+
 [ ] figure out electron thrash
 
     when loading a large collection the collection itself loads relatively
@@ -16,8 +26,37 @@ TODO
     10-60 second during which the page is unrepsonsive. Profiling shows no
     JS executing.
 
+    This might have been mobx. The issue there is every time you access
+    a field being watched by mobx it does a bunch of bookkeeping. So
+    for example displaying 300 thumbnails might end up going through
+    that bookkeeping code 300 times. I moved the access of those fields
+    higher in the code and then they just get passed down as props
+    instead of passing down the mobx object. That *seems* to have fixed
+    it but I'm not sure.
+
+[ ] Fix scroll position issues
+
+    Scroll several folders of images down, view image, close viewer.
+    Notice you're no longer scrolled to the same spot.
+    Similarly typing filters loses your place.
+
+    Need to do some thing where we keep track of the top visible image
+    or the last image you clicked on and then try to keep that in view
+    both when restoring the imagegrids and when resizing
+
+
 -- Kinda MVP --
 ================================================================================
+
+[ ] handle scanning errors better?
+
+    Everytime we run we scan the folders and check for changes.
+    That can take a long time if there are lots of folders
+    and especially if they are remote. So let's say we lose
+    the connection after we've started. I think the current
+    code will end up marking all the existing photos as
+    bad. We should notice the error and stop scanning that
+    folder.
 
 [ ] fix updating folders issue
 
