@@ -1,8 +1,8 @@
 {
   "name": "mopho-v",
   "productName": "MoPho-V",
-  "version": "0.1.1-super-alpha",
-  "description": "A Community Supported Viewer",
+  "version": "0.1.2-super-alpha",
+  "description": "Community Supported Movie and Photo Viewer",
   "build": {
     "appId": "com.greggman.moPhoV",
     "asar": true,
