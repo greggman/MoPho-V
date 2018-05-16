@@ -231,6 +231,29 @@ function createBasename(dataDir, prefix, filePath) {
   return path.join(dataDir, `${prefix}-${hash.digest('hex')}`);
 }
 
+// used to make some prefix a browser can use the prefx to reference
+// a path to media
+function dirsToPrefixMap(dirs) {
+  const map = {};
+  dirs.forEach((dir) => {
+    map[dir] = createBasename('', 'folder', dir);
+  });
+  return map;
+}
+
+// We need to trap beacuse some paths will fail rather than just
+// generate an error :(
+function filterNonExistingDirs(dirs) {
+  return dirs.filter((dir) => {
+    try {
+      const stat = fs.statSync(dir);
+      return !!stat;
+    } catch (e) {
+      return false;
+    }
+  });
+}
+
 // PS: I understand this is not a good check. I should probably
 // write a file as temp/ABC and try to open it as temp/abc
 // but for now I don't care
@@ -276,9 +299,11 @@ function fileExistsSync(filename) {
 export {
   areFilesSame,
   createBasename,
+  dirsToPrefixMap,
   euclideanModulo,
   fileExistsSync,
   filenameFromUrl,
+  filterNonExistingDirs,
   getActualFilename,
   getDifferentFilenames,
   getIndexToInsert,
