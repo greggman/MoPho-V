@@ -31,7 +31,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import {remote} from 'electron';  // eslint-disable-line
+import {remote, ipcRenderer} from 'electron';  // eslint-disable-line
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
@@ -383,6 +383,7 @@ class Prefs extends React.Component {
   }
   _sendStateToAllStreams() {
     this._streams.forEach(this._sendPrefs);
+    ipcRenderer.send('prefs', prefs);
   }
   _updateBoolState(path, key, event) {
     const prefs = this.state.prefs;
