@@ -1,6 +1,135 @@
 TODO
 ================================================================================
 
+-- Just because I want to --
+================================================================================
+
+[ ] Support VR through WebVR
+
+    So I got a Daydream recently and Chrome 66 with a bunch of
+    flags turned on supports running Chrome as an app inside Daydream.
+    You can use the Daydream controller to point at and click links.
+    You can enable a VR keyboard so you can type URL in VR and click on
+    text boxes. If you go to aframe.io you can run lots of WebVR demos
+    and not have to leave the HMD.
+
+    So, that got me thinking I could use MoPho-V to serve a webpage
+    to browse your images in WebVR. It's not perfect and it's probably
+    got speed and memory issues but I thought'd I'd try it.
+
+    I plugged in happyfuntimes and routed the database messages through
+    and got a webpage running with debug output.
+
+    I remapped the various URLs so that MoPho-V can intercept the requests
+    and show the files. In other words Android Chrome asks for image at
+    "/folder-id-7/foo/bar.jpg" and the server runningin MoPho-V returns
+    the data for "/path/to/basefolder-7/foo/bar.jpg"
+
+    Things that are left
+
+    [ ] Display in A-Frame (or other WebVR)
+
+        I'm serving A-Frame and the demo works
+
+    [ ] Get a single grid up that you can scroll through
+
+    [ ] Make a single viewer work
+
+    [ ] Figure out a UI
+
+        Not sure grids and panes make sense in VR. Maybe there should
+        just be one grid you can make appear/disappear. You can then
+        choose an image then drag that image wherever you want. Consider
+        that one pane so you can click forward/back and select slideshow
+        for that image. Bring up the grid again and pick another
+        and drag that somewhere else? Save the layout so you don't have
+        to set it up again?
+
+        Seems like you'd also want to be able to size images, and of course
+        rotate, etc..
+
+    [ ] Support 180/360/3D videos
+
+        I'm not sure A-Frame supports this. I know it supports 360 videos.
+        I don't know if it supports 360 3D or 180 3D.
+
+        Also either need a UI to select format of video or else need
+        you to rename the files with known formats like name-180_180x180_3dh_LR.mp4.
+        Suspect you can't play videos becauase of WebGL overhead.
+
+        Ideally the browser would let you use 3D CSS and you could
+        just use HTML video elements. The other option is WebGL extensions
+        for handling video better.
+
+        This is kind of a killer.
+
+    [ ] Issues
+
+        *   no HTTPS so not sure what stuff Chrome is going to block :(
+
+        *   Mobile can only play one video at a time
+
+            Solution might be to show multiple videos but
+            only play the last one clicked. Not even sure
+            mobile supports showing the thumbnails to multiple
+            videos but will get there when we get there.
+
+        *   Suspect gifs are not supported
+
+        *   Not sure about speed issues (bandwidth)
+
+        *   Not sure how to handle archives
+
+            Currently they are decompressed into a collection
+            of blobs. URLs for those blobs are only valid in
+            the MoPho-V, not the browser. Options include:
+
+            *   Browser requests file, browser process asks thumber for data,
+                thumber provides data to browser process, browser process serves
+                data.
+
+                That sounds easiest as no new decompression code needed.
+                It also sound problematic. Certainly not good for streaming
+                video.
+
+            *   Browser requests file, browser process decompresses.
+                The decompression code should work but I don't like the idea
+                that the browser process can crash if the archive is too
+                big. Switching archive libraries might fix.
+
+            For now I should just filter out archive data on the client.
+
+        *   Security: The files have to be served. On the one hand
+            it's really only for your home network. On the other if you
+            have it running on you lap top and then walk to the cafe
+            your files are effectively public.
+
+            One solution is to add a password or PIN. You'd enter it
+            in VR when you connect. It would generate some access token
+            that is valid only for that session so if someone else
+            connects they need to know the PIN to generate their own
+            token.
+
+        *   Connecting: Since it's happyfuntimes you open Chrome in Daydream
+            and go to happyfuntimes.net. Can certainly run a vr.mopho-v.org or
+            something. The only data passed to happyfuntimes.net is your
+            public IP address and your private IP for the machine running MoPho-V.
+            The private one isn't useful to anyone not on your LAN so that
+            seems innocuous.
+
+            There's no other identifying info (well, I don't look at user agent etc).
+            It would be nice not to have to ping outside but then you have to
+            browse to something like `http://192.168.1.27:18679` which is more
+            painful IMO and not as bookmarkable (might change). Can certainly
+            make it an option not to ping.
+
+            One solution would be a native app on Daydream. It could then
+            do what things like Chromecast do and just broadcast for something
+            on the same net. But, a native app is slightly beside the point which
+            is that you have to trust them. With a webpage it's semi-easy to
+            just open the Devtools and see every network request they make to
+            see if they are being evil and if you're being spyied on.
+
 -- MVP --
 ================================================================================
 

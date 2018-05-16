@@ -37,6 +37,8 @@ import otherWindowIPC from 'other-window-ipc';
 import fs from 'graceful-fs';
 import path from 'path';
 import _ from 'lodash';
+import * as happyfuntimes from 'happyfuntimes';
+
 import createLimitedResourceManager from '../../lib/limited-resource-manager';
 import createMediaLoader from './media-loader';
 import createThumbnailMaker from './thumbnail-maker';
@@ -153,21 +155,46 @@ function start(args) {
     fs: fs,
     watcherFactory: createWatcher,
   });
-  g.thumbnailManager.on('updateFiles', makeEventForwarder('updateFiles'));
+  const updateFilesEventForwarder = makeEventForwarder('updateFiles');
+  g.thumbnailManager.on('updateFiles', (folders, ...args) => {
+    updateFilesEventForwarder(folders, ...args);
+    hftServer.broadcastCmd('updateFiles', prepFoldersForBrowser(folders));
+  });
 
   function updatePrefs(prefs) {
     g.prefs = prefs;
     const isPrefs = !args._.length;
     const dirs = isPrefs ? prefs.folders : args._;
-    g.thumbnailManager.setFolders(utils.removeChildFolders(dirs.filter((dir) => {
-      try {
-        const stat = fs.statSync(dir);
-        return !!stat;
-      } catch (e) {
-        log(dir, 'does not exist');
-        return false;
+    g.dirsToPrefixMap = Object.entries(utils.dirsToPrefixMap(dirs)).sort((a, b) => {
+      return Math.sign(b.length - a.length);
+    });
+    g.thumbnailManager.setFolders(utils.removeChildFolders(utils.filterNonExistingDirs(dirs)), isPrefs);
+  }
+
+  function pathToPrefx(path) {
+    for (const [dir, prefix] of g.dirsToPrefixMap) {
+      if (path.startsWith(dir)) {
+        return `/${prefix}${path.substring(dir.length)}`;
       }
-    })), isPrefs);
+    }
+    return path;
+  }
+
+  function prepFoldersForBrowser(folders) {
+    const preppedFolders = {};
+    for (const [folderName, folder] of Object.entries(folders)) {
+      const f = _.cloneDeep(folder);
+      for (const [fileName, file] of Object.entries(f.files)) {
+        if (file.thumbnail && file.thumbnail.url && file.thumbnail.url.startsWith(g.dataDir)) {
+          file.thumbnail.url = `/user-data-dir${file.thumbnail.url.substring(g.dataDir.length)}`;
+        }
+        if (!file.url) {
+          file.url = pathToPrefx(fileName);
+        }
+      }
+      preppedFolders[folderName] = f;
+    }
+    return preppedFolders;
   }
 
   otherWindowIPC.createChannelStream('prefs')
@@ -183,6 +210,9 @@ function start(args) {
     });
 
   const targets = [];
+  const hftServer = new happyfuntimes.GameServer({
+    url: `ws://localhost:${args.port}`,
+  });
 
   function makeEventForwarder(eventName) {
     return (...argss) => {
@@ -218,6 +248,17 @@ function start(args) {
     g.channel.close();
     g.mediaManagerServer.close();
     g.watcherManager.close();
+  });
+
+  hftServer.on('playerconnect', (netPlayer) => {
+    netPlayer.on('disconnect', () => {});
+    const hftStream = {
+      send(cmd, folders) {
+        netPlayer.sendCmd(cmd, prepFoldersForBrowser(folders));
+      },
+    };
+
+    g.thumbnailManager.sendAll(hftStream);
   });
 }
 

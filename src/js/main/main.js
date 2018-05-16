@@ -36,6 +36,8 @@ import fs from 'fs';
 import makeOptions from 'optionator';
 import electron from 'electron';  // eslint-disable-line
 import 'other-window-ipc';
+import * as happyfuntimes from 'happyfuntimes';
+import * as express from 'express';
 
 import {getUpdateCheckDate} from '../lib/update-manager';
 import appdata from '../lib/appdata';
@@ -135,6 +137,10 @@ const oneOfAKindWindows = {};
 let oldProgState;
 let hideInsteadOfCloseOneOffWindows = true;
 let quitting = false;
+let hftServer;
+let setupSteps = 2;
+let router;
+const hftState = {};
 
 if (args.compareFoldersToCache) {
   const baseFolders = args._ && args._.length > 0 ? args._ : prefs.folders;
@@ -186,6 +192,66 @@ ipcMain.on('unlock', () => {
   passwordWindow.close();
 });
 ipcMain.on('setupMenus', setupMenus);
+ipcMain.on('prefs', updatePrefs);
+
+const staticOptions = {
+  fallthrough: true,
+};
+
+function updatePrefs(prefs) {
+  router = new express.Router();
+  router.use('/out', express.static(path.join(`${__dirname}/../../../out`), staticOptions))
+  router.use('/user-data-dir', express.static(args.userDataDir, staticOptions));
+  const isPrefs = !args._.length;
+  const dirs = isPrefs ? prefs.folders : args._;
+  const map = utils.dirsToPrefixMap(utils.filterNonExistingDirs(dirs));
+  for(const [dir, prefix] of Object.entries(map)) {
+    router.use(`/${prefix}`, express.static(dir, staticOptions));
+  }
+}
+
+function routeDirs(...args) {
+  router(...args);
+}
+
+// TODO: do this only if prefs, and respond to prefs updates to turn it off and change port?
+function startHappyFunTimes() {
+  happyfuntimes.start({
+    baseDir: path.join(`${__dirname}/../../../app`),
+  })
+  .then((srv) => {
+    hftServer = srv;
+    hftServer.app.use(routeDirs);
+    const ports = hftServer.ports;
+    console.log("Listening on ports:", ports);
+    hftState.ports = ports;
+    hftState.port = ports[0];
+    args.port = hftState.port;  // because we need to pass this to thumber?
+    startIfReady();
+  })
+  .catch((err) => {
+    console.error("error starting server:", err);
+  });
+}
+startHappyFunTimes();
+
+function startIfReady() {
+  --setupSteps;
+  if (setupSteps !== 0) {
+    return;
+  }
+
+  if (prefs) {
+    updatePrefs(prefs);
+  }
+
+  if (prefs && prefs.misc && prefs.misc.password) {
+    setupPasswordMenus();
+    createPasswordWindow();
+  } else {
+    start();
+  }
+}
 
 function getWindowInfo(webContents) {
   const ndx = windows.findIndex((window) => {
@@ -670,12 +736,7 @@ function start() {
 }
 
 app.on('ready', () => {
-  if (prefs && prefs.misc && prefs.misc.password) {
-    setupPasswordMenus();
-    createPasswordWindow();
-  } else {
-    start();
-  }
+  startIfReady();
 });
 
 app.on('before-quit', () => {
@@ -691,6 +752,9 @@ app.on('before-quit', () => {
 });
 
 app.on('window-all-closed', () => {
+  if (hftServer) {
+    hftServer.close();
+  }
   app.quit();
 });
 
