@@ -73,6 +73,8 @@ TODO
     is deleted AND delete it from the internal DB immediately
     assuming the delete succeeds
 
+[ ] Look into switching to Axosoft/nsfw from chokidar
+
 [ ] fix scanning speed
 
     for some reason scanning gets extremely slow. Electron seems
