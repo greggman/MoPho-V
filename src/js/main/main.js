@@ -68,6 +68,8 @@ const optionSpec = {
     { option: 'delete-folder-data-if-no-files-for-archive', type: 'Boolean', description: 'delete folder data if no files for archive', },
     { option: 'max-parallel-readdirs', type: 'Int', default: '2', description: 'maximum parallel readdirs', },
     { option: 'readdirs-throttle-duration', type: 'Int', default: '0', description: 'amount to throttle readdir calls in milliseconds', },
+    { option: 'enable-webvr', type: 'Boolean', default: 'true', description: 'starts a web server for webvr. With your WebVR device on the same LAN run MoPho-V then go to happyfuntimes.net', },
+    { option: 'enable-rendezvous', type: 'Boolean', default: 'true', description: 'starts a web server for webvr. With your WebVR device on the same LAN run MoPho-V then go to happyfuntimes.net', },
   ],
   helpStyle: {
     typeSeparator: '=',
@@ -216,8 +218,13 @@ function routeDirs(...args) {
 
 // TODO: do this only if prefs, and respond to prefs updates to turn it off and change port?
 function startHappyFunTimes() {
+  if (!args.enableWebvr) {
+    process.nextTick(startIfReady);
+    return;
+  }
   happyfuntimes.start({
     baseDir: path.join(`${__dirname}/../../../app`),
+    privateServer: !args.enableRendezvous,
   })
   .then((srv) => {
     hftServer = srv;
