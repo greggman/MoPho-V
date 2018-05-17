@@ -202,12 +202,12 @@ const staticOptions = {
 
 function updatePrefs(prefs) {
   router = new express.Router();
-  router.use('/out', express.static(path.join(`${__dirname}/../../../out`), staticOptions))
+  router.use('/out', express.static(path.join(`${__dirname}/../../../out`), staticOptions));
   router.use('/user-data-dir', express.static(args.userDataDir, staticOptions));
   const isPrefs = !args._.length;
   const dirs = isPrefs ? prefs.folders : args._;
   const map = utils.dirsToPrefixMap(utils.filterNonExistingDirs(dirs));
-  for(const [dir, prefix] of Object.entries(map)) {
+  for (const [dir, prefix] of Object.entries(map)) {
     router.use(`/${prefix}`, express.static(dir, staticOptions));
   }
 }
@@ -225,19 +225,17 @@ function startHappyFunTimes() {
   happyfuntimes.start({
     baseDir: path.join(`${__dirname}/../../../app`),
     privateServer: !args.enableRendezvous,
-  })
-  .then((srv) => {
+  }).then((srv) => {
     hftServer = srv;
     hftServer.app.use(routeDirs);
     const ports = hftServer.ports;
-    console.log("Listening on ports:", ports);
+    console.log('Listening on ports:', ports);
     hftState.ports = ports;
     hftState.port = ports[0];
     args.port = hftState.port;  // because we need to pass this to thumber?
     startIfReady();
-  })
-  .catch((err) => {
-    console.error("error starting server:", err);
+  }).catch((err) => {
+    console.error('error starting server:', err);
   });
 }
 startHappyFunTimes();

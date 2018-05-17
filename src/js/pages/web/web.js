@@ -6,8 +6,8 @@ client.on('disconnect', () => { log('disconnect'); });
 client.on('updateFiles', (data) => {
   log('updateFiles', JSON.stringify(data, null, 2));
   const seen = {};
-  for (const [folderName, folder] of Object.entries(data)) {
-    for (const [file, fileInfo] of Object.entries(folder.files)) {
+  for (const folder of Object.values(data)) {
+    for (const fileInfo of Object.values(folder.files)) {
       if (fileInfo.bad || fileInfo.archiveName) {
         return;
       }
@@ -16,13 +16,13 @@ client.on('updateFiles', (data) => {
         seen[url] = true;
         const img = new Image();
         img.src = url;
-        img.width = "256";
+        img.width = '256';
         document.body.appendChild(img);
       }
       {
         const img = new Image();
         img.src = fileInfo.url;
-        img.width = "256";
+        img.width = '256';
         document.body.appendChild(img);
       }
     }
@@ -30,7 +30,7 @@ client.on('updateFiles', (data) => {
 });
 
 function log(...args) {
-  const elem = document.createElement("pre");
+  const elem = document.createElement('pre');
   elem.textContent = [...args].join(' ');
   document.body.appendChild(elem);
 }
