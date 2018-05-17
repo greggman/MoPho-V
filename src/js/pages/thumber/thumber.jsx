@@ -149,6 +149,13 @@ function start(args) {
     g.thumbnailPageMaker,
   ]);
 
+  const hftServer = args.enableWebvr ? new happyfuntimes.GameServer({
+    url: `ws://localhost:${args.port}`,
+  }) : {
+    broadcastCmd() {},
+    on() {},
+  };
+
   g.thumbnailManager = new ThumbnailManager({
     dataDir: g.dataDir,
     thumbnailPageMakerManager: g.thumbnailPageMakerManager,
@@ -210,12 +217,6 @@ function start(args) {
     });
 
   const targets = [];
-  const hftServer = args.enableWebvr ? new happyfuntimes.GameServer({
-    url: `ws://localhost:${args.port}`,
-  }) : {
-    broadcastCmd() {},
-    on() {},
-  };
 
   function makeEventForwarder(eventName) {
     return (...argss) => {

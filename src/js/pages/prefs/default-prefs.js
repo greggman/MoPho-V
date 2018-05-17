@@ -58,6 +58,8 @@ const defaultPrefs = {
     showDimensions: false,
     promptOnDeleteFile: true,
     promptOnDeleteFolder: true,
+    enableWeb: false,
+    enableRendevous: true,
   },
   slideshowDuration: {
     'image': 5,

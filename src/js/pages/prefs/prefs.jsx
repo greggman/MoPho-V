@@ -295,7 +295,6 @@ class Prefs extends React.Component {
     bind(
       this,
       '_addStream',
-      '_sendPrefs',
       '_cleanup',
       '_sendStateToAllStreams',
       '_saveAndSendPrefs',
@@ -365,13 +364,13 @@ class Prefs extends React.Component {
       this._removeStream(stream);
     });
     this._streams.push(stream);
-    this._sendPrefs(stream);
+    this._sendPrefs(stream, this._getPrefsToSend());
   }
   _removeStream(stream) {
     const ndx = this._streams.indexOf(stream);
     this._streams.splice(ndx, 1);
   }
-  _sendPrefs(stream) {
+  _getPrefsToSend() {
     let prefs = this.state.prefs;
     const dirs = this.props.options._;
     if (dirs && dirs.length) {
@@ -379,10 +378,16 @@ class Prefs extends React.Component {
         folders: dirs,
       });
     }
+    return prefs;
+  }
+  _sendPrefs(stream, prefs) {
     stream.send('prefs', prefs);
   }
   _sendStateToAllStreams() {
-    this._streams.forEach(this._sendPrefs);
+    const prefs = this._getPrefsToSend();
+    this._streams.forEach((stream) => {
+      this._sendPrefs(stream, prefs);
+    });
     ipcRenderer.send('prefs', prefs);
   }
   _updateBoolState(path, key, event) {
@@ -588,6 +593,7 @@ class Prefs extends React.Component {
   }
   render() {
     const prefs = this.state.prefs;
+    const rendezvousUrl = prefs.misc.enableRendezvous ? 'http://happyfuntimes.net' : 'http://<yourlocalip>:18679';
     return (
       <div className="prefs">
         <fieldset>
@@ -638,6 +644,11 @@ class Prefs extends React.Component {
               {this._makeCheckbox('misc', 'showDimensions', 'Show dimensions when hovering over image')}
               {this._makeCheckbox('misc', 'promptOnDeleteFile', 'Prompt before deleting a file')}
               {this._makeCheckbox('misc', 'promptOnDeleteFolder', 'Prompt before deleting a folder')}
+              {this._makeCheckbox('misc', 'enableWeb', 'Turn on local web server')}
+              {prefs.misc.enableWeb
+                ? this._makeCheckbox('misc', 'enableRendezvous', `Connect to local web server via ${rendezvousUrl}`)
+                : ''
+              }
               <EnumSelector desc="Toolbar Position" items={s_toolbarPositionModes} item={prefs.misc.toolbarPosition} onChange={this._changeToolbarPosition} />
             </div>
           </fieldset>
