@@ -116,7 +116,7 @@
     "exifreader": "^2.2.0",
     "express": "^4.14.0",
     "graceful-fs": "^4.1.11",
-    "happyfuntimes": "^0.2.2",
+    "happyfuntimes": "^0.2.3",
     "hjson": "^3.1.1",
     "immutability-helper": "^2.6.4",
     "jszip": "^3.1.5",
