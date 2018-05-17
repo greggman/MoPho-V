@@ -14,3 +14,7 @@ script:
   - npm run unit-tests
   - npm run publish
 
+after_failure:
+  - sleep 5
+  - echo "--end--"
+
