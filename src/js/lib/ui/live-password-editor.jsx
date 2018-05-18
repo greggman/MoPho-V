@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import React from 'react';
 import _ from 'lodash';
+import crypto from 'crypto';
 import bind from '../../lib/bind';
 import {hashPassword} from '../../lib/password-utils';
 import Modal from '../../lib/ui/modal';
@@ -93,7 +94,7 @@ class LivePasswordEditor extends React.Component {
   }
   _setPassword(password) {
     if (password.length) {
-      hashPassword(password, this.props.onChange);
+      hashPassword(crypto, password, this.props.onChange);
     } else {
       this.props.onChange('');
     }

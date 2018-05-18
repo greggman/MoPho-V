@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import React from 'react';
 import { render as reactRender } from 'react-dom';
 import {ipcRenderer} from 'electron';  // eslint-disable-line
+import crypto from 'crypto';
 import stacktraceLog from '../../lib/stacktrace-log.js';  // eslint-disable-line
 import '../../lib/title';
 import {cssArray} from '../../lib/css-utils';
@@ -64,7 +65,7 @@ class Password extends React.Component {
             ref={(input) => { this.input = input; }}
             onKeyPress={(event) => {
               if (event.key === 'Enter') {
-                checkPassword(this.props.password, event.target.value.trim(), (isMatch) => {
+                checkPassword(crypto, this.props.password, event.target.value.trim(), (isMatch) => {
                   if (isMatch) {
                     ipcRenderer.send('unlock');
                   } else {

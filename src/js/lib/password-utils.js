@@ -31,9 +31,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import crypto from 'crypto';
-
-function genPassword(password, salt, iterations, callback) {
+function genPassword(crypto, password, salt, iterations, callback) {
   crypto.pbkdf2(password, salt, iterations, 64, 'sha512', (err, derivedKey) => {
     if (err) {
       throw new Error('WTF!');
@@ -42,23 +40,39 @@ function genPassword(password, salt, iterations, callback) {
   });
 }
 
-function checkPassword(savedPassword, enteredPassword, callback) {
+function isEmpty(s) {
+  return s === undefined || s.trim() === '';
+}
+
+function passwordsMatch(savedPassword, testPassword) {
+  return (isEmpty(savedPassword) && isEmpty(testPassword)) ||
+    savedPassword === testPassword;
+}
+
+function checkPassword(crypto, savedPassword, enteredPassword, callback) {
+  if (isEmpty(enteredPassword)) {
+    process.nextTick(() => {
+      callback(isEmpty(savedPassword));
+    });
+    return;
+  }
   const [iterations, salt] = savedPassword.split(':');
-  genPassword(enteredPassword, salt, iterations | 0, (hash) => {
-    callback(hash === savedPassword);
+  genPassword(crypto, enteredPassword, salt, iterations | 0, (hash) => {
+    callback(passwordsMatch(hash, savedPassword));
   });
 }
 
-function hashPassword(password, callback) {
+function hashPassword(crypto, password, callback) {
   crypto.randomBytes(32, (err, salt) => {
     if (err) {
       throw new Error('WAT!');
     }
-    genPassword(password, salt.toString('hex'), 100000, callback);
+    genPassword(crypto, password, salt.toString('hex'), 100000, callback);
   });
 }
 
 export {
   checkPassword,
+  passwordsMatch,
   hashPassword,
 };
