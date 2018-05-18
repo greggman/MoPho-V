@@ -68,8 +68,6 @@ const optionSpec = {
     { option: 'delete-folder-data-if-no-files-for-archive', type: 'Boolean', description: 'delete folder data if no files for archive', },
     { option: 'max-parallel-readdirs', type: 'Int', default: '2', description: 'maximum parallel readdirs', },
     { option: 'readdirs-throttle-duration', type: 'Int', default: '0', description: 'amount to throttle readdir calls in milliseconds', },
-    { option: 'enable-webvr', type: 'Boolean', default: 'true', description: 'starts a web server for webvr. With your WebVR device on the same LAN run MoPho-V then go to happyfuntimes.net', },
-    { option: 'enable-rendezvous', type: 'Boolean', default: 'true', description: 'starts a web server for webvr. With your WebVR device on the same LAN run MoPho-V then go to happyfuntimes.net', },
   ],
   helpStyle: {
     typeSeparator: '=',
@@ -134,14 +132,14 @@ const shell = electron.shell;
 const BrowserWindow = electron.BrowserWindow;
 const windowInfosById = {};
 const windows = [];
-const {prefs} = loadPrefs(prefsFilename, fs);
 const oneOfAKindWindows = {};
+let {prefs} = loadPrefs(prefsFilename, fs);
 let oldProgState;
 let hideInsteadOfCloseOneOffWindows = true;
 let quitting = false;
 let hftServer;
-let setupSteps = 2;
 let router;
+let oldEnableRendezvous = false;
 const hftState = {};
 
 if (args.compareFoldersToCache) {
@@ -194,13 +192,15 @@ ipcMain.on('unlock', () => {
   passwordWindow.close();
 });
 ipcMain.on('setupMenus', setupMenus);
-ipcMain.on('prefs', updatePrefs);
+ipcMain.on('prefs', (event, prefs) => {
+  updatePrefs(prefs);
+});
 
 const staticOptions = {
   fallthrough: true,
 };
 
-function updatePrefs(prefs) {
+function setupFolderRouter() {
   router = new express.Router();
   router.use('/out', express.static(path.join(`${__dirname}/../../../out`), staticOptions));
   router.use('/user-data-dir', express.static(args.userDataDir, staticOptions));
@@ -212,19 +212,35 @@ function updatePrefs(prefs) {
   }
 }
 
+function updatePrefs(newPrefs) {
+  prefs = newPrefs;
+
+  setupFolderRouter();
+
+  if (prefs.misc.enableWeb) {
+    startHappyFunTimes();
+  } else {
+    stopHappyFunTimes();
+  }
+}
+
 function routeDirs(...args) {
   router(...args);
 }
 
 // TODO: do this only if prefs, and respond to prefs updates to turn it off and change port?
 function startHappyFunTimes() {
-  if (!args.enableWebvr) {
-    process.nextTick(startIfReady);
-    return;
+  if (hftServer) {
+    if (oldEnableRendezvous === prefs.misc.enableRendezvous) {
+      return;
+    }
+    stopHappyFunTimes();
   }
+
+  oldEnableRendezvous =  prefs.misc.enableRendezvous;
   happyfuntimes.start({
     baseDir: path.join(`${__dirname}/../../../app`),
-    privateServer: !args.enableRendezvous,
+    privateServer: !prefs.misc.enableRendezvous,
   }).then((srv) => {
     hftServer = srv;
     hftServer.app.use(routeDirs);
@@ -233,28 +249,15 @@ function startHappyFunTimes() {
     hftState.ports = ports;
     hftState.port = ports[0];
     args.port = hftState.port;  // because we need to pass this to thumber?
-    startIfReady();
   }).catch((err) => {
     console.error('error starting server:', err);
   });
 }
-startHappyFunTimes();
 
-function startIfReady() {
-  --setupSteps;
-  if (setupSteps !== 0) {
-    return;
-  }
-
-  if (prefs) {
-    updatePrefs(prefs);
-  }
-
-  if (prefs && prefs.misc && prefs.misc.password) {
-    setupPasswordMenus();
-    createPasswordWindow();
-  } else {
-    start();
+function stopHappyFunTimes() {
+  if (hftServer) {
+    hftServer.close();
+    hftServer = undefined;
   }
 }
 
@@ -726,6 +729,7 @@ function setupMenus() {
 
 const s_minMsBetweenUpdateChecks = 7 *  24 * 60 * 60 * 1000;  // 7 days
 function start() {
+  updatePrefs(prefs);
   setupMenus();
   createThumber();
   createPreferencesWindow();
@@ -741,7 +745,12 @@ function start() {
 }
 
 app.on('ready', () => {
-  startIfReady();
+  if (prefs && prefs.misc && prefs.misc.password) {
+    setupPasswordMenus();
+    createPasswordWindow();
+  } else {
+    start();
+  }
 });
 
 app.on('before-quit', () => {

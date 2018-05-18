@@ -1,11 +1,42 @@
 <html>
   <head>
-    <!--
-    <script src="js/aframe.min.js"></script>
-    -->
+    <style>
+    body {
+      margin: 0;
+    }
+    .password {
+      display: none;
+    }
+    .password>div {
+      display: flex;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .8);
+      color: white;
+      z-index: 999;
+    }
+    .error {
+      background: red !important;
+    }
+    .password>div>div> {
+      padding: 1em;
+      background: #555;
+      border: 1em solid black;
+    }
+    img {
+        margin: 1em;
+        border: 1px solid black;
+    }
+    </style>
+    <script src="3rdparty/aframe.min.js"></script>
   </head>
   <body>
-  <!--
+    <!--
     <a-scene>
       <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
       <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
@@ -14,12 +45,16 @@
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
     -->
+    <div class="password">
+      <div>
+        <div>
+          <form>
+            <input type="text" autocomplete="username" style="display:none;">
+            <input type="password" placeholder="password" autocomplete="current-password"><button>ok</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
-  <style>
-  img {
-      margin: 1em;
-      border: 1px solid black;
-  }
-  </style>
   <script src="/out/js/pages/web/web.js"></script>
 </html>

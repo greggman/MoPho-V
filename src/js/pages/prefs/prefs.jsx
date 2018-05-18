@@ -385,10 +385,11 @@ class Prefs extends React.Component {
   }
   _sendStateToAllStreams() {
     const prefs = this._getPrefsToSend();
+    // send to browser first because it might have to start HFT
+    ipcRenderer.send('prefs', prefs);
     this._streams.forEach((stream) => {
       this._sendPrefs(stream, prefs);
     });
-    ipcRenderer.send('prefs', prefs);
   }
   _updateBoolState(path, key, event) {
     const prefs = this.state.prefs;

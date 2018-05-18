@@ -38,6 +38,7 @@ import fs from 'graceful-fs';
 import path from 'path';
 import _ from 'lodash';
 import * as happyfuntimes from 'happyfuntimes';
+import crypto from 'crypto';
 
 import createLimitedResourceManager from '../../lib/limited-resource-manager';
 import createMediaLoader from './media-loader';
@@ -53,6 +54,7 @@ import MediaManagerServer from './media-manager-server';
 import ImageLoader from './image-loader';
 import WatcherManager from '../../lib/watcher/watcher-manager';
 import createThrottledReaddir from '../../lib/readdir-throttler';
+import {checkPassword} from '../../lib/password-utils';
 import stacktraceLog from '../../lib/stacktrace-log'; // eslint-disable-line
 import '../../lib/title';
 
@@ -149,12 +151,12 @@ function start(args) {
     g.thumbnailPageMaker,
   ]);
 
-  const hftServer = args.enableWebvr ? new happyfuntimes.GameServer({
-    url: `ws://localhost:${args.port}`,
-  }) : {
+  const fakeHFTServer = {
     broadcastCmd() {},
     on() {},
+    close() {},
   };
+  const players = [];
 
   g.thumbnailManager = new ThumbnailManager({
     dataDir: g.dataDir,
@@ -165,7 +167,9 @@ function start(args) {
   const updateFilesEventForwarder = makeEventForwarder('updateFiles');
   g.thumbnailManager.on('updateFiles', (folders, ...args) => {
     updateFilesEventForwarder(folders, ...args);
-    hftServer.broadcastCmd('updateFiles', prepFoldersForBrowser(folders));
+    if (players.length) {
+      g.hftServer.broadcastCmd('updateFiles', prepFoldersForBrowser(folders));
+    }
   });
 
   function updatePrefs(prefs) {
@@ -176,6 +180,61 @@ function start(args) {
       return Math.sign(b.length - a.length);
     });
     g.thumbnailManager.setFolders(utils.removeChildFolders(utils.filterNonExistingDirs(dirs)), isPrefs);
+
+    setupHFTServer(prefs);
+  }
+
+  function setupHFTServer(prefs) {
+    if (g.hftServer) {
+      g.hftServer.close();
+      g.hftServer = undefined;
+    }
+    g.hftServer = prefs.misc.enableWeb ? new happyfuntimes.GameServer({
+      url: `ws://localhost:${args.port}`,
+    }) : fakeHFTServer;
+    g.hftServer.on('playerconnect', (netPlayer) => {
+      players.push(netPlayer);
+      netPlayer.on('disconnect', () => {
+        const ndx = players.indexOf(netPlayer);
+        players.splice(ndx, 1);
+      });
+      const hftStream = {
+        send(cmd, folders) {
+          if (netPlayer.loggedIn) {
+            netPlayer.sendCmd(cmd, prepFoldersForBrowser(folders));
+          }
+        },
+      };
+      netPlayer.on('login', (data) => {
+        if (netPlayer.loggedIn) {
+          return;
+        }
+        checkPassword(crypto, g.prefs.misc.password, data.password, (isMatch) => {
+          if (!isMatch) {
+            netPlayer.sendCmd('login', {needPassword: true});
+          } else {
+            netPlayer.loggedIn = true;   // HACK! shoudn't add props to things that don't belong to me but it's so damn easy :P
+            netPlayer.sendCmd('login', {needPassword: false});
+            g.thumbnailManager.sendAll(hftStream);
+            // I was going to send a token needed
+            // for all image URLs ... but ... given the URLs
+            // are not so guessable and given it's currently http
+            // it doesn't seem important. If you're sniffing
+            // you could just get the URLs with token.
+            // crypto.randomBytes(32, (err, tokenBin) => {
+            //   if (err) {
+            //     throw new Error('WAT!');
+            //   }
+            //   const token = tokenBit.toString('hex');
+            //   netPlayer.token = token;
+            //   ipcRenderer.send('registerToken', token);
+            //   netPlayer.send('token', {token});
+            //   g.thumbnailManager.sendAll(hftStream);
+            // });
+          }
+        });
+      });
+    });
   }
 
   function pathToPrefx(path) {
@@ -252,17 +311,6 @@ function start(args) {
     g.channel.close();
     g.mediaManagerServer.close();
     g.watcherManager.close();
-  });
-
-  hftServer.on('playerconnect', (netPlayer) => {
-    netPlayer.on('disconnect', () => {});
-    const hftStream = {
-      send(cmd, folders) {
-        netPlayer.sendCmd(cmd, prepFoldersForBrowser(folders));
-      },
-    };
-
-    g.thumbnailManager.sendAll(hftStream);
   });
 }
 
