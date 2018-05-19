@@ -14,21 +14,11 @@ script:
   - npm run unit-tests
   - npm run publish
 
-before_script:
-  - echo "--before-script--"
-  - exit 0
-
-before_install:
-  - echo "--before-install--"
-  - exit 0
-
 after_failure:
   - sleep 5
   - echo "--after-failure--"
-  - exit 0
 
 after_script:
   - sleep 5
   - echo "--after-script--"
-  - exit 0
 
