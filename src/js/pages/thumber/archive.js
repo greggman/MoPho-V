@@ -97,7 +97,7 @@ function gatherRarFiles(entry, files, logger) {
   switch (entry.type) {
     case 'file': {
       const name = entry.fullFileName;
-      if (filters.isArchiveFilenameWeCareAbout(name)) {
+      if (!filters.isArchiveFilenameWeCareAbout(name)) {
         return;
       }
       const type = mime.lookup(name) || '';
