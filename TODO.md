@@ -177,6 +177,52 @@ TODO
 -- Kinda MVP --
 ================================================================================
 
+[ ] Show parent folders
+
+    As it is only folders that have files in them get shown so if you have
+
+        dogs
+          german shepards
+            img1.jpg
+            img2.jpg
+          pugs
+            img1.jpg
+            img2.jpg
+          bulldogs
+            img1.jpg
+            img2.jpg
+
+    Then 'dogs' is not shown since it has no files in it. This can make
+    things look strange. Example
+
+        cats
+          img1.jpg
+        dogs
+          german shepards
+            img1.jpg
+            img2.jpg
+
+    Will show
+
+        cat(1)
+          german shepards(2)
+
+    Because 'dogs' is not show.
+
+    Fixing this is actually a little bit of work. As it is 'dogs` is not even
+    stored on the viewer side.
+
+    Currently FolderDB stores the view side DB of folders. It discards folders
+    with zero files. It receives folders in any order so it receives parent
+    discards it because files. Then it receives child. It could create parent
+    at that point but it doesn't know how deep to make parents.
+
+    It's given a displayName so that should be the deepest parent
+    but I'm not sure how many things rely on displayName being fullPath
+
+    So for now hacked in a showEmpty prefs but you have to refresh the view
+    Otherwise can fix later.
+
 [ ] handle scanning errors better?
 
     Everytime we run we scan the folders and check for changes.
