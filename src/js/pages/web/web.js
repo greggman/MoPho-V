@@ -104,32 +104,39 @@ class ImageCache {
 const imageCache = new ImageCache();
 
 AFRAME.registerComponent('thumbnail', {
-
-});
-
-AFRAME.registerComponent('imagegrid', {
   schema: {
-    across: { type: 'int', default: 3, },
-    down: { type: 'int', default: 3, },
-    spacing: { type: 'number', default: 1, },
+    file: {},
   },
   init() {
-    this.thumbs = [];
-    this.el.addEventListener('setImages', (e) => {
-      this.files = e.detail;
-      const len = Math.min(this.thumbs.length, this.files.length);
-      if (len) {
-        for (let i = 0; i < len; ++i) {
-          const thumb = this.thumbs[i];
-          const file = this.files[i];
-          this.loadImage(thumb, file);
-        }
-      }
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    const texture = new THREE.CanvasTexture(canvas);
+    const geometry = new THREE.PlaneGeometry();
+    const material = new THREE.MeshBasicMaterial({
+      map: texture,
+      transparent: true,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    this.el.setObject3D('mesh', mesh);
+    this.texture = texture;
+    this.material = material;
+    this.ctx = ctx;
+    this.requestId = 0;
+
+    this.el.addEventListener('click', (e) => {
+console.log(e);
     });
   },
-  loadImage(thumb, file) {
+  requestImage(file) {
+    const requestId = ++this.requestId;
+    this.url = file.url;
     imageCache.getImage(file.thumbnail.url).then((img) => {
-      const ctx = thumb.ctx;
+      if (requestId !== this.requestId) {
+        return;
+      }
+      const ctx = this.ctx;
       const thumbnail = file.thumbnail;
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, 256, 256);
@@ -148,90 +155,164 @@ AFRAME.registerComponent('imagegrid', {
       const width  = info.rotation % 180 ? yAspect : xAspect; // * info.scale[0];
       const height = info.rotation % 180 ? xAspect : yAspect; // * info.scale[1];
       // thumb.elem.setAttribute('rotation', {x: 0, y: 0, z: 360 - info.rotation});
-      thumb.elem.setAttribute('scale', {x: width, y: height, z: 1});
-      thumb.texture.needsUpdate = true;
+      this.el.setAttribute('scale', {x: width, y: height, z: 1});
+      this.texture.needsUpdate = true;
     }).catch(() => {
-      const ctx = thumb.ctx;
-      ctx.fillStyle = 'red';
-      ctx.fillRect(0, 0, 256, 256);
-      ctx.font = '100px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('X', 128, 128);
-      thumb.elem.setAttribute('scale', {x: 1, y: 1, z: 1});
-      thumb.texture.needsUpdate = true;
+      if (requestId !== this.requestId) {
+        return;
+      }
+      this.fillImage();
     });
+  },
+  fillImage() {
+    const ctx = this.ctx;
+    ctx.fillStyle = 'red';
+    ctx.fillRect(0, 0, 256, 256);
+    ctx.font = '100px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('X', 128, 128);
+    this.el.setAttribute('scale', {x: 1, y: 1, z: 1});
+    this.texture.needsUpdate = true;
+  },
+  setState(x, y, z, opacity) {
+    this.el.object3D.position.set(x, y, z);
+    this.material.opacity = opacity;
+  },
+  update() {
+    const file = this.data.file;
+    if (file === this.oldFile) {
+      return;
+    }
+    this.oldFile = file;
+    if (file) {
+      this.requestImage(file);
+    }
+  }
+});
+
+AFRAME.registerComponent('imagegrid', {
+  schema: {
+    across: { type: 'int', default: 3, },
+    down: { type: 'int', default: 3, },
+    spacing: { type: 'number', default: 1, },
+  },
+  init() {
+    this.thumbs = [];
+    this.el.addEventListener('setImages', this.setImages.bind(this));
+  },
+  setImages(e) {
+    this.files = e.detail.files;
+    this.scrollY = e.detail.scrollY;
+
+    const data = this.data;
+    const across = data.across;
+    const down = data.down;
+    const spacing = data.spacing;
+    const maxX = (across - 1);
+    const maxY = (down - 1);
+
+    const startLine = this.scrollY | 0;
+    const start = startLine * this.data.across;
+    const end = Math.min(start + this.thumbs.length, this.files.length);
+    const unusedThumbs = this.thumbs.slice();
+    const thumbsThatMatchFiles = {};
+    for (let i = 0; i < this.thumbs.length; ++i) {
+      const ndx = start + i;
+      if (ndx >= end) {
+        break;
+      }
+      const file = this.files[ndx];
+      for (let j = 0; j < unusedThumbs.length; ++j) {
+        const thumb = unusedThumbs[j];
+        if (thumb.url === file.url) {
+          thumbsThatMatchFiles[file.url] = unusedThumbs.splice(j, 1)[0];
+          break;
+        }
+      }
+    }
+
+    for (let i = 0; i < this.thumbs.length; ++i) {
+      const ndx = start + i;
+      let thumb;
+      if (ndx < end) {
+        const file = this.files[ndx];
+        thumb = thumbsThatMatchFiles[file.url];
+        if (!thumb) {
+          thumb = unusedThumbs.pop();
+          this.loadImage(thumb, file);
+        }
+      } else {
+        thumb = unusedThumbs.pop();
+      }
+      const x = ndx % across;
+      const y = (ndx / across | 0) - this.scrollY;
+      const u = x / maxX;
+      const v = y / maxY;
+      const px = maxX * ( u - .5) * spacing;
+      const py = maxY * ( v - .5) * spacing * -1;
+      const pz = 0;
+      const opacity = y < 1
+        ? y
+        : y > (maxY - 1)
+          ? 1 - (y - (maxY - 1))
+          : 1;
+      thumb.elem.components.thumbnail.setState(px, py, pz, opacity);
+    }
+  },
+  loadImage(thumb, file) {
+    thumb.elem.setAttribute('thumbnail', {file: file});
   },
   update() {
     const data = this.data;
     const across = data.across;
     const down = data.down;
-    const spacing = data.spacing;
     const needed = across * down;
     while (this.thumbs.length < needed) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 256;
-      canvas.height = 256;
-      canvas.id = `c${this.thumbs.length}`;
-      const ctx = canvas.getContext('2d');
-      const hue = this.thumbs.length / 9 * 360 | 0;
-      const color = `hsl(${hue}deg,100%,50%)`;
-      ctx.fillStyle = color;
-      ctx.fillRect(0, 0, 256, 256);
-      ctx.fillStyle = `hsl(${(hue + 180)}deg,100%,80%)`;
-      ctx.fillRect(0, 110, 256, 36);
-      ctx.fillRect(110, 0, 36, 256);
-      ctx.fillStyle = 'black';
-      ctx.font = '200px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(this.thumbs.length, 128, 128);
-      document.body.appendChild(canvas);
       const elem = document.createElement('a-entity');
-      // elem.setAttribute('geometry', {
-      //   primitive: 'plane',
-      //   height: 1,
-      //   width: 1,
-      // });
-      // elem.setAttribute('material', {
-      //   shader: 'flat',
-      // });
-      const texture = new THREE.CanvasTexture(canvas);
-      const geometry = new THREE.PlaneGeometry();
-      const material = new THREE.MeshBasicMaterial({
-        map: texture,
-      });
-      const mesh = new THREE.Mesh(geometry, material);
-      elem.setObject3D('mesh', mesh);
-
-      this.thumbs.push({
-        ctx,
-        texture,
-        elem,
-      });
+      elem.setAttribute('thumbnail', {});
       this.el.appendChild(elem);
-    }
-    if (across !== this.oldAcross || down !== this.oldDown) {
-      this.oldAcross = across;
-      this.oldDown = down;
-      const maxX = (across - 1);
-      const maxY = (down - 1);
-      this.thumbs.forEach((thumb, ndx) => {
-        const x = ndx % across;
-        const y = ndx / across | 0;
-        const u = x / maxX;
-        const v = y / maxY;
-        const px = maxX * (u - .5) * spacing;
-        const py = maxY * (v - .5) * spacing;
-        const pz = 0;
-        thumb.elem.setAttribute('position', {x: px, y: py, z: pz});
-        thumb.elem.object3D.position.set(px, py, pz);
+      this.thumbs.push({
+        elem: elem,
       });
     }
   },
   remove() {
 
   }
+});
+
+AFRAME.registerComponent('viewer', {
+  scheme: {
+    src: {type: 'string'},
+  },
+  init() {
+    this.img = this.el.querySelector('.img');
+  },
+  setFile(file) {
+    const url = file.url;
+    console.log('viewer:', file);
+    this.img.setAttribute('src', url);
+    const onload = () => {
+      this.img.removeEventListener('materialtextureloaded', onload);
+      const info = getOrientationInfo(file, file.orientation);
+      const aspect = info.width / info.height;
+      let scaleX = 1;
+      let scaleY = 1 / aspect;
+      if (info.rotation % 180) {
+        scaleY = 1;
+        scaleX = 1 / aspect;
+      }
+      const scale = 5; // 10;
+      const width  = scale * info.scale[0] * scaleX;
+      const height = scale * info.scale[1] * scaleY;
+      // const width  = info.rotation % 180 ? yAspect : xAspect; // * info.scale[0];
+      // const height = info.rotation % 180 ? xAspect : yAspect; // * info.scale[1];
+      this.img.setAttribute('rotation', { x: 0, y: 0, z: 360 - info.rotation});
+      this.img.setAttribute('scale', {x: width, y: height, z: 1});
+    };
+    this.img.addEventListener('materialtextureloaded', onload);
+  },
 });
 
 AFRAME.registerComponent('mophov', {
@@ -246,8 +327,24 @@ AFRAME.registerComponent('mophov', {
     this.newFiles = [];
     this.images = [];
     this.imageGrid = this.el.querySelector('#imagegrid');
+    this.scrollY = 0;
+    this.across = 7;  // FIX
+
+    this.viewer = this.el.querySelector('.viewer');
 
     this.showFiles = _.debounce(this.showFiles.bind(this), 250);
+
+    window.addEventListener('keydown', (e) => {
+      const file = this.files[(e.keyCode - 48) % this.files.length];
+      console.log('setUrl:', file.url);
+      this.viewer.components.viewer.setFile(file);
+    });
+
+    setInterval((e) => {
+      const file = this.files[Math.random() * this.files.length | 0];
+      console.log('setUrl:', file.url);
+      this.viewer.components.viewer.setFile(file);
+    }, 5000);
 
     // I have no idea what I'm doing here or where to look up best
     // practices. I can't do HTTPS because certs for ip addresses
@@ -279,13 +376,90 @@ AFRAME.registerComponent('mophov', {
       }
     });
 
-    client.on('updateFiles', (folders) => {      
+    client.on('updateFiles', (folders) => {
       for (const folder of Object.values(folders)) {
         this.newFiles = this.newFiles.concat(Object.values(folder.files).filter(goodFile));
       }
       this.newFiles.sort(sortFn);
       this.showFiles();
     });
+
+    const setScrollY = (v) => {
+      const max = Math.ceil(this.files.length / this.across);
+      this.scrollY = Math.max(0, Math.min(max, v));
+    };
+
+    this.wheelHandler = (e) => {
+      setScrollY(this.scrollY + e.deltaY * 0.01);
+      this.setImages();
+    };
+
+    window.addEventListener('wheel', this.wheelHandler);
+
+    const dd = this.el.querySelector('#dd');
+    let controllerTouched = false;
+    let controllerStart = true;
+    let startPos;
+    let scrollYStart;
+    const scrollSpeed = 1;
+
+    dd.addEventListener('trackpadtouchstart', () => {
+      controllerTouched = true;
+      controllerStart = true;
+    });
+
+    dd.addEventListener('axismove', (e) => {
+      if (!controllerTouched) {
+        return;
+      }
+      if (controllerStart) {
+        controllerStart = false;
+        startPos = {x: e.detail.axis[0], y: e.detail.axis[1], };
+        scrollYStart = this.scrollY;
+      } else {
+        const delta = {
+          x: e.detail.axis[0] - startPos.x,
+          y: e.detail.axis[1] - startPos.y,
+        };
+        setScrollY(scrollYStart + delta.y * scrollSpeed);
+        this.setImages();
+      }
+    });
+
+    dd.addEventListener('trackpadtouchend', () => {
+      controllerTouched = false;
+    });
+
+    /*
+    [
+      'trackpadchanged',
+      'trackpadmove',
+      'trackpaddown',
+      'trackpadup',
+      'trackpadtouchstart',
+      'trackpadtouchmove',
+      'trackpadtouchend',
+      'axismove',
+      'buttonchanged',
+      'buttonup',
+      'buttondown',
+      'touchstart',
+      'touchend',
+    ].forEach((event) => {
+      dd.addEventListener(event, (e) => {
+        console.log(event, e);
+      });
+    });
+    */
+  },
+  setImages() {
+    this.imageGrid.emit('setImages', {
+      files: this.files,
+      scrollY: this.scrollY,
+    });
+  },
+  remove() {
+    window.removeEventListener('wheel', this.wheelHandler);
   },
   login() {
     this.client.sendCmd('login', {password: this.password});
@@ -301,47 +475,7 @@ AFRAME.registerComponent('mophov', {
   },
   showFiles() {
     this.files = this.newFiles.slice();
-    this.imageGrid.emit('setImages', this.files);
-    return;
-    const len = Math.min(this.files.length, 15);
-    for (let i = 0; i < len; ++i) {
-      const file = this.files[i];
-      const canvas = document.createElement('canvas');
-      canvas.id = `img${i}`;
-      canvas.src = file.url;
-      canvas.width = 256;
-      canvas.height = 256;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = `hsl(${Math.random() * 360 | 0},100%,50%)`;
-      ctx.fillRect(0, 0, 256, 256);
-      const elem = document.createElement('a-entity');
-      elem.setAttribute('geometry', {
-        primitive: 'plane',
-        height: 1,
-        width: 1,
-      });
-      elem.setAttribute('material', {
-        shader: 'flat',
-        src: canvas,
-      });
-      const x = i % 5 - 2;
-      const y = (i / 5 | 0) - 2;
-      let xAspect = file.width / file.height;
-      let yAspect = 1;
-      if (xAspect > 1) {
-        yAspect = 1 / xAspect;
-        xAspect = 1;
-      }
-      const info = getOrientationInfo(file, file.orientation);
-      const width  = xAspect * info.scale[0];
-      const height = yAspect * info.scale[1];
-      elem.setAttribute('position', {x, y, z: 0});
-      elem.setAttribute('rotation', {x: 0, y: 0, z: 360 - info.rotation});
-      elem.setAttribute('scale', {x: width, y: height, z: 1});
-      this.el.appendChild(elem);
-    }
-
-    this.imageGrid.emit('setImages', {foo:'bar'}, {bar:'foo'});
+    this.setImages();
   },
 });
 

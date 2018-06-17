@@ -43,8 +43,59 @@
       <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
       <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
       -->
-      <a-entity mophov position="0 0 0">
-        <a-entity id="imagegrid" imagegrid="across:7; down:5; spacing: 1.1;" position="0 2 -4"></a-entity>
+      <a-entity mophov position="0 2 -6">
+        <a-entity 
+          id="imagegrid" 
+          imagegrid="across:7; down:7; spacing: 1.1;" 
+          position="0 0 -0.2"
+        >
+        </a-entity>
+        <a-entity 
+          id="dd" 
+          daydream-controls="hand: left"
+        >
+        </a-entity>
+        <a-entity
+          class="viewer"
+          viewer=""
+          position="0 0 -0.1"
+        >
+          <a-entity
+            class="view"
+          >
+            <a-image class="img" src="images/app-rotation.jpg"></a-image>
+            <a-entity
+              class="video"
+            >
+            </a-entity>
+          </a-entity>
+          <a-entity
+            class="ui"
+            position="0 0 0"
+          >
+            <a-entity
+              class="left"
+              geometry="primitive: plane; height: 1; width: 1;"
+              position="-5 0 0"
+              text="
+                width: 1;
+                height: 1;
+                value: <"
+              
+            >
+            </a-entity>
+            <a-entity
+              class="right"
+              geometry="primitive: plane; height: 1; width: 1;"
+              position="5 0 0"
+              text="
+                width: 1;
+                height: 1;
+                value: >"
+            >
+            </a-entity>
+          </a-entity>
+        </a-entity>
       </a-entity>      
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
