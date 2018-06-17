@@ -126,7 +126,7 @@ AFRAME.registerComponent('thumbnail', {
     this.requestId = 0;
 
     this.el.addEventListener('click', (e) => {
-console.log(e);
+      console.log(e);
     });
   },
   requestImage(file) {
@@ -340,11 +340,11 @@ AFRAME.registerComponent('mophov', {
       this.viewer.components.viewer.setFile(file);
     });
 
-    setInterval((e) => {
-      const file = this.files[Math.random() * this.files.length | 0];
-      console.log('setUrl:', file.url);
-      this.viewer.components.viewer.setFile(file);
-    }, 5000);
+    // setInterval((e) => {
+    //   const file = this.files[Math.random() * this.files.length | 0];
+    //   console.log('setUrl:', file.url);
+    //   this.viewer.components.viewer.setFile(file);
+    // }, 5000);
 
     // I have no idea what I'm doing here or where to look up best
     // practices. I can't do HTTPS because certs for ip addresses
