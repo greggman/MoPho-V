@@ -60,6 +60,7 @@ const defaultPrefs = {
     promptOnDeleteFolder: true,
     enableWeb: false,
     enableRendevous: true,
+    showEmpty: false,
   },
   slideshowDuration: {
     'image': 5,

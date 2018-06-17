@@ -292,7 +292,7 @@ class App extends React.Component {
     this._folderFilter.updateFiles(folders);
   }
   _addFilesToFolderStateHelper(folders) {
-    FolderStateHelper.updateFolders(this._newRoot, folders);
+    FolderStateHelper.updateFolders(this._newRoot, folders, this._folderStatePrefs);
     this._setNewRoot();
   }
   _setNewRoot() {
@@ -319,6 +319,9 @@ class App extends React.Component {
   _rerunFilter() {
     this._filterShowBad = this.state.prefs.misc && this.state.prefs.misc.showBad || this._haveBadFilter;
     this._filterSmallImages = this.state.prefs.misc && this.state.prefs.misc.filterSmallImages;
+    this._folderStatePrefs = {
+      showEmpty: this.state.prefs.misc.showEmpty,
+    };
     this._newRoot = FolderStateHelper.createRoot(this.state.winState.sortMode);
     this._setNewRoot();
     this._folderDB.sendAll();

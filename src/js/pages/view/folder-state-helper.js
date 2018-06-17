@@ -181,7 +181,7 @@ class FolderStateHelper {
     };
   }
 
-  static updateFolders(root, folders) {
+  static updateFolders(root, folders, prefs) {
     const newFolders = root.folders.slice();
     let totalFiles = root.totalFiles;
     for (const [folderName, folder] of Object.entries(folders)) {
@@ -193,7 +193,7 @@ class FolderStateHelper {
         totalFiles -= oldFolder.files.length;
       }
       const status = folder.status;
-      const haveNewFiles = newFiles.length > 0;
+      const haveNewFiles = (prefs && prefs.showEmpty) || newFiles.length > 0;
       if (haveNewFiles || status.scanning || (status.checking && !status.scannedTime)) {
         const newFolder = FolderStateHelper.createFolder(folderName, newFiles, Object.assign({newest, oldest}, status));
         const newNdx = root.indexFn(newFolders, newFolder);
