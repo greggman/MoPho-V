@@ -60,12 +60,16 @@ const rarExtensions = {
   '.cbr': true,
 };
 
+function isDotFile(filename) {
+  return filename.startsWith(',');
+}
+
 function isImageExtension(filename) {
-  return imageExtensions[path.extname(filename).toLowerCase()];
+  return !isDotFile(filename) && imageExtensions[path.extname(filename).toLowerCase()];
 }
 
 function isVideoExtension(filename) {
-  return videoExtensions[path.extname(filename).toLowerCase()];
+  return !isDotFile(filename) && videoExtensions[path.extname(filename).toLowerCase()];
 }
 
 function isImageOrVideoExtension(filename) {
@@ -73,15 +77,15 @@ function isImageOrVideoExtension(filename) {
 }
 
 function isGif(filename) {
-  return path.extname(filename).toLowerCase() === '.gif';
+  return !isDotFile(filename) && path.extname(filename).toLowerCase() === '.gif';
 }
 
 function isRar(filename) {
-  return rarExtensions[path.extname(filename).toLowerCase()];
+  return !isDotFile(filename) && rarExtensions[path.extname(filename).toLowerCase()];
 }
 
 function isZip(filename) {
-  return zipExtensions[path.extname(filename).toLowerCase()];
+  return !isDotFile(filename) && zipExtensions[path.extname(filename).toLowerCase()];
 }
 
 function isArchive(filename) {
@@ -120,6 +124,7 @@ function isArchiveFilenameWeCareAbout(filename) {
 export {
   isArchive,
   isArchiveFilenameWeCareAbout,
+  isDotFile,
   isGif,
   isImageExtension,
   isImageOrVideoExtension,
