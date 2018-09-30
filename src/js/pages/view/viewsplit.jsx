@@ -383,8 +383,10 @@ class ViewSplit extends React.Component {
   }
   _bumpTreeVersion() {
     this._saveLayout();
-    this.setState({
-      treeVersion: this.state.treeVersion + 1,
+    this.setState((prevState) => {
+      return {
+        treeVersion: prevState.treeVersion + 1,
+      };
     });
   }
   _registerVPair(vpair) {
@@ -443,8 +445,10 @@ class ViewSplit extends React.Component {
   }
   _bumpCurrentId() {
     this._saveLayout();
-    this.setState({
-      currentId: this.state.currentId + 1,
+    this.setState((prevState) => {
+      return {
+        currentId: prevState.currentId + 1,
+      };
     });
   }
   _handleSliderMouseDown(e, id) {

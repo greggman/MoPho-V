@@ -117,8 +117,8 @@ function isMimeImageOrVideo(mimeType) {
 }
 
 function isArchiveFilenameWeCareAbout(filename) {
-  return isImageOrVideoExtension(filename) &&
-         filename.indexOf('__MACOS') < 0;   // hacky I know ...
+  return isImageOrVideoExtension(filename)
+      && filename.indexOf('__MACOS') < 0;   // hacky I know ...
 }
 
 export {
@@ -138,4 +138,3 @@ export {
   isVideoExtension,
   isZip,
 };
-

@@ -124,15 +124,16 @@ class Folders extends React.Component {
     const folders = root.folders.map((folder, ndx) => {
       const id = `folder-${folder.filename}`;
       const numFiles = folder.files.length;
-      return (<Folder
-        key={id}
-        folder={folder}
-        numFiles={numFiles}
-        count={ndx}
-        folderCount={folderCtx.folderCount + ndx}
-        eventBus={this.props.eventBus}
-        prefs={this.props.prefs}
-      />);
+      return (
+        <Folder
+          key={id}
+          folder={folder}
+          numFiles={numFiles}
+          count={ndx}
+          folderCount={folderCtx.folderCount + ndx}
+          eventBus={this.props.eventBus}
+          prefs={this.props.prefs}
+        />);
     });
     return folders;
   }

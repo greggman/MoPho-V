@@ -141,6 +141,7 @@ class Update extends React.Component {
     this.updateState = 'quitting';
     ipcRenderer.send('quitAndInstall');
   }
+  /* eslint indent: "off" */ // because indent rule broke in eslint 16
   render() {
     const state = states[this.updateState];
     const progress = this.state.progress;
@@ -166,7 +167,7 @@ class Update extends React.Component {
           { (state.canTry)
               ? (
                 <div>
-                  <button onClick={this._checkForUpdate}>Check for Update</button>
+                  <button type="button" onClick={this._checkForUpdate}>Check for Update</button>
                 </div>
                 )
               : undefined
@@ -175,7 +176,7 @@ class Update extends React.Component {
             (state.restart)
               ? (
                 <div>
-                  <button onClick={this._quitAndUpdate}>Quit and Update</button>
+                  <button type="button" onClick={this._quitAndUpdate}>Quit and Update</button>
                 </div>
                 )
               : undefined

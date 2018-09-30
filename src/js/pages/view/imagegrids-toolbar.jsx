@@ -98,7 +98,7 @@ class ImagegridsToolbar extends React.Component {
     const actionFuncs = this.props.actions;
     const action = actions[actionName];
     return (
-      <button onClick={actionFuncs[actionName]} data-tooltip={action.hint}><img src={action.icon} /></button>
+      <button type="button" onClick={actionFuncs[actionName]} data-tooltip={action.hint}><img src={action.icon} /></button>
     );
   }
   _handleKeyPress(event) {
@@ -152,8 +152,8 @@ class ImagegridsToolbar extends React.Component {
         </div>
         */}
         <div className="button-group">
-          <button onClick={this._changeGridMode} data-tooltip={gridMode.hint}><img src={gridMode.icon} /></button>
-          <button onClick={this._changeSortMode} data-tooltip={sortMode.hint}><img src={sortMode.icon} /></button>
+          <button type="button" onClick={this._changeGridMode} data-tooltip={gridMode.hint}><img src={gridMode.icon} /></button>
+          <button type="button" onClick={this._changeSortMode} data-tooltip={sortMode.hint}><img src={sortMode.icon} /></button>
         </div>
         <div className="zoom tooltip-high" data-tooltip="zoom">
           <Range

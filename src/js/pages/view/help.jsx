@@ -44,7 +44,7 @@ const Help = (props) => {
           nodeintegration="true"
         />
         <div>
-          <button onClick={props.onClose}>Ok</button>
+          <button type="button" onClick={props.onClose}>Ok</button>
         </div>
       </div>
     </Modal>

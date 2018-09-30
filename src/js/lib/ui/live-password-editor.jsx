@@ -60,9 +60,9 @@ class PasswordInput extends React.Component {
           ref={(input) => { this._input = input; }}
           type="password"
         />
-        <button onClick={this._setPassword}>Set</button>
-        <button onClick={this.props.cancelPassword}>Cancel</button>
-        <button onClick={this.props.clearPassword}>Clear</button>
+        <button type="button" onClick={this._setPassword}>Set</button>
+        <button type="button" onClick={this.props.cancelPassword}>Cancel</button>
+        <button type="button" onClick={this.props.clearPassword}>Clear</button>
       </div>
     );
   }
@@ -125,14 +125,14 @@ class LivePasswordEditor extends React.Component {
     if (!hasPassword) {
       return (
         <div>
-          <button onClick={this._editPassword}>Set</button>
+          <button type="button" onClick={this._editPassword}>Set</button>
         </div>
       );
     } else {
       return (
         <div>
           <div>Password: ********</div>
-          <button onClick={this._editPassword}>Edit</button>
+          <button type="button" onClick={this._editPassword}>Edit</button>
         </div>
       );
     }

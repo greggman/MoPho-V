@@ -45,8 +45,8 @@ const OkayCancel = (props) => {
       <div className="dialog">
         <div className="msg">{msg}</div>
         <div className="options">
-          <button onClick={onCancel}>{cancel}</button>
-          <button onClick={onOkay}>{okay}</button>
+          <button type="button" onClick={onCancel}>{cancel}</button>
+          <button type="button" onClick={onOkay}>{okay}</button>
         </div>
       </div>
     </Modal>

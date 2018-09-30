@@ -42,7 +42,7 @@ const WaitForFiles = (props) => {
         <div>&nbsp;</div>
         <div>... waiting for files ...</div>
         <div>&nbsp;</div>
-        <div>Use <button onClick={props.onClick}>Preferences</button> to add folders</div>
+        <div>Use <button type="button" onClick={props.onClick}>Preferences</button> to add folders</div>
       </div>
     </Modal>
   );

@@ -213,8 +213,10 @@ class Viewer extends React.Component {
     this.props.viewerState.filename = fileInfo.filename;
     this.props.viewerState.mimeType = fileInfo.type;
 
-    this.setState({
-      id: this.state.id + 1,
+    this.setState((prevState) => {
+      return {
+        id: prevState.id + 1,
+      };
     });
   }
   @action _handleTimeUpdate() {
@@ -228,8 +230,10 @@ class Viewer extends React.Component {
     videoState.time = video.currentTime;
   }
   _bumpId() {
-    this.setState({
-      id: this.state.id + 1,
+    this.setState((prevState) => {
+      return {
+        id: prevState.id + 1,
+      };
     });
   }
   _getRotation() {

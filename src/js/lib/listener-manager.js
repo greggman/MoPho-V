@@ -76,4 +76,3 @@ function ListenerManager() {
 export {
   ListenerManager as default,
 };
-

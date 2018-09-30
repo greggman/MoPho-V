@@ -194,14 +194,18 @@ class VPair extends React.Component {
   }
   _gotoNext() {
     const root = this.props.root;
-    this.setState({
-      currentImageIndex: (this.state.currentImageIndex + 1) % root.totalFiles,
+    this.setState((prevState) => {
+      return {
+        currentImageIndex: (prevState.currentImageIndex + 1) % root.totalFiles,
+      };
     }, this._viewCurrentIndex);
   }
   _gotoPrev() {
     const root = this.props.root;
-    this.setState({
-      currentImageIndex: euclideanModulo(this.state.currentImageIndex - 1, root.totalFiles),
+    this.setState((prevState) => {
+      return {
+        currentImageIndex: euclideanModulo(prevState.currentImageIndex - 1, root.totalFiles),
+      };
     }, this._viewCurrentIndex);
   }
   _setCurrentView() {

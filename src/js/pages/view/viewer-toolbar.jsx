@@ -77,7 +77,7 @@ class Que extends React.Component {
     const actionFuncs = this.props.actions;
     const action = actions[actionName];
     return (
-      <button onClick={actionFuncs[actionName]} data-tooltip={action.hint}><img src={action.icon} /></button>
+      <button type="button" onClick={actionFuncs[actionName]} data-tooltip={action.hint}><img src={action.icon} /></button>
     );
   }
   _changeTime(event) {
@@ -93,7 +93,7 @@ class Que extends React.Component {
     return (
       <div className={videoClasses}>
         {/* this._makeButton('fastBackward') */}
-        <button onClick={this.props.actions.togglePlay} data-tooltip={actions.togglePlay.hint}><img src={videoState.playing ? 'images/buttons/pause.svg' : 'images/buttons/play.svg'} /></button>
+        <button type="button" onClick={this.props.actions.togglePlay} data-tooltip={actions.togglePlay.hint}><img src={videoState.playing ? 'images/buttons/pause.svg' : 'images/buttons/play.svg'} /></button>
         <div className="cue">
           <Range
             value={videoState.time / videoState.duration * 10000}
@@ -151,7 +151,7 @@ class ViewerToolbar extends React.Component {
     const actionFuncs = this.props.actions;
     const action = actions[actionName];
     return (
-      <button onClick={actionFuncs[actionName]} data-tooltip={action.hint}><img src={action.icon} /></button>
+      <button type="button" onClick={actionFuncs[actionName]} data-tooltip={action.hint}><img src={action.icon} /></button>
     );
   }
   render() {

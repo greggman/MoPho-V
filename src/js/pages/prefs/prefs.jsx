@@ -126,11 +126,13 @@ class BaseFolder extends React.Component {
           </pre>
         </div>
         <button
+          type="button"
           onClick={() => { props.setFolder(foldername, ndx); }}
         >
         ...
         </button>
         <button
+          type="button"
           onClick={() => { props.deleteFolder(ndx); }}
         >
           Del
@@ -224,8 +226,8 @@ class Key extends React.Component {
         <div className="keypress">
           <div>Press A Key</div>
           <div>Key: {keyInfoToString(keyInfo)}</div>
-          <button onClick={this._setKeyCapture}>Set</button>
-          <button onClick={this._abortKeyCapture}>Cancel</button>
+          <button type="button" onClick={this._setKeyCapture}>Set</button>
+          <button type="button" onClick={this._abortKeyCapture}>Cancel</button>
         </div>
       </Modal>
     ) : undefined;
@@ -237,8 +239,8 @@ class Key extends React.Component {
           <div className="keycode" onClick={this._startKeyCapture}>{keyInfoToString(keyInfo)}</div>
           <ActionSelector items={actions} item={keyInfo.action} onChange={this._setAction} />
         </div>
-        <button onClick={this._startKeyCapture}>Set</button>
-        <button onClick={() => { deleteKey(); }}>Del</button>
+        <button type="button" onClick={this._startKeyCapture}>Set</button>
+        <button type="button" onClick={() => { deleteKey(); }}>Del</button>
       </div>
     );
   }
@@ -605,6 +607,7 @@ class Prefs extends React.Component {
             <div>
               {prefs.folders.map(this._makeFolder)}
               <button
+                type="button"
                 onClick={this._addFolder}
               >
                 Add Folder
@@ -625,6 +628,7 @@ class Prefs extends React.Component {
             <div>
               {this._makeKeys()}
               <button
+                type="button"
                 onClick={this._addKey}
               >
                 Add Key
@@ -681,9 +685,11 @@ class Prefs extends React.Component {
           <fieldset>
             <legend>Extra</legend>
             <div>
-              <button onClick={() => {
-                shell.openItem(this.props.options.userDataDir);
-              }}
+              <button
+                type="button"
+                onClick={() => {
+                  shell.openItem(this.props.options.userDataDir);
+                }}
               >
                 Open Cache in Explorer/Finder
               </button>

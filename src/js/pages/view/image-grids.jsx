@@ -270,22 +270,23 @@ class ImageGrids extends React.Component {
   _itemRenderer(index, key) {
     const info = this._folders[index];
     const width = this._getWidth();
-    return (<ImageGrid
-      key={key}
-      count={info.count}
-      width={width}
-      name={info.name}
-      folder={info.folder}
-      eventBus={this.props.eventBus}
-      options={this.props.options}
-      prefs={this.props.prefs}
-      gridMode={this.props.winState.gridMode}
-      scrollParent={this._scrollToRelativePosition}
-      setCurrentView={this.props.setCurrentView}
-      currentImageIndex={this.props.currentImageIndex}
-      zoom={this._zoom}
-      winState={this.props.winState}
-    />);
+    return (
+      <ImageGrid
+        key={key}
+        count={info.count}
+        width={width}
+        name={info.name}
+        folder={info.folder}
+        eventBus={this.props.eventBus}
+        options={this.props.options}
+        prefs={this.props.prefs}
+        gridMode={this.props.winState.gridMode}
+        scrollParent={this._scrollToRelativePosition}
+        setCurrentView={this.props.setCurrentView}
+        currentImageIndex={this.props.currentImageIndex}
+        zoom={this._zoom}
+        winState={this.props.winState}
+      />);
   }
   _getNumItems() {
     return this._folders ? this._folders.length : 0;

@@ -365,20 +365,24 @@ class App extends React.Component {
     return !tooSmall;
   }
   _handleCycleSortMode() {
-    this.setState({
-      winState: Object.assign({}, this.state.winState, {
-        sortMode: sortModes.next(this.state.winState.sortMode),
-      }),
+    this.setState((prevState) => {
+      return {
+        winState: Object.assign({}, prevState.winState, {
+          sortMode: sortModes.next(prevState.winState.sortMode),
+        }),
+      };
     }, () => {
       this._saveLayout();
       this._rerunFilter();
     });
   }
   _handleCycleGridMode() {
-    this.setState({
-      winState: Object.assign({}, this.state.winState, {
-        gridMode: gridModes.next(this.state.winState.gridMode),
-      }),
+    this.setState((prevState) => {
+      return {
+        winState: Object.assign({}, prevState.winState, {
+          gridMode: gridModes.next(prevState.winState.gridMode),
+        }),
+      };
     }, () => {
       this._saveLayout();
     });
@@ -390,10 +394,12 @@ class App extends React.Component {
     this._viewerStateHolder.state = view ? view.getViewerState() : null;
   }
   _toggleUI() {
-    this.setState({
-      winState: Object.assign({}, this.state.winState, {
-        showUI: (this.state.winState.showUI + 3) % 4,
-      }),
+    this.setState((prevState) => {
+      return {
+        winState: Object.assign({}, prevState.winState, {
+          showUI: (prevState.winState.showUI + 3) % 4,
+        }),
+      };
     }, () => {
       this._saveLayout();
     });
@@ -427,19 +433,23 @@ class App extends React.Component {
   //    this.viewSplit.emit('scrollToImage', ...args);
   //  }
   _setThumbnailZoom(zoom) {
-    this.setState({
-      winState: Object.assign({}, this.state.winState, {
-        thumbnailZoom: zoom,
-      }),
+    this.setState((prevState) => {
+      return {
+        winState: Object.assign({}, prevState.winState, {
+          thumbnailZoom: zoom,
+        }),
+      };
     }, () => {
       this._saveLayout();
     });
   }
   _handleRotate() {
-    this.setState({
-      winState: Object.assign({}, this.state.winState, {
-        rotateMode: (this.state.winState.rotateMode + 1) % rotateModes.length,
-      }),
+    this.setState((prevState) => {
+      return {
+        winState: Object.assign({}, prevState.winState, {
+          rotateMode: (prevState.winState.rotateMode + 1) % rotateModes.length,
+        }),
+      };
     }, () => {
       this._saveLayout();
     });
@@ -448,18 +458,22 @@ class App extends React.Component {
     this._thumberStream.send('refreshFolder', folderName);
   }
   _handleDeleteFolder(event, folderInfo) {
-    this.setState({
-      contextFolderInfo: folderInfo,
-      showDeleteFolderPrompt: this.state.prefs.misc.promptOnDeleteFolder,
+    this.setState((prevState) => {
+      return {
+        contextFolderInfo: folderInfo,
+        showDeleteFolderPrompt: prevState.prefs.misc.promptOnDeleteFolder,
+      };
     });
     if (!this.state.prefs.misc.promptOnDeleteFolder) {
       this._deleteFolder(folderInfo);
     }
   }
   _handleDeleteFile(event, fileInfo) {
-    this.setState({
-      contextFileInfo: fileInfo,
-      showDeleteFilePrompt: this.state.prefs.misc.promptOnDeleteFile,
+    this.setState((prevState) => {
+      return {
+        contextFileInfo: fileInfo,
+        showDeleteFilePrompt: prevState.prefs.misc.promptOnDeleteFile,
+      };
     });
     if (!this.state.prefs.misc.promptOnDeleteFile) {
       this._deleteFile(fileInfo);
@@ -471,10 +485,12 @@ class App extends React.Component {
     });
     const filename = this.state.contextFolderInfo.filename;
     if (!shell.moveItemToTrash(filename)) {
-      this.setState({
-        showForceDelete: true,
-        forceDeleteFilename: filename,
-        forceDeleteIsFolder: !this.state.contextFolderInfo.archive,
+      this.setState((prevState) => {
+        return {
+          showForceDelete: true,
+          forceDeleteFilename: filename,
+          forceDeleteIsFolder: !prevState.contextFolderInfo.archive,
+        };
       });
     }
   }
@@ -592,10 +608,12 @@ class App extends React.Component {
   }
   _handleSplitResize(event) {
     const {flex} = event.component.props;
-    this.setState({
-      winState: Object.assign({}, this.state.winState, {
-        splitPosition: flex,
-      }),
+    this.setState((prevState) => {
+      return {
+        winState: Object.assign({}, prevState.winState, {
+          splitPosition: flex,
+        }),
+      };
     }, () => {
       this._saveLayout();
     });
@@ -630,6 +648,7 @@ class App extends React.Component {
     const toolbarOnBottom = isFullScreen
       ? s_rotateModeVsToolbarModeBottomTable[rotateMode][toolbarPosition]
       : s_toolbarModeBottomTable[toolbarPosition];
+    /* eslint indent: "off" */ // eslint indent broke as of eslint 5.6.1
     return (
       <div
         style={splitStyle}

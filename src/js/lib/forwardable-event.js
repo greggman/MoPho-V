@@ -46,4 +46,3 @@ class ForwardableEvent {
 export {
   ForwardableEvent as default,
 };
-
