@@ -100,7 +100,7 @@
     "eslint-plugin-react": "^7.11.1",
     "mocha": "^5.2.0",
     "node-cleanup": "^2.1.2",
-    "sinon": "^4.5.0",
+    "sinon": "^6.3.4",
     "source-map-support": "^0.5.9",
     "spectron": "^3.8.0",
     "temp": "^0.8.3",
