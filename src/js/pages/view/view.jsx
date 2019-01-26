@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import React from 'react';
 import { render as reactRender } from 'react-dom';
-import {useStrict} from 'mobx';
+import {configure} from 'mobx';
 
 import {ipcRenderer} from 'electron';  // eslint-disable-line
 import App from './app';
@@ -43,7 +43,9 @@ import '../../lib/title';
 const isDevMode = process.env.NODE_ENV === 'development';
 
 if (isDevMode) {
-  useStrict(true);  // mobx
+  configure({
+    enforceActions: 'always',
+  });
 }
 
 // we can print this value to see if code is getting executed on the same frame

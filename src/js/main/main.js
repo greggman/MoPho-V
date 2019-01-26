@@ -36,6 +36,7 @@ import fs from 'fs';
 import makeOptions from 'optionator';
 import electron from 'electron';  // eslint-disable-line
 import 'other-window-ipc';
+import debugFn from 'debug';
 import * as happyfuntimes from 'happyfuntimes';
 import * as express from 'express';
 
@@ -53,7 +54,7 @@ import compareFoldersToCache from './compare-folders-to-cache';
 const {windowTrackerInit} = require('../lib/remote-helpers');
 // import {windowTrackerInit} from '../../../src/js/lib/remote-helpers';
 
-
+const debug = debugFn('main');
 const isDevMode = process.env.NODE_ENV === 'development';
 const isOSX = process.platform === 'darwin';
 
@@ -371,11 +372,16 @@ function createWindow(url, options) {
     show: options.show === undefined ? true : options.show,
     webPreferences: {
       webSecurity: false,
+      contextIsolation: false,
+      nodeIntegration: true,
+      webviewTag: true,
     },
   });
 
+  debug('createWindow:', url);
   window.loadURL(url);
   if (isDevMode && inspectRE.test(url)) {
+    debug('openDevTools:', url);
     window.webContents.openDevTools();
   }
 
@@ -407,6 +413,8 @@ function makeOneOfAKindCloseHandler(window, id) {
 }
 
 function createOneOfAKindWindow(id, url, options) {
+  const openDevTools = isDevMode && inspectRE.test(url);
+
   let window = oneOfAKindWindows[id];
   if (window) {
     window.show();
@@ -421,12 +429,20 @@ function createOneOfAKindWindow(id, url, options) {
       minWidth: 128,
       enableLargerThanScreen: true,
       frame: options.frame === undefined ? true : options.frame,
-      show: options.show === undefined ? true : options.show,
+      show: openDevTools ? openDevTools : (options.show === undefined ? true : options.show),
       defaultEncoding: 'utf8',
+      webPreferences: {
+        webSecurity: false,
+        contextIsolation: false,
+        nodeIntegration: true,
+        webviewTag: true,
+      },
     });
 
+    debug('createOneOfAKindWindow:', url);
     window.loadURL(`file://${__dirname}/../../../${url}`);
-    if (isDevMode && inspectRE.test(url)) {
+    if (openDevTools) {
+      debug('openDevTools:', url);
       window.webContents.openDevTools();
     }
 

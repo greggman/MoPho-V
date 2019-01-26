@@ -320,7 +320,7 @@ class App extends React.Component {
     this._filterShowBad = this.state.prefs.misc && this.state.prefs.misc.showBad || this._haveBadFilter;
     this._filterSmallImages = this.state.prefs.misc && this.state.prefs.misc.filterSmallImages;
     this._folderStatePrefs = {
-      showEmpty: this.state.prefs.misc.showEmpty,
+      showEmpty: this.state.prefs.misc && this.state.prefs.misc.showEmpty,
     };
     this._newRoot = FolderStateHelper.createRoot(this.state.winState.sortMode);
     this._setNewRoot();

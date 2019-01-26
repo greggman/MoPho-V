@@ -54,22 +54,19 @@
   ],
   "babel": {
     "plugins": [
-      "transform-class-properties",
-      "transform-decorators-legacy"
+      ["@babel/plugin-proposal-decorators", { "legacy": true }],
+      ["@babel/plugin-proposal-class-properties", { "loose": true }]
     ],
     "presets": [
       [
-        "env",
+        "@babel/preset-env",
         {
           "targets": {
-            "browsers": [
-              "Chrome >= 58"
-            ]
+            "electron": "4"
           }
         }
       ],
-      "stage-1",
-      "react"
+      "@babel/preset-react"
     ]
   },
   "author": "greggman",
@@ -79,64 +76,64 @@
   },
   "homepage": "https://github.com/greggman/MoPho-V#readme",
   "devDependencies": {
-    "ajv": "^6.5.4",
-    "babel-cli": "^6.18.0",
-    "babel-eslint": "^10.0.1",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-decorators-legacy": "^1.3.5",
-    "babel-polyfill": "^6.16.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.16.0",
-    "babel-preset-stage-0": "^6.16.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/plugin-proposal-decorators": "^7.3.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "ajv": "^6.7.0",
+    "babel-loader": "^8.0.5",
     "chai": "^4.2.0",
-    "concurrently": "^4.0.1",
+    "concurrently": "^4.1.0",
     "cross-env": "^5.2.0",
-    "electron": "^3.0.2",
-    "electron-builder": "^20.28.4",
-    "eslint": "^5.6.1",
+    "electron": "^4.0.2",
+    "electron-builder": "^20.38.5",
+    "eslint": "^5.12.1",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jsx-a11y": "^6.2.0",
     "eslint-plugin-optional-comma-spacing": "0.0.4",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-react": "^7.12.4",
     "mocha": "^5.2.0",
     "node-cleanup": "^2.1.2",
-    "sinon": "^6.3.4",
-    "source-map-support": "^0.5.9",
-    "spectron": "^4.0.0",
-    "temp": "^0.8.3",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2"
+    "sinon": "^7.2.3",
+    "source-map-support": "^0.5.10",
+    "spectron": "^5.0.0",
+    "temp": "^0.9.0",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "asar": "^0.14.3",
-    "chalk": "^2.4.1",
+    "asar": "^0.14.6",
+    "chalk": "^2.4.2",
     "chokidar": "^2.0.4",
-    "electron-updater": "^3.1.2",
-    "es6-promisify": "^6.0.0",
-    "exifreader": "^2.5.0",
-    "express": "^4.16.3",
-    "graceful-fs": "^4.1.11",
+    "debug": "^4.1.1",
+    "electron-updater": "^4.0.6",
+    "es6-promisify": "^6.0.1",
+    "exifreader": "^2.6.0",
+    "express": "^4.16.4",
+    "graceful-fs": "^4.1.15",
     "happyfuntimes": "^0.2.5",
-    "hjson": "^3.1.1",
-    "immutability-helper": "^2.8.1",
+    "hjson": "^3.1.2",
+    "immutability-helper": "^3.0.0",
     "jszip": "^3.1.5",
     "keycode": "^2.2.0",
     "lodash": "^4.17.11",
     "lodash.throttle": "^4.1.1",
-    "mime-types": "^2.1.20",
-    "mobx": "^5.5.0",
-    "mobx-react": "^5.2.8",
-    "moment": "^2.22.2",
+    "mime-types": "^2.1.21",
+    "mobx": "^5.9.0",
+    "mobx-react": "^5.4.3",
+    "moment": "^2.24.0",
     "optionator": "^0.8.1",
     "other-window-ipc": "^1.3.1",
     "prop-types": "^15.6.2",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "react-list": "^0.8.10",
-    "react-measure": "^2.1.2",
-    "react-reflex": "^2.2.9",
-    "react-virtualized": "^9.20.1",
-    "rimraf": "^2.6.2"
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "react-list": "^0.8.11",
+    "react-measure": "^2.2.2",
+    "react-reflex": "^3.0.8",
+    "react-virtualized": "^9.21.0",
+    "rimraf": "^2.6.3"
   }
 }

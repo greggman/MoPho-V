@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import fs from 'fs';
-import promisify from 'es6-promisify';
+import {promisify} from 'es6-promisify';
 
 const api = {};
 [

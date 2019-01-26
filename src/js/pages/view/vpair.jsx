@@ -84,7 +84,7 @@ class VPair extends React.Component {
       loopEnd: 1,
     });
 
-    this._viewerState = observable.shallowObject({
+    this._viewerState = observable.object({
       viewing: false,
       mimeType: 'image',  // mimeType image, video
       fileInfo: {},
@@ -94,13 +94,13 @@ class VPair extends React.Component {
       zoom: 1,
       slideshow: false,
       videoState: videoState,
-    });
+    }, {}, {deep: false});
 
     const initialState = Object.assign(props.initialState ? toJS(props.initialState) : {
       currentCollection: undefined,
     });
 
-    this._imagegridState = observable.shallowObject(initialState);
+    this._imagegridState = observable.object(initialState, {}, {deep: false});
 
     this.state = {
       currentImageIndex: -1,

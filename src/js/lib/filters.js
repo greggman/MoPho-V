@@ -61,7 +61,7 @@ const rarExtensions = {
 };
 
 function isDotFile(filename) {
-  return filename.startsWith(',');
+  return filename.startsWith('.') || path.basename(filename).startsWith('.');
 }
 
 function isImageExtension(filename) {
