@@ -98,7 +98,7 @@ class Viewer extends React.Component {
     this.state = {
       width: 0,
       height: 0,
-      id: 0,
+      id: 0, // eslint-disable-line
       infoFlash: false,
       playerFlash: false,
     };

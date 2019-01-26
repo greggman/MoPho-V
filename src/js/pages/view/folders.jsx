@@ -133,7 +133,8 @@ class Folders extends React.Component {
           folderCount={folderCtx.folderCount + ndx}
           eventBus={this.props.eventBus}
           prefs={this.props.prefs}
-        />);
+        />
+      );
     });
     return folders;
   }

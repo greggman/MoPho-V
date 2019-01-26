@@ -286,7 +286,8 @@ class ImageGrids extends React.Component {
         currentImageIndex={this.props.currentImageIndex}
         zoom={this._zoom}
         winState={this.props.winState}
-      />);
+      />
+    );
   }
   _getNumItems() {
     return this._folders ? this._folders.length : 0;

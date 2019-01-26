@@ -329,8 +329,8 @@ class ViewSplit extends React.Component {
     }
 
     this.state = {
-      treeVersion: 0,
-      currentId: 0,
+      treeVersion: 0,  // eslint-disable-line
+      currentId: 0,    // eslint-disable-line
       dimensions: {
         width: -1,
         height: -1,
