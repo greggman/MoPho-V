@@ -177,6 +177,44 @@ class Two {
       parent._addChild(this);
     }
   }
+  getRightMost() {
+    let current = this;
+    while (current.children.length) {
+      current = current.children[current.children.length - 1];
+    }
+    return current;
+  }
+  getLeftMost() {
+    let current = this;
+    while (current.children.length) {
+      current = current.children[0];
+    }
+    return current;
+  }
+  getPrev() {
+    const parent = this.parent;
+    if (!parent) {
+      return this.getRightMost();
+    }
+    // are we the right child?
+    if (parent.children.length === 2 && parent.children[1] === this) {
+      return parent.children[0].getRightMost();
+    }
+    // we're the left child
+    return parent.getPrev();
+  }
+  getNext() {
+    const parent = this.parent;
+    if (!parent) {
+      return this.getLeftMost();
+    }
+    // are we the left child?
+    if (parent.children.length === 2 && parent.children[0] === this) {
+      return parent.children[1].getLeftMost();
+    }
+    // we're the right child
+    return parent.getNext();
+  }
   split(splitType) {
     assert(this.splitType === Two.NONE, 'not already split');
     assert(this.children.length === 0, 'we have no children');
@@ -313,6 +351,8 @@ class ViewSplit extends React.Component {
       '_handleSliderMouseMove',
       '_handleSliderMouseUp',
       '_saveLayout',
+      '_activateNextView',
+      '_activatePrevView',
       // '_forwardAction',
     );
 
@@ -345,6 +385,8 @@ class ViewSplit extends React.Component {
     this._actionListener.on('splitHorizontal', this._splitHorizontal);
     this._actionListener.on('splitVertical', this._splitVertical);
     this._actionListener.on('deletePane', this._deletePane);
+    this._actionListener.on('nextView', this._activateNextView);
+    this._actionListener.on('prevView', this._activatePrevView);
   }
   componentDidMount() {
     this.props.setCurrentView(this);
@@ -415,6 +457,16 @@ class ViewSplit extends React.Component {
       this._setCurrentViewFromTwo(this._currentTwo.delete());
       this._bumpTreeVersion();
     }
+  }
+  _activateNextView(forwardableEvent) {
+    forwardableEvent.stopPropagation();
+    const next = this._currentTwo.getNext();
+    this._setCurrentViewFromTwo(next);
+  }
+  _activatePrevView(forwardableEvent) {
+    forwardableEvent.stopPropagation();
+    const next = this._currentTwo.getPrev();
+    this._setCurrentViewFromTwo(next);
   }
   _getCursorStyle() {
     const extra = this.state.splitType === 'horizontal' ? 1 : 0;
