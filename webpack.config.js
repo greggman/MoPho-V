@@ -6,6 +6,7 @@ module.exports = {
   devtool: 'inline-source-map',
   performance: {
     maxEntrypointSize: 40000000,
+    maxAssetSize:      40000000,
   },
   output: {
     filename: 'web.js',
