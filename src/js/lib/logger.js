@@ -68,7 +68,7 @@ function makeTerminalLog(color, name) {
 }
 
 function makeLogFunc(baseName, subName) {
-  const name = subName ? `${baseName}[${subName}]` : baseName;
+  const name = subName !== undefined ? `${baseName}[${subName}]` : baseName;
   const color = generateColor();
   const logger = process.type === 'renderer'
     ? makeBrowserLog(color, name)
