@@ -39,7 +39,7 @@ import React from 'react';
 import _ from 'lodash';
 import {autorun, observable, action} from 'mobx';
 import {observer} from 'mobx-react';
-import {hideMenu, showMenu} from '../../../3rdparty/react-contextmenu/actions';
+import {hideMenu, showMenu} from 'react-contextmenu';
 import ActionEvent from '../../lib/action-event';
 import ActionListener from '../../lib/action-listener';
 import bind from '../../lib/bind';

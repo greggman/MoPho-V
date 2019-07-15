@@ -33,7 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import React from 'react';
 import {shell} from 'electron';  // eslint-disable-line
-import {ContextMenu, MenuItem} from '../../../3rdparty/react-contextmenu';
+import {ContextMenu, MenuItem} from 'react-contextmenu';
 import bind from '../../lib/bind';
 import debug from '../../lib/debug';
 import ForwardableEvent from '../../lib/forwardable-event';
