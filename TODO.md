@@ -15,15 +15,15 @@ TODO
 
     So, that got me thinking I could use MoPho-V to serve a webpage
     to browse your images in WebVR. It's not perfect and it's probably
-    got speed and memory issues but I thought'd I'd try it.
+    got speed and memory issues but I thought I'd try it.
 
     I plugged in happyfuntimes and routed the database messages through
     and got a webpage running with debug output.
 
     I remapped the various URLs so that MoPho-V can intercept the requests
     and show the files. In other words Android Chrome asks for image at
-    "/folder-id-7/foo/bar.jpg" and the server runningin MoPho-V returns
-    the data for "/path/to/basefolder-7/foo/bar.jpg"
+    "/folder-id-7/foo/bar.jpg" and the server running in MoPho-V returns
+    the data for "/path/to/base-folder-7/foo/bar.jpg"
 
     Things that are left
 
@@ -55,7 +55,7 @@ TODO
 
         Also either need a UI to select format of video or else need
         you to rename the files with known formats like name-180_180x180_3dh_LR.mp4.
-        Suspect you can't play videos becauase of WebGL overhead.
+        Suspect you can't play videos because of WebGL overhead.
 
         Ideally the browser would let you use 3D CSS and you could
         just use HTML video elements. The other option is WebGL extensions
@@ -120,15 +120,15 @@ TODO
             There's no other identifying info (well, I don't look at user agent etc).
             It would be nice not to have to ping outside but then you have to
             browse to something like `http://192.168.1.27:18679` which is more
-            painful IMO and not as bookmarkable (might change). Can certainly
+            painful IMO and not as bookmark-able (might change). Can certainly
             make it an option not to ping.
 
             One solution would be a native app on Daydream. It could then
-            do what things like Chromecast do and just broadcast for something
+            do what things like ChromeCast do and just broadcast for something
             on the same net. But, a native app is slightly beside the point which
             is that you have to trust them. With a webpage it's semi-easy to
-            just open the Devtools and see every network request they make to
-            see if they are being evil and if you're being spyied on.
+            just open the DevTools and see every network request they make to
+            see if they are being evil and if you're being spied on.
 
 -- MVP --
 ================================================================================
@@ -144,7 +144,7 @@ TODO
     fitting on the screen then not. The range slider and the current
     time are updated. The time seems more likely the issue as in
     as the numbers change one the width of that cell changes.
-    Why it only happens somtimes though is unclear. Maybe just
+    Why it only happens sometimes though is unclear. Maybe just
     giving the time a fixed width would fix it but I can't repo
     the issue on demand so I can't check the fix works.
 
@@ -152,7 +152,7 @@ TODO
 
     when loading a large collection the collection itself loads relatively
     quickly but Electron is busy doing internal bookkeeping for several seconds
-    10-60 second during which the page is unrepsonsive. Profiling shows no
+    10-60 second during which the page is unresponsive. Profiling shows no
     JS executing.
 
     This might have been mobx. The issue there is every time you access
@@ -177,12 +177,16 @@ TODO
 -- Kinda MVP --
 ================================================================================
 
+[ ] Add toolbar icon for playback speed
+
+[ ] Add toolbar icon to sync list to current pane
+
 [ ] Show parent folders
 
     As it is only folders that have files in them get shown so if you have
 
         dogs
-          german shepards
+          german shepherds
             img1.jpg
             img2.jpg
           pugs
@@ -198,16 +202,16 @@ TODO
         cats
           img1.jpg
         dogs
-          german shepards
+          german shepherds
             img1.jpg
             img2.jpg
 
     Will show
 
         cat(1)
-          german shepards(2)
+          german shepherds(2)
 
-    Because 'dogs' is not show.
+    Because 'dogs' is not shown.
 
     Fixing this is actually a little bit of work. As it is 'dogs` is not even
     stored on the viewer side.
@@ -225,7 +229,7 @@ TODO
 
 [ ] handle scanning errors better?
 
-    Everytime we run we scan the folders and check for changes.
+    Every time we run we scan the folders and check for changes.
     That can take a long time if there are lots of folders
     and especially if they are remote. So let's say we lose
     the connection after we've started. I think the current
@@ -276,7 +280,7 @@ TODO
     to react-list are slightly off.
 
 [ ] profile scroll (as in fix the jank)
-[ ] fix image flash. Issue is src and other settings happen separartely?
+[ ] fix image flash. Issue is src and other settings happen separately?
 [ ] Make up,down,left,right in ImageGrid navigate grid
 
     up/down should go to image above or below current image
@@ -323,7 +327,7 @@ TODO
     archive internal filenames may not be utf-8. Maybe some
     library exists to guess the encoding
 
-[ ] use differnet icon for rotate image vs rotate UI
+[ ] use different icon for rotate image vs rotate UI
 
 [ ] toggle full zoom of current pane
 [ ] Use File at a time Zip lib
@@ -378,9 +382,9 @@ TODO
     and if we do you can also solve it that way.
 
 [ ] explain hover stuff (made diagram, not happy with it)
-[ ] Option to not continuously scan (default is continious)
+[ ] Option to not continuously scan (default is continuous)
 
-[ ] move menu accerlators to actions
+[ ] move menu accelerators to actions
 [ ] add context menu to viewer images
 [ ] split at same location.
 
@@ -411,7 +415,7 @@ TODO
 [ ] Save View State Layouts
 
     Note sure where in the UI this would fit but it would
-    be nice to be able to save cetain layouts with certain
+    be nice to be able to save certain layouts with certain
     media in each layout. This is basically the (entire state of app)
     above except it would be for one window only and added to some
     list of saved layouts.
@@ -457,7 +461,7 @@ TODO
     UX for thumbnails.
 
     You could then split the view so one pane is showing your
-    colleciton and another pane is showing everything else
+    collection and another pane is showing everything else
     and drag and drop thumbnails to the collection. Drag
     a folder heading to insert the entire folder which
     would include subfolders.
@@ -474,14 +478,14 @@ TODO
     which seems too temporal for collections.
 
     Maybe another way is to just be able to hide trees of folders
-    A simple UI might be a checkbox next to each folder. Uncheck
+    A simple UI might be a checkbox next to each folder. Un-check
     and the folder disappears. That means the folder's line in
     the folder would disappear as well since having 500 folders
-    showing when you only want 30 is still problemantic.
+    showing when you only want 30 is still problematic.
     Some other button on the toolbar would show the hidden folders
-    again so you could unhide them.
+    again so you could un-hide them.
 
-    This might be better as it's more temploral. Checking a few
+    This might be better as it's more temporal. Checking a few
     top level folders would quickly pair down the media
 
     If I do implement collections here's a few ideas
@@ -490,7 +494,7 @@ TODO
     [ ] right click folder/title to add folder (should add live folder and tree)
     [ ] While viewing right click to add.
         Adds with current orientation, zoom, loop settings. This orientation should be
-        relative (the viewer is already relative so probably no problme)
+        relative (the viewer is already relative so probably no problem)
     [ ] right click thumbnail to remove (unless it's "all" playlist)
     [ ] make sure it skips missing files
     [ ] drag to reorder.
@@ -508,7 +512,7 @@ TODO
 [ ] option to use orientation for width/height search?
 [ ] show zoom amount
 
-    either as a flash over image OR under zoom/behind zoom slider in toobar
+    either as a flash over image OR under zoom/behind zoom slider in toolbar
 
 [ ] Fix focus issues
 [ ] show slideshow state on toolbar
@@ -522,7 +526,7 @@ TODO
 [ ] Option: Thumbnail generation size
 [ ] When sizing window keep left column same size (unless it won't fit)
 [ ] add icons for zoom modes
-[ ] consider scanning for existance
+[ ] consider scanning for existence
 
     User starts viewer, then turns on share, shouldn't have to
     restart viewer?
@@ -552,7 +556,7 @@ TODO
 
     Make the main viewer a plugin
 
-    1. Plugin the main viewer (3 panes, toolbar, folders, imaegrid)
+    1. Plugin the main viewer (3 panes, toolbar, folders, imagegrid)
 
 [ ] Archive plugin API
 
@@ -597,7 +601,7 @@ TODO
     a few images from each folder.
 
     Where should playlists be stored? A separate list? A normal folder?
-    Maybe just like a .jpg there's a .mopho-v-playlst so you can share
+    Maybe just like a .jpg there's a .mopho-v-playlist so you can share
     them? Have to figure out how to keep paths working if they
     cross paths. Also if user moves a folder
 
@@ -641,8 +645,8 @@ TODO
     *   support more formats (avi/webp/tiff/tga)
     *   support more themes
     *   move basic support to plugins (images/videos/layout)
-    *   check for dups simple (check by size, then by content)
-    *   check for dups complex (check by perception)
+    *   check for dupes simple (check by size, then by content)
+    *   check for dupes complex (check by perception)
     *   ask google images
         but really just want to pass the data to the browser
     *   upload image(s) to site ABC
@@ -651,7 +655,7 @@ TODO
     Note: About browsing other sites, It's NOT ok to do that in electron. Electron does not get security updates like Chrome does so if you want to visit the live internet you really should be using Chrome or maybe the new Firefox. It's possible we could use a plugin in firefox
     or chrome and talk via IPC/RPC
 
-[ ] generete gif thumbnails for gifs and videos?
+[ ] generate gif thumbnails for gifs and videos?
 
     There's a bunch of issue here. One is they take tons of memory.
     Another is they take tons of time. Yet another is how stuff
@@ -825,7 +829,7 @@ DONE
 [X] password
 [X] figure out why bad thumbnails on large collection
 [X] check jank (seems to be a macOS issue. Rebooted)
-[X] fix archives AGAIN >:( (rescanning fixed. Not sure what problem was)
+[X] fix archives AGAIN >:( (re-scanning fixed. Not sure what problem was)
 
 [X] Save Window Size and Locations
     [X] Check if works if 2 -> 1 monitor
@@ -872,9 +876,9 @@ DONE
 [X] make it harder to bring down menus (can't)
 [X] fix vid speed
 [X] fix resizing viewer
-[X] speed up resizng response
+[X] speed up resizing response
 [X] Fix Thumber issue when fullscreen
-[X] ignore folders that don't exist (when initiing thumber)
+[X] ignore folders that don't exist (when initializing thumber)
 [X] ignore __MACOS folder in .zip file
 [X] Live filter
 
@@ -894,7 +898,7 @@ DONE
     Maybe That's step 1?
 
     Except asking the thumber to send all and filtering at
-    FolderStateHelper is too slow to type in realtime.
+    FolderStateHelper is too slow to type in real time.
 
     So, use DB, ...? unsure what to do
 
@@ -908,7 +912,7 @@ DONE
     Should we emit empty folders?
 
     Advantage: Will remove previous results for us
-    Disavantage: Might be simpler and more expected to just clear
+    Disadvantage: Might be simpler and more expected to just clear
       previous results (clear FolderStateHelper) and then
       refill. That way while typing we just see results immediately
 
@@ -928,10 +932,10 @@ DONE
     that updating the state changes how things are rendered.
 
     The only property that can't be state is the currentTime
-    it's updated by the brower.
+    it's updated by the browser.
 
 [X] rotate ui, no toolbar, no folders, no toolbar + no folders
-[X] Make hidding folders work
+[X] Make hiding folders work
 [X] Save Prefs
 [X] figure out why it shows inspectors
 [X] open cache in finder/explorer button in prefs
@@ -939,13 +943,13 @@ DONE
 [X] Option for no thumber
 [X] Make UI for base folders
 [X] on viewer if no folders suggest adding in prefs
-[x] Fix context menu under separtator
+[x] Fix context menu under separator
 [x] move key config to prefs
 [X] Fix sizing issue
 [X] fix active tab indicator
    [X] add more obvious one
-[X] add trasitions to video controls
-[X] show title with trasition always?
+[X] add transitions to video controls
+[X] show title with transition always?
 [X] highlight thumbnail
 [ ] fix panes
 
@@ -1001,7 +1005,7 @@ DONE
   *  should wrap 2D context stuff into classes that do that one operation?
      easier to mock/test
 
-  *  need to handle bad archive. Archive should not be rescanned if bad.
+  *  need to handle bad archive. Archive should not be re-scanned if bad.
      seems like that should be stored in parent? Or should it be stored
      in data for archive itself? For example we for some reason we couldn't
      scan a folder should that data be stored in the folder or folder's parent?
@@ -1047,7 +1051,7 @@ Rejected
     In other words when you split a view both splits should look the same,
     If it's viewing show the same view?
 
-    If you're splitting youm most likely want to view something else
+    If you're splitting you most likely want to view something else
     in the split so no reason to do this.
 
 [ ] change filters to be more like expressions, allow using them as expressions for
