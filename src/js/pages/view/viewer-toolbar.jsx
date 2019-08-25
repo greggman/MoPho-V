@@ -117,7 +117,8 @@ class Que extends React.Component {
         <button
           type="button"
           onClick={actionFuncs.cyclePlaybackSpeed}
-          data-tooltip={cyclePlaybackSpeedAction.hint}>
+          data-tooltip={cyclePlaybackSpeedAction.hint}
+        >
           <img src={playbackRateInfo.get(videoState.playbackRate).icon} />
         </button>
         {this._makeButton('setLoop')}
