@@ -68,6 +68,8 @@ const modeInfo = {
   'cover':      { desc: 'cover',       image: 'images/stretch-both.svg', },
 };
 
+const playbackRates = [1, 0.66, 0.5, 0.33, 0.25, 3, 2, 1.5];
+
 @observer
 class Viewer extends React.Component {
   constructor(props) {
@@ -137,6 +139,14 @@ class Viewer extends React.Component {
       };
     };
 
+
+    const cyclePlaybackSpeed = () => {
+      const rate = this.props.viewerState.videoState.playbackRate;
+      // works even if no match since result will be 0
+      const ndx = (playbackRates.indexOf(rate) + 1) % playbackRates.length;
+      this._setPlaybackRate(playbackRates[ndx]);
+    };
+
     const actionListener = new ActionListener();
     this._actionListener = actionListener;
     actionListener.on('closeViewer', () => { this._hideImage(); });
@@ -161,6 +171,7 @@ class Viewer extends React.Component {
     actionListener.on('setPlaybackSpeed3', createSetPlaybackRateFn(0.5 )); // 3  0.5
     actionListener.on('setPlaybackSpeed4', createSetPlaybackRateFn(0.33)); // 4  0.33
     actionListener.on('setPlaybackSpeed5', createSetPlaybackRateFn(0.25)); // 5  0.25
+    actionListener.on('cyclePlaybackSpeed', cyclePlaybackSpeed); // 1  1
     actionListener.on('toggleSlideshow', (fe) => { this.toggleSlideshow(fe.domEvent); });
     actionListener.on('rotate', (fe) => { fe.stopPropagation(); this._rotate(fe.domEvent); });
     actionListener.on('changeStretchMode', (fe) => { this._changeStretchMode(fe.domEvent); });

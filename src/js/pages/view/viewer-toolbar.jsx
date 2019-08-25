@@ -63,6 +63,17 @@ class Range extends React.Component {
   }
 }
 
+const playbackRateInfo = new Map([
+  [1,    {icon: 'images/speed-1x.svg'}],
+  [0.66, {icon: 'images/speed-.66x.svg'}],
+  [0.5,  {icon: 'images/speed-.5x.svg'}],
+  [0.33, {icon: 'images/speed-.33x.svg'}],
+  [0.25, {icon: 'images/speed-.25x.svg'}],
+  [3,    {icon: 'images/speed-3x.svg'}],
+  [2,    {icon: 'images/speed-2x.svg'}],
+  [1.5,  {icon: 'images/speed-1.5x.svg'}],
+]);
+
 @observer
 class Que extends React.Component {
   constructor(props) {
@@ -87,13 +98,14 @@ class Que extends React.Component {
     this.props.videoState.volume = event.target.value / event.target.max;
   }
   render() {
-    const videoState = this.props.videoState;
+    const {videoState, actions: actionFuncs} = this.props;
+    const {cyclePlaybackSpeed: cyclePlaybackSpeedAction} = actions;
     const videoClasses = new CSSArray('video-controls');
     videoClasses.addIf(!this.props.active, 'disabled');
     return (
       <div className={videoClasses}>
         {/* this._makeButton('fastBackward') */}
-        <button type="button" onClick={this.props.actions.togglePlay} data-tooltip={actions.togglePlay.hint}><img src={videoState.playing ? 'images/buttons/pause.svg' : 'images/buttons/play.svg'} /></button>
+        <button type="button" onClick={actions.togglePlay} data-tooltip={actions.togglePlay.hint}><img src={videoState.playing ? 'images/buttons/pause.svg' : 'images/buttons/play.svg'} /></button>
         <div className="cue">
           <Range
             value={videoState.time / videoState.duration * 10000}
@@ -102,6 +114,12 @@ class Que extends React.Component {
             onUpdate={this._changeTime}
           />
         </div>
+        <button
+          type="button"
+          onClick={actionFuncs.cyclePlaybackSpeed}
+          data-tooltip={cyclePlaybackSpeedAction.hint}>
+          <img src={playbackRateInfo.get(videoState.playbackRate).icon} />
+        </button>
         {this._makeButton('setLoop')}
         <div className="volume tooltip-high" data-tooltip="volume">
           <Range

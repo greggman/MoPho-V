@@ -60,6 +60,7 @@ const actions = {
   setPlaybackSpeed3: { hint: '.5x',       icon: 'images/buttons/0.5x.svg',         desc: 'playback speed .5x', },
   setPlaybackSpeed4: { hint: '.33x',      icon: 'images/buttons/0.33x.svg',        desc: 'playback speed .33x', },
   setPlaybackSpeed5: { hint: '.25x',      icon: 'images/buttons/0.25x.svg',        desc: 'playback speed .25x', },
+  cyclePlaybackSpeed:{ hint: 'cycle speed', icon: 'images/buttons/speed.svg',      desc: 'cycle playback speed', },
   toggleSlideshow:   { hint: 'slideshow', icon: 'images/buttons/slideshow.svg',    desc: 'start/stop slideshow', },
   rotate:            { hint: 'rotate',    icon: 'images/buttons/rotate.svg',       desc: 'rotate item', },
   changeStretchMode: { hint: 'zoom mode', icon: 'images/buttons/stretch-both.svg', desc: 'change stretch mode', },
