@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import mime from 'mime-types';
-import JSZip from 'jszip';
+import unzipit from 'unzipit.js';
 import debug from '../../lib/debug';
 import * as filters from '../../lib/filters';
 import pfs from '../../lib/promise-fs';
@@ -56,14 +56,16 @@ async function zipDecompress(filename) {
 
   try {
     const data = await pfs.readFile(filename);
-    const zip = await JSZip.loadAsync(data);
-    const zipNames = Object.keys(zip.files);
+    const {entries} = await unzipit(data);
+    const zipFiles = Object.fromEntries(entries.map(e => [e.name, e]));
+    const zipNames = Object.keys(zipFiles);
     // TODO: do I want to support videos?
     const zipPromises = zipNames.filter(filters.isArchiveFilenameWeCareAbout).map(async (name, ndx) => {
       try {
-        const zipOb = zip.files[name];
+        const zipOb = zipFiles[name];
         _logger(filename, ndx, zipOb.name, name);
-        const content = await zipOb.async('uint8array');
+        const contentAB = await zipOb.arrayBuffer();
+        const content = new Uint8Array(contentAB);
         const type = mime.lookup(name) || '';
         const blob = new Blob([content], { type: type, });
         const url = URL.createObjectURL(blob);
@@ -72,7 +74,7 @@ async function zipDecompress(filename) {
           url: url,
           type: type,
           size: content.length,
-          mtime: zipOb.date.getTime(),
+          mtime: zipOb.lastModDate.getTime(),
         };
       } catch (err) {
         console.error(err);
