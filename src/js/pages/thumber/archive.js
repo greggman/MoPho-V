@@ -157,26 +157,21 @@ function mightBeRar(buf) {
          buf[3] === 0x21;   // !
 }
 
-function createDecompressor(filename) {
+async function createDecompressor(filename) {
   const buf = Buffer.alloc(4);
-  const p = pfs.open(filename, 'r')
-    .then((fd) => {
-      return pfs.read(fd, buf, 0, buf.length, null);
-    })
-    .then(() => {
-      if (mightBeZip(buf)) {
-        return zipDecompress(filename);
-      } else if (mightBeRar(buf)) {
-        return rarDecompress(filename);
-      } else if (filters.isZip(filename)) {
-        // Zips don't technically start with any signature, the end with one
-        // but too lazy to check that for now
-        return zipDecompress(filename);
-      } else {
-        throw new Error('unknown file type');
-      }
-    });
-  return p;
+  const fd = await pfs.open(filename, 'r');
+  await pfs.read(fd, buf, 0, buf.length, null);
+  if (mightBeZip(buf)) {
+    return zipDecompress(filename);
+  } else if (mightBeRar(buf)) {
+    return rarDecompress(filename);
+  } else if (filters.isZip(filename)) {
+    // Zips don't technically start with any signature, they end with one
+    // but too lazy to check that for now
+    return zipDecompress(filename);
+  } else {
+    throw new Error('unknown file type');
+  }
 }
 
 export {
