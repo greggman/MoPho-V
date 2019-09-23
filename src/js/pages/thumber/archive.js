@@ -50,47 +50,41 @@ function freeArchiveFiles(files) {
   });
 }
 
-function zipDecompress(filename) {
+async function zipDecompress(filename) {
   const _logger = debug('ZipDecompressor', filename);
   const _files = {};
 
-  const p = pfs.readFile(filename)
-    .then((data) => {
-      return JSZip.loadAsync(data);
-    }).then((zip) => {
-      const zipNames = Object.keys(zip.files);
-      // TODO: do I want to support videos?
-      const zipPromises = zipNames.filter(filters.isArchiveFilenameWeCareAbout).map((name, ndx) => {
+  try {
+    const data = await pfs.readFile(filename);
+    const zip = await JSZip.loadAsync(data);
+    const zipNames = Object.keys(zip.files);
+    // TODO: do I want to support videos?
+    const zipPromises = zipNames.filter(filters.isArchiveFilenameWeCareAbout).map(async (name, ndx) => {
+      try {
         const zipOb = zip.files[name];
         _logger(filename, ndx, zipOb.name, name);
-        return zipOb.async('uint8array')
-          .then((content) => {
-            const type = mime.lookup(name) || '';
-            const blob = new Blob([content], { type: type, });
-            const url = URL.createObjectURL(blob);
-            const safeName = makeSafeName(name);  // this is to remove folders (needed?)
-            _files[safeName] = {
-              url: url,
-              type: type,
-              size: content.length,
-              mtime: zipOb.date.getTime(),
-            };
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      });
-      return Promise.all(zipPromises)
-        .then(() => {
-          return _files;
-        });
-    }).catch((err) => {
-      console.error(err);
-      freeArchiveFiles(_files);
-      throw err;
+        const content = await zipOb.async('uint8array');
+        const type = mime.lookup(name) || '';
+        const blob = new Blob([content], { type: type, });
+        const url = URL.createObjectURL(blob);
+        const safeName = makeSafeName(name);  // this is to remove folders (needed?)
+        _files[safeName] = {
+          url: url,
+          type: type,
+          size: content.length,
+          mtime: zipOb.date.getTime(),
+        };
+      } catch (err) {
+        console.error(err);
+      }
     });
-
-  return p;
+    await Promise.all(zipPromises);
+    return _files;
+  } catch (err) {
+    console.error(err);
+    freeArchiveFiles(_files);
+    throw err;
+  }
 }
 
 function gatherRarFiles(entry, files, logger) {
