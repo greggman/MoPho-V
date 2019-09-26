@@ -35,6 +35,7 @@ import mime from 'mime-types';
 import * as unzipit from 'unzipit';
 import debug from '../../lib/debug';
 import * as filters from '../../lib/filters';
+import * as utils from '../../lib/utils';
 import pfs from '../../lib/promise-fs';
 import readRARContent from '../../../../app/3rdparty/libunrar-js/libunrar';
 
@@ -55,24 +56,23 @@ async function zipDecompress(filename) {
   const _files = {};
 
   try {
-    const data = await pfs.readFile(filename);
-    const {entries: zipFiles} = await unzipit.unzip(data);
+    const url = utils.urlFromFilename(filename);
+    console.log(filename, url);
+    const {entries: zipFiles} = await unzipit.unzip(url);
     const zipNames = Object.keys(zipFiles);
     // TODO: do I want to support videos?
     const zipPromises = zipNames.filter(filters.isArchiveFilenameWeCareAbout).map(async (name, ndx) => {
       try {
         const zipOb = zipFiles[name];
         _logger(filename, ndx, zipOb.name, name);
-        const contentAB = await zipOb.arrayBuffer();
-        const content = new Uint8Array(contentAB);
         const type = mime.lookup(name) || '';
-        const blob = new Blob([content], { type: type, });
+        const blob = await zipOb.blob(type);
         const url = URL.createObjectURL(blob);
         const safeName = makeSafeName(name);  // this is to remove folders (needed?)
         _files[safeName] = {
           url: url,
           type: type,
-          size: content.length,
+          size: blob.size,
           mtime: zipOb.lastModDate.getTime(),
         };
       } catch (err) {
