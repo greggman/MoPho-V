@@ -32,7 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import mime from 'mime-types';
-import unzipit from 'unzipit.js';
+import * as unzipit from 'unzipit';
 import debug from '../../lib/debug';
 import * as filters from '../../lib/filters';
 import pfs from '../../lib/promise-fs';
@@ -56,8 +56,7 @@ async function zipDecompress(filename) {
 
   try {
     const data = await pfs.readFile(filename);
-    const {entries} = await unzipit(data);
-    const zipFiles = Object.fromEntries(entries.map(e => [e.name, e]));
+    const {entries: zipFiles} = await unzipit.unzip(data);
     const zipNames = Object.keys(zipFiles);
     // TODO: do I want to support videos?
     const zipPromises = zipNames.filter(filters.isArchiveFilenameWeCareAbout).map(async (name, ndx) => {

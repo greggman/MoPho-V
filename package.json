@@ -146,6 +146,6 @@
     "react-reflex": "^3.0.16",
     "react-virtualized": "^9.21.1",
     "rimraf": "^2.6.3",
-    "unzipit.js": "0.0.2"
+    "unzipit": "^0.1.3"
   }
 }
