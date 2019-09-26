@@ -44,6 +44,11 @@ function makeSafeName(name) {
   return name.replace(s_slashRE, '|');
 }
 
+unzipit.setOptions({
+  workerURL: utils.urlFromFilename(require.resolve('unzipit/dist/unzipit-worker.js')),
+  numWorkers: 2,
+});
+
 function freeArchiveFiles(files) {
   // Need to handle closing in middle of extraction :(
   Object.keys(files).forEach((filename) => {
