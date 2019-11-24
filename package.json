@@ -1,7 +1,7 @@
 {
   "name": "mopho-v",
   "productName": "MoPho-V",
-  "version": "0.1.6-super-alpha",
+  "version": "0.1.7-super-alpha",
   "description": "Community Supported Movie and Photo Viewer",
   "build": {
     "appId": "com.greggman.moPhoV",
@@ -99,7 +99,7 @@
     "concurrently": "^4.1.1",
     "cross-env": "^5.2.0",
     "electron": "^5.0.6",
-    "electron-builder": "^21.0.15",
+    "electron-builder": "^21.2.0",
     "eslint": "^6.0.1",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-plugin-import": "^2.18.0",
@@ -146,6 +146,6 @@
     "react-reflex": "^3.0.16",
     "react-virtualized": "^9.21.1",
     "rimraf": "^2.6.3",
-    "unzipit": "^0.1.4"
+    "unzipit": "^1.0.0"
   }
 }
