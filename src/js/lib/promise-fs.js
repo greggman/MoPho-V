@@ -47,8 +47,8 @@ const api = {};
   'fsync',
   'ftruncate',
   'futimes',
-  'lchmod',
-  'lchown',
+//  'lchmod',
+//  'lchown',
   'link',
   'lstat',
   'mkdir',
@@ -70,6 +70,7 @@ const api = {};
   'write',
   'writeFile',
 ].forEach((name) => {
+  console.log(name);
   api[name] = promisify(fs[name], fs);
 });
 
