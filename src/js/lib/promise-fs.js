@@ -47,8 +47,6 @@ const api = {};
   'fsync',
   'ftruncate',
   'futimes',
-//  'lchmod',
-//  'lchown',
   'link',
   'lstat',
   'mkdir',
