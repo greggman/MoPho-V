@@ -87,6 +87,7 @@ class VPair extends React.Component {
     this._viewerState = observable.object({
       viewing: false,
       mimeType: 'image',  // mimeType image, video
+      filename: '',
       fileInfo: {},
       duration: 1,
       rotation: 0,

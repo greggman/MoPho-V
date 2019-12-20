@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import React from 'react';
 import _ from 'lodash';
+import path from 'path';
 import {action} from 'mobx';
 import {observer} from 'mobx-react';
 import bind from '../../lib/bind';
@@ -177,6 +178,7 @@ class ViewerToolbar extends React.Component {
     this._logger('render');
     const viewerState = this._getViewerState();
     const isVideo = filters.isMimeVideo(viewerState.mimeType);
+    document.title = `view: ${path.basename(viewerState.filename)}`;
     return (
       <div className="toolbar viewertoolbar">
         <div className="button-group">
