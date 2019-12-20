@@ -122,6 +122,8 @@ class Que extends React.Component {
         >
           <img src={playbackRateInfo.get(videoState.playbackRate).icon} />
         </button>
+        {this._makeButton('fastBackward')}
+        {this._makeButton('fastForward')}
         {this._makeButton('setLoop')}
         <div className="volume tooltip-high" data-tooltip="volume">
           <Range
