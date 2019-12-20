@@ -643,6 +643,14 @@ function setupMenus() {
           role: 'minimize'
         },
         {
+          label: 'Toggle Full Screen',
+          click(item, focusedWindow) {
+            if (focusedWindow) {
+              sendAction(focusedWindow.webContents, 'toggleFullscreen');
+            }
+          }
+        },
+        {
           label: 'Close',
           accelerator: 'CmdOrCtrl+W',
           role: 'close'
