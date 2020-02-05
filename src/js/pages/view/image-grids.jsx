@@ -174,6 +174,7 @@ class ImageGrids extends React.Component {
     this._eventBus.debugId = this._logger.getPrefix();
   }
   componentDidMount() {
+    this._imagegrids.addEventListener('wheel', this._handleWheel, {passive: false});
     const on = this._listenerManager.on.bind(this._listenerManager);
     const eventBus = this._eventBus;
     on(eventBus, 'setcollection', this._handleSetCollection);
@@ -204,6 +205,7 @@ class ImageGrids extends React.Component {
     this._getFoldersFromState(nextProps);
   }
   componentWillUnmount() {
+    this._imagegrids.removeEventListener('wheel', this._handleWheel, {passive: false});
     this._actionListener.close();
     this.props.eventBus.setForward(null);
     this._listenerManager.removeAll();
@@ -316,7 +318,6 @@ class ImageGrids extends React.Component {
           return (
             <div
               className="imagegrids"
-              onWheel={this._handleWheel}
               onScroll={this._handleScroll}
               ref={(imagegrids) => {
                 if (imagegrids && imagegrids !== this._imagegrids) {
