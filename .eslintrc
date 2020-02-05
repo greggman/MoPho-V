@@ -61,10 +61,12 @@
         "react/prop-types": "off",        // TURN THIS ON
         "lines-between-class-members": "off",  // FUCK YOU!
         "operator-linebreak": "off",           // FUCK YOU!
+        "max-classes-per-file": "off",         // FUCK YOU! FUCKING FUCK!
         "no-multiple-empty-lines": "off",      // Triple fuck you! Fucking waste of dev time to deal with this assholes!
         "import/no-useless-path-segments": "off", // BUGGY! Gives bad results
         "react/destructuring-assignment": "off",  // More fUck you! It's actually *LESS READABLE* dickheads!
         "react/jsx-one-expression-per-line": "off",  // FUCKING STUPID! How about one-operator-per-line as an example. Gees!
+        "jsx-a11y/control-has-associated-label": "off",
     },
     "overrides": [
         {

@@ -536,7 +536,7 @@ function setupPasswordMenus() {
 
 
   if (isOSX) {
-    const name = electron.app.getName();
+    const name = electron.app.name;
     menuTemplate.unshift({
       label: name,
       submenu: [
@@ -662,7 +662,7 @@ function setupMenus() {
   ];
 
   if (isOSX) {
-    const name = electron.app.getName();
+    const name = electron.app.name;
     menuTemplate.unshift({
       label: name,
       submenu: [

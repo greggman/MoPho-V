@@ -115,6 +115,12 @@ class Folders extends React.Component {
       '_handleWheel',
     );
   }
+  componentDidMount() {
+    this.main.addEventListener('wheel', this._handleWheel, {passive: false});
+  }
+  componentWillUnmount() {
+    this.main.removeEventListener('wheel', this._handleWheel, {passive: false});
+  }
   _handleWheel(e) {
     e.preventDefault();
     const pos = getRotatedXY(e, 'delta', this.props.rotateMode);
@@ -143,7 +149,7 @@ class Folders extends React.Component {
       display: this.props.show ? 'block' : 'none',
     };
     const folders = this.renderFolder(this.props.root, '', 0, { folderCount: 0 });
-    return (<div ref={(main) => { this.main = main; }} onWheel={this._handleWheel} style={style} className="folders">{folders}</div>);
+    return (<div ref={(main) => { this.main = main; }} style={style} className="folders">{folders}</div>);
   }
 }
 
