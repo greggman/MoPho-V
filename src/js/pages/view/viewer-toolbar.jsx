@@ -33,7 +33,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import React from 'react';
 import _ from 'lodash';
-import path from 'path';
 import {action} from 'mobx';
 import {observer} from 'mobx-react';
 import bind from '../../lib/bind';
@@ -139,11 +138,14 @@ class Que extends React.Component {
   }
 }
 
+let viewId = 0;
+
 @observer
 class ViewerToolbar extends React.Component {
   constructor(props) {
     super(props);
     this._logger = debug('ViewerToolBar');
+    this._viewId = ++viewId;
     bind(
       this,
       '_changeZoom',
@@ -180,7 +182,8 @@ class ViewerToolbar extends React.Component {
     this._logger('render');
     const viewerState = this._getViewerState();
     const isVideo = filters.isMimeVideo(viewerState.mimeType);
-    document.title = `view: ${path.basename(viewerState.filename)}`;
+    //document.title = `view: ${path.basename(viewerState.filename)}`;
+    document.title = `view: ${this._viewId}`;
     return (
       <div className="toolbar viewertoolbar">
         <div className="button-group">

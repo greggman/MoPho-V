@@ -403,6 +403,7 @@ div::-webkit-scrollbar-corner {
     color: rgba(255,255,255,1);
     background-color: rgba(0,0,0,1);
     gz-index: 4;
+    transform: translate3d(0, 0, 0);
 }
 .viewer .next:hover,
 .viewer .prev:hover {
@@ -427,6 +428,7 @@ div::-webkit-scrollbar-corner {
     text-align: center;
     gz-index: 4;
     user-select: initial;  /* allow selecting the info text */
+    transform: translate3d(0, 0, 0);
 }
 .viewer .info:hover {
     transition: opacity 0s linear;
@@ -442,7 +444,10 @@ div::-webkit-scrollbar-corner {
     font-family: monospace;
     font-size: 20px;
     color: rgba(255,255,255,0.3);
+    background-color: rgba(0,0,0,.3);
+    padding: 5px;
     cursor: pointer;
+    transform: translate3d(0, 0, 0);
 }
 .viewer .ui:hover {
     transition: opacity 0s linear;
