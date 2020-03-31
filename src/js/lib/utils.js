@@ -47,8 +47,9 @@ function urlFromFilename(filename) {
   if (filename.substr(0, 5).toLowerCase() === 'blob:') {
     return filename;
   }
+
   if (driveRE.test(filename) || uncRE.test(filename)) {
-    return `file:///${filename}`;
+    return `file:///${filename.replace(/#/g, '%23').replace(/\?/g, '%3f')}`;
   }
   return filename.replace(backslashRE, '/').split('/').map(encodeURIComponent).join('/');
 }
