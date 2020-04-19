@@ -4,6 +4,33 @@ TODO
 -- Just because I want to --
 ================================================================================
 
+[ ] Use File at a time Zip lib
+
+    current zip lib (jszip) has to unzip entire zip before we get any data.
+    This makes viewing slow.
+
+[ ] Use File at a time Rar lib
+
+    current rar lib has to unrar entire rar before we get any data.
+    This makes viewing slow
+
+[ ] split at same location.
+
+    In other words when you split a view both splits should look the same,
+    same scroll location.[ ] Fix delete on network
+
+[ ] Allow saving current collection of panes, zoom, speed, loops,
+[ ] When sizing window keep left column same size (unless it won't fit)
+[ ] Be able to move picture larger than screen
+[ ] Save loops per video
+[ ] Save currently viewed images (entire state of app)
+
+    This should really save entire state. For each pane
+    what image, slideshow on or off, video playing or not
+    at which speed, which zoom, which stretch mode, which
+    rotation, which loop settings.
+[ ] fix image flash. Issue is src and other settings happen separately?
+
 [ ] Support VR through WebVR
 
     So I got a Daydream recently and Chrome 66 with a bunch of
@@ -177,9 +204,10 @@ TODO
 -- Kinda MVP --
 ================================================================================
 
-[ ] Add toolbar icon for playback speed
 
 [ ] Add toolbar icon to sync list to current pane
+
+    no. Just put left arrow at top of group
 
 [ ] Show parent folders
 
@@ -280,7 +308,6 @@ TODO
     to react-list are slightly off.
 
 [ ] profile scroll (as in fix the jank)
-[ ] fix image flash. Issue is src and other settings happen separately?
 [ ] Make up,down,left,right in ImageGrid navigate grid
 
     up/down should go to image above or below current image
@@ -330,16 +357,6 @@ TODO
 [ ] use different icon for rotate image vs rotate UI
 
 [ ] toggle full zoom of current pane
-[ ] Use File at a time Zip lib
-
-    current zip lib (jszip) has to unzip entire zip before we get any data.
-    This makes viewing slow.
-
-[ ] Use File at a time Rar lib
-
-    current rar lib has to unrar entire rar before we get any data.
-    This makes viewing slow
-
 [ ] add zoom reset
 [ ] try to keep same images on screen as size or rotation changes.
 
@@ -386,10 +403,6 @@ TODO
 
 [ ] move menu accelerators to actions
 [ ] add context menu to viewer images
-[ ] split at same location.
-
-    In other words when you split a view both splits should look the same,
-    same scroll location.
 
 [ ] restore imagegrid to current image
 [ ] Save Scroll positions?
@@ -405,12 +418,7 @@ TODO
     scroll position IF the user has not already scrolled. (does the browser
     ignore the user if they've already scrolled?)
 
-[ ] Save currently viewed images (entire state of app)
 
-    This should really save entire state. For each pane
-    what image, slideshow on or off, video playing or not
-    at which speed, which zoom, which stretch mode, which
-    rotation, which loop settings.
 
 [ ] Save View State Layouts
 
@@ -522,9 +530,8 @@ TODO
 [ ] have toolbar loop icon change based on loop mode
 [ ] make zoom notched at 100%
 [ ] Option to Reset (delete all data)
-[ ] Be able to move picture larger than screen
+
 [ ] Option: Thumbnail generation size
-[ ] When sizing window keep left column same size (unless it won't fit)
 [ ] add icons for zoom modes
 [ ] consider scanning for existence
 
@@ -589,7 +596,6 @@ TODO
 
   [ ] Plugins
 
-[ ] Allow saving current collection of panes, zoom, speed, loops,
 [ ] Drag to move files/folders (rename)
 [ ] option to go to next instead of loop for videos
     [ ] for playlist always go to next? User can add multiple times for loop
@@ -724,6 +730,7 @@ NOTES
 DONE
 ================================================================================
 
+[X] Add toolbar icon for playback speed
 [X] fix Modal on rotation
 [X] fix context menu on rotation
 [X] make it possible to delete archives
