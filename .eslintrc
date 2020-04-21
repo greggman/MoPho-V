@@ -46,7 +46,8 @@
         "optional-comma-spacing/optional-comma-spacing": ["error", {"after": true}],
         "array-bracket-spacing": "off",
         "space-in-parens": "off",
-        "arrow-body-style": ["error", "always"],
+        "arrow-body-style": ["error", "as-needed"],
+        "arrow-parens": "off",
         "no-else-return": "off",
         "object-shorthand": "off",
         "class-methods-use-this": "off",
@@ -64,6 +65,7 @@
         "max-classes-per-file": "off",         // FUCK YOU! FUCKING FUCK!
         "no-multiple-empty-lines": "off",      // Triple fuck you! Fucking waste of dev time to deal with this assholes!
         "import/no-useless-path-segments": "off", // BUGGY! Gives bad results
+        "import/prefer-default-export": "off",  // FUCK OFF!
         "react/destructuring-assignment": "off",  // More fUck you! It's actually *LESS READABLE* dickheads!
         "react/jsx-one-expression-per-line": "off",  // FUCKING STUPID! How about one-operator-per-line as an example. Gees!
         "jsx-a11y/control-has-associated-label": "off",
