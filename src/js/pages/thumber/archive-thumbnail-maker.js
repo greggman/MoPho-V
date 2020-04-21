@@ -46,6 +46,8 @@ async function createThumbnailsForArchive(filepath, baseFilename, thumbnailPageM
   let files;
   let newFiles;
   let startTime;
+  const blobUrls = [];
+
   try {
     logger('waiting for decompressor:', filepath);
     archiveHandle = await decompressorManager();
@@ -55,9 +57,26 @@ async function createThumbnailsForArchive(filepath, baseFilename, thumbnailPageM
 
     // create file like info for each blob
     const blobInfos = {};
-    for (const fileInfo of Object.values(archiveFiles)) {
-      blobInfos[fileInfo.url] = fileInfo;
-    }
+
+    // First get all the blobs
+    const blobs = await Promise.all(Object.values(archiveFiles).map(async (fileInfo) => {
+      return fileInfo.blob();
+    }));
+
+    // Now get URLs for all the blobs. This way if one of the blobs
+    // fails we'll have no objectURLs to discard. Otherwise if we just
+    // one blob failed we'd throw, we'd then fall through to cleanup
+    // but other promises might still be pending
+    Object.values(archiveFiles).forEach((fileInfo, ndx) => {
+      const url = URL.createObjectURL(blobs[ndx]);
+      blobUrls.push(url);
+      blobInfos[url] = {
+        url,
+        size: fileInfo.size,
+        type: fileInfo.type,
+        mtime: fileInfo.mtime,
+      };
+    });
     tpmHandle = await thumbnailPageMakerManager();
     files = await tpmHandle.resource(
       baseFilename,
@@ -68,23 +87,22 @@ async function createThumbnailsForArchive(filepath, baseFilename, thumbnailPageM
     // Map thumbnails from blobs back to files
     newFiles = {};
     const filesByBlob = {};
-    Object.keys(archiveFiles).forEach((filename) => {
-      filesByBlob[archiveFiles[filename].url] = filename;
+    Object.keys(archiveFiles).forEach((filename, ndx) => {
+      filesByBlob[blobUrls[ndx]] = filename;
     });
     for (const [blobName, blobInfo] of Object.entries(files)) {
       const filename = filesByBlob[blobName];
       blobInfo.archiveName = filepath;
-      newFiles[path.join(filepath, filename)] = Object.assign({
+      newFiles[path.join(filepath, filename)] = {
         archiveName: filepath,
-      }, blobInfo);
+        ...blobInfo,
+      };
     }
   } finally {
     if (tpmHandle) {
       tpmHandle.release();
     }
-    if (archiveFiles) {
-      archive.freeArchiveFiles(files);
-    }
+    blobUrls.forEach(URL.revokeObjectURL);
     if (archiveHandle) {
       archiveHandle();
     }

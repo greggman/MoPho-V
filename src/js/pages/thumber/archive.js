@@ -50,15 +50,7 @@ unzipit.setOptions({
   numWorkers: 2,
 });
 
-function freeArchiveFiles(files) {
-  // Need to handle closing in middle of extraction :(
-  Object.keys(files).forEach((filename) => {
-    URL.revokeObjectURL(files[filename].url);
-  });
-}
-
 async function zipDecompress(filename) {
-  const _logger = debug('ZipDecompressor', filename);
   const _files = {};
 
   try {
@@ -67,29 +59,21 @@ async function zipDecompress(filename) {
     const {entries: zipFiles} = await unzipit.unzip(url);
     const zipNames = Object.keys(zipFiles);
     // TODO: do I want to support videos?
-    const zipPromises = zipNames.filter(filters.isArchiveFilenameWeCareAbout).map(async (name, ndx) => {
-      try {
-        const zipOb = zipFiles[name];
-        _logger(filename, ndx, zipOb.name, name);
-        const type = mime.lookup(name) || '';
-        const blob = await zipOb.blob(type);
-        const url = URL.createObjectURL(blob);
-        const safeName = makeSafeName(name);  // this is to remove folders (needed?)
-        _files[safeName] = {
-          url: url,
-          type: type,
-          size: blob.size,
-          mtime: zipOb.lastModDate.getTime(),
-        };
-      } catch (err) {
-        console.error(err);
-      }
+    zipNames.filter(filters.isArchiveFilenameWeCareAbout).forEach((name) => {
+      const zipOb = zipFiles[name];
+      const type = mime.lookup(name) || '';
+      const blob = () => zipOb.blob(type);
+      const safeName = makeSafeName(name);  // this is to remove folders (needed?)
+      _files[safeName] = {
+        type,
+        blob,
+        size: zipOb.size,
+        mtime: zipOb.lastModDate.getTime(),
+      };
     });
-    await Promise.all(zipPromises);
     return _files;
   } catch (err) {
     console.error(err);
-    freeArchiveFiles(_files);
     throw err;
   }
 }
@@ -103,12 +87,11 @@ function gatherRarFiles(entry, files, logger) {
       }
       const type = mime.lookup(name) || '';
       const content = entry.fileContent.buffer;
-      const blob = new Blob([content], { type: type, });
-      const url = URL.createObjectURL(blob);
+      const blob = async () => new Blob([content], { type: type, });
       const safeName = makeSafeName(name);
       files[safeName] = {
-        url: url,
-        type: type,
+        type,
+        blob,
         size: entry.fileSize,
         // We don't have mtime from this lib so just put in a date that should fail.
         // The idea is we'll check the archive mtime and if that's changed then
@@ -129,26 +112,19 @@ function gatherRarFiles(entry, files, logger) {
   }
 }
 
-function rarDecompress(filename) {
+async function rarDecompress(filename) {
   const _logger = debug('RarDecompressor', filename);
   const _files = {};
 
-  const p = pfs.readFile(filename)
-    .then((data) => {
-      _logger('unrar:', filename);
-      const rarContent = readRARContent([
-        { name: 'tmp.rar', content: data },
-      ], (/* ...args */) => {
-        // _logger("process:", ...args);
-      });
-      gatherRarFiles(rarContent, _files, _logger);
-      return _files;
-    }).catch((err) => {
-      console.error(err);
-      freeArchiveFiles(_files);
-      throw err;
-    });
-  return p;
+  const data = await pfs.readFile(filename);
+  _logger('unrar:', filename);
+  const rarContent = readRARContent([
+    { name: 'tmp.rar', content: data },
+  ], (/* ...args */) => {
+    // _logger("process:", ...args);
+  });
+  gatherRarFiles(rarContent, _files, _logger);
+  return _files;
 }
 
 function mightBeZip(buf) {
@@ -184,5 +160,4 @@ async function createDecompressor(filename) {
 
 export {
   createDecompressor,
-  freeArchiveFiles,
 };

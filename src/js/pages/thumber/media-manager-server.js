@@ -39,17 +39,16 @@ import bind from '../../lib/bind';
 
 class MediaClientProxy {
   constructor(id, stream) {
-    this._id = id; // mostly for debuggging
+    this._id = id; // mostly for debugging
     this._stream = stream;
     this._logger = debug('MediaClientProxy', id);
     this._archiveName = null;
     this._requests = [];
     this._currentRequest = null;
     this._archiveFiles = {};
+    this._archiveBlobUrlsByFilename = {};
     bind(
       this,
-      '_registerArchiveFiles',
-      '_handleError',
       '_sendMediaStatus',
       '_getMediaStatus',
       '_disconnect',
@@ -65,7 +64,9 @@ class MediaClientProxy {
 
   _closeArchive() {
     if (this._archiveFiles) {
-      archive.freeArchiveFiles(this._archiveFiles);
+      Object.values(this._archiveBlobUrlsByFilename)
+        .filter(e => e.url)
+        .forEach(e => URL.revokeObjectURL(e.url));
     }
     this._archiveFiles = {};
     this._archiveName = null;
@@ -86,17 +87,35 @@ class MediaClientProxy {
     this._processNextRequest();
   }
 
-  _sendMediaStatus() {
-    const request = this._currentRequest;
-    const blobInfo = this._archiveFiles[request.filename];
-    const error = blobInfo ? null : `no blobInfo for: ${request.filename}`;
-    this._logger('sendMediaStatus: reqId:', request.requestId, 'archive:', request.archiveName, 'filename:', request.filename, 'error:', error);
-    this._stream.send('mediaStatus', request.requestId, error, blobInfo);
+  async _sendMediaStatus() {
+    const {requestId, archiveName, filename} = this._currentRequest;
+    const blobInfo = this._archiveFiles[filename];
+    let exception;
+    if (blobInfo && !this._archiveBlobUrlsByFilename[filename]) {
+      try {
+        const blob = await blobInfo.blob();
+        this._archiveBlobUrlsByFilename[filename] = URL.createObjectURL(blob);
+      } catch (e) {
+        exception = e;
+      }
+    }
+    const error = exception
+      ? `${exception} for: ${filename}`
+      : blobInfo
+        ? null :
+        `no blobInfo for: ${filename}`;
+    this._logger('sendMediaStatus: reqId:', requestId, 'archive:', archiveName, 'filename:', filename, 'error:', error);
+    this._stream.send('mediaStatus', requestId, error, blobInfo ? {
+      size: blobInfo.size,
+      type: blobInfo.type,
+      mtime: blobInfo.mtime,
+      url: this._archiveBlobUrlsByFilename[filename],
+    } : undefined);
     this._currentRequest = null;
     this._processNextRequest();
   }
 
-  _processNextRequest() {
+  async _processNextRequest() {
     this._logger('processNextRequest');
     if (this._currentRequest || this._requests.length === 0) {
       return;
@@ -116,19 +135,13 @@ class MediaClientProxy {
     this._logger('createDecompressor:', request.archiveName);
     this._closeArchive();
     this._archiveName = request.archiveName;
-    archive.createDecompressor(request.archiveName)
-      .then(this._registerArchiveFiles)
-      .catch(this._handleError);
-  }
 
-  _registerArchiveFiles(files) {
-    this._logger('registerArchiveFiles:', this._archiveName);
-    this._archiveFiles = files;
-    process.nextTick(this._sendMediaStatus);
-  }
-
-  _handleError(/* error */) {
-    this._archiveFiles = {};
+    try {
+      this._archiveBlobUrlsByFilename = {};
+      this._archiveFiles = await archive.createDecompressor(request.archiveName);
+    } catch (e) {
+      this._archiveFiles = {};
+    }
     process.nextTick(this._sendMediaStatus);
   }
 }
