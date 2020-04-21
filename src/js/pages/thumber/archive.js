@@ -31,14 +31,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import fs from 'fs';
 import mime from 'mime-types';
 import * as unzipit from 'unzipit';
 import debug from '../../lib/debug';
 import * as filters from '../../lib/filters';
 import * as utils from '../../lib/utils';
-import pfs from '../../lib/promise-fs';
 import readRARContent from '../../../../app/3rdparty/libunrar-js/libunrar';
 
+const pfs = fs.promises;
 const s_slashRE = /[/\\]/g;
 function makeSafeName(name) {
   return name.replace(s_slashRE, '|');
@@ -165,8 +166,9 @@ function mightBeRar(buf) {
 
 async function createDecompressor(filename) {
   const buf = Buffer.alloc(4);
-  const fd = await pfs.open(filename, 'r');
-  await pfs.read(fd, buf, 0, buf.length, null);
+  const fh = await pfs.open(filename, 'r');
+  await fh.read(buf, 0, buf.length, null);
+  await fh.close();
   if (mightBeZip(buf)) {
     return zipDecompress(filename);
   } else if (mightBeRar(buf)) {
