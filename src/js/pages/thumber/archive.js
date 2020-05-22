@@ -50,13 +50,32 @@ unzipit.setOptions({
   numWorkers: 2,
 });
 
+class StatelessFileReader {
+  constructor(filename) {
+    this.filename = filename;
+  }
+  async getLength() {
+    if (this.length === undefined) {
+      const stat = await pfs.stat(this.filename);
+      this.length = stat.size;
+    }
+    return this.length;
+  }
+  async read(offset, length) {
+    const fh = await pfs.open(this.filename);
+    const data = new Uint8Array(length);
+    await fh.read(data, 0, length, offset);
+    await fh.close();
+    return data;
+  }
+}
+
 async function zipDecompress(filename) {
   const _files = {};
 
   try {
-    const url = utils.urlFromFilename(filename);
-    console.log(filename, url);
-    const {entries: zipFiles} = await unzipit.unzip(url);
+    const reader = new StatelessFileReader(filename);
+    const {entries: zipFiles} = await unzipit.unzip(reader);
     const zipNames = Object.keys(zipFiles);
     // TODO: do I want to support videos?
     zipNames.filter(filters.isArchiveFilenameWeCareAbout).forEach((name) => {
