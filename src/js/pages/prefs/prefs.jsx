@@ -54,13 +54,13 @@ import LivePasswordEditor from '../../lib/ui/live-password-editor';
 
 const dialog = remote.dialog;
 
-function getFolder() {
-  const folders = dialog.showOpenDialog({
+async function getFolders() {
+  const {canceled, filePaths} = await dialog.showOpenDialog({
     title: 'Select Folder',
     // defaultPath: '',
     properties: ['openDirectory'],
   });
-  return folders ? folders[0] : undefined;
+  return canceled ? undefined : filePaths;
 }
 
 class BaseFolder extends React.Component {
@@ -442,26 +442,26 @@ class Prefs extends React.Component {
       />
     );
   }
-  _addFolder() {
-    const folder = getFolder();
-    if (folder) {
+  async _addFolder() {
+    const folders = await getFolders();
+    if (folders) {
       const prefs = this.state.prefs;
       this._updateState({
         prefs: Object.assign({}, prefs, {
-          folders: [...prefs.folders, folder],
+          folders: [...prefs.folders, ...folders],
         }),
       });
     }
   }
-  _setFolder(foldername, ndx) {
-    const folder = getFolder();
-    if (folder) {
+  async _setFolder(foldername, ndx) {
+    const folders = await getFolders();
+    if (folders) {
       const prefs = this.state.prefs;
       this._updateState({
         prefs: Object.assign({}, prefs, {
           folders: [
             ...prefs.folders.slice(0, ndx),
-            folder,
+            folders[0],
             ...prefs.folders.slice(ndx + 1),
           ],
         }),
