@@ -217,7 +217,7 @@ class ImageGrids extends React.Component {
     // TODO: Find next on right
   }
   _gotoPrev() {
-    // TODO: Findnext on left
+    // TODO: Find next on left
   }
   _handleWheel(e) {
     e.preventDefault();

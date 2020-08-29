@@ -151,20 +151,23 @@ class Update extends React.Component {
           <h1>Update</h1>
           <div className="status">
             <div>status: {state.msg}</div>
-            { (progress && progress.transferred && progress.total)
+            {
+              (progress && progress.transferred && progress.total)
                 ? (
                   <div>{progress.transferred} / {progress.total}</div>
                   )
                 : undefined
             }
           </div>
-          { (this.state.error)
+          {
+            (this.state.error)
               ? (
                 <div className="error">{this.state.error}</div>
                 )
               : undefined
           }
-          { (state.canTry)
+          {
+            (state.canTry)
               ? (
                 <div>
                   <button type="button" onClick={this._checkForUpdate}>Check for Update</button>

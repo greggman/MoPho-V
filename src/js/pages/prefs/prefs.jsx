@@ -447,9 +447,7 @@ class Prefs extends React.Component {
     if (folders) {
       const prefs = this.state.prefs;
       this._updateState({
-        prefs: Object.assign({}, prefs, {
-          folders: [...prefs.folders, ...folders],
-        }),
+        prefs: { ...prefs, folders: [...prefs.folders, ...folders] },
       });
     }
   }
@@ -458,13 +456,13 @@ class Prefs extends React.Component {
     if (folders) {
       const prefs = this.state.prefs;
       this._updateState({
-        prefs: Object.assign({}, prefs, {
+        prefs: { ...prefs,
           folders: [
             ...prefs.folders.slice(0, ndx),
             folders[0],
             ...prefs.folders.slice(ndx + 1),
           ],
-        }),
+        },
       });
     }
   }
@@ -475,41 +473,39 @@ class Prefs extends React.Component {
       ...prefs.folders.slice(ndx + 1),
     ];
     this._updateState({
-      prefs: Object.assign({}, prefs, {
-        folders: newFolders,
-      }),
+      prefs: { ...prefs, folders: newFolders },
     });
   }
   _addKey() {
     const prefs = this.state.prefs;
     this._updateState({
-      prefs: Object.assign({}, prefs, {
-        keyConfig: [...prefs.keyConfig, { keyCode: 0, action: 'noop'}],
-      }),
+      prefs: {
+        ...prefs,
+        keyConfig: [
+          ...prefs.keyConfig,
+          { keyCode: 0, action: 'noop' },
+        ],
+      },
     });
   }
   _setKeyAction(ndx, action) {
     const prefs = this.state.prefs;
     const keys = [...prefs.keyConfig];
-    const key = Object.assign({}, keys[ndx]);
+    const key = { ...keys[ndx]};
     key.action = action;
     keys[ndx] = key;
     this._updateState({
-      prefs: Object.assign({}, prefs, {
-        keyConfig: keys,
-      }),
+      prefs: { ...prefs, keyConfig: keys },
     });
   }
   _setKeyCode(ndx, keyInfo) {
     const prefs = this.state.prefs;
     const keys = [...prefs.keyConfig];
-    const key = Object.assign({}, keys[ndx]);
+    const key = { ...keys[ndx]};
     Object.assign(key, keyInfo);
     keys[ndx] = key;
     this._updateState({
-      prefs: Object.assign({}, prefs, {
-        keyConfig: keys,
-      }),
+      prefs: { ...prefs, keyConfig: keys },
     });
   }
   _deleteKey(ndx) {
@@ -519,9 +515,7 @@ class Prefs extends React.Component {
       ...prefs.keyConfig.slice(ndx + 1),
     ];
     this._updateState({
-      prefs: Object.assign({}, prefs, {
-        keyConfig: newKeys,
-      }),
+      prefs: { ...prefs, keyConfig: newKeys },
     });
   }
   _makeKeys() {
@@ -651,9 +645,10 @@ class Prefs extends React.Component {
               {this._makeCheckbox('misc', 'promptOnDeleteFile', 'Prompt before deleting a file')}
               {this._makeCheckbox('misc', 'promptOnDeleteFolder', 'Prompt before deleting a folder')}
               {this._makeCheckbox('misc', 'enableWeb', 'Turn on local web server')}
-              {prefs.misc.enableWeb
-                ? this._makeCheckbox('misc', 'enableRendezvous', `Connect to local web server via ${rendezvousUrl}`)
-                : ''
+              {
+                prefs.misc.enableWeb
+                  ? this._makeCheckbox('misc', 'enableRendezvous', `Connect to local web server via ${rendezvousUrl}`)
+                  : ''
               }
               <EnumSelector desc="Toolbar Position" items={s_toolbarPositionModes} item={prefs.misc.toolbarPosition} onChange={this._changeToolbarPosition} />
             </div>

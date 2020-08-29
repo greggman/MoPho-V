@@ -35,15 +35,11 @@ import {assert} from 'chai';
 import {FolderStateHelper} from './folder-state-helper';
 
 function getFolderNames(folders) {
-  return folders.map((folder) => {
-    return folder.filename;
-  });
+  return folders.map((folder) => folder.filename);
 }
 
 function getFileNames(files) {
-  return files.map((file) => {
-    return file.name;
-  });
+  return files.map((file) => file.name);
 }
 
 describe('FolderStateHelper', () => {

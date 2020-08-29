@@ -182,7 +182,7 @@ class ViewerToolbar extends React.Component {
     this._logger('render');
     const viewerState = this._getViewerState();
     const isVideo = filters.isMimeVideo(viewerState.mimeType);
-    //document.title = `view: ${path.basename(viewerState.filename)}`;
+    // document.title = `view: ${path.basename(viewerState.filename)}`;
     document.title = `view: ${this._viewId}`;
     return (
       <div className="toolbar viewertoolbar">

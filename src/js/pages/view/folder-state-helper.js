@@ -113,9 +113,7 @@ function getIndexToInsertBySortName(array, folder) {
 }
 
 function getIndexOfFolderByFolderName(array, folderName) {
-  return array.findIndex((folder) => {
-    return folder.filename === folderName;
-  });
+  return array.findIndex((folder) => folder.filename === folderName);
 }
 
 const sortModes = new KeyHelper({
@@ -126,13 +124,14 @@ const sortModes = new KeyHelper({
 
 class FolderStateHelper {
   static createFolder(filename, files, extra) {
-    return Object.assign({
+    return {
       filename,
       sortName: createSortName(filename),
       name: path.basename(filename),
       files,
       totalFiles: 0,
-    }, extra);
+      ...extra,
+    };
   }
 
   static createRoot(sortMode) {
@@ -195,7 +194,7 @@ class FolderStateHelper {
       const status = folder.status;
       const haveNewFiles = (prefs && prefs.showEmpty) || newFiles.length > 0;
       if (haveNewFiles || status.scanning || (status.checking && !status.scannedTime)) {
-        const newFolder = FolderStateHelper.createFolder(folderName, newFiles, Object.assign({newest, oldest}, status));
+        const newFolder = FolderStateHelper.createFolder(folderName, newFiles, {newest, oldest, ...status});
         const newNdx = root.indexFn(newFolders, newFolder);
         newFolders.splice(newNdx, 0, newFolder);
         totalFiles += newFiles.length;

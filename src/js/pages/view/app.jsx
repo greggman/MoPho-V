@@ -110,7 +110,7 @@ class App extends React.Component {
     this.state = {
       totalFiles: 0,
       prefs: {},
-      winState: Object.assign({
+      winState: {
         showUI: 3,
         rotateMode: 0,
         thumbnailZoom: 1,
@@ -118,7 +118,8 @@ class App extends React.Component {
         gridMode: 'columns',
         splitPosition: 0.2,
         splitStartPosition: 0.2,
-      }, props.startState ? props.startState.winState : {}),
+        ...(props.startState ? props.startState.winState : {}),
+      },
       contextFileInfo: null,
       contextFolderInfo: null,
       showDeleteFilePrompt: false,
@@ -266,7 +267,7 @@ class App extends React.Component {
     setupFullscreen();
 
     process.nextTick(() => {
-      this._setFilter(() => { return true; });
+      this._setFilter(() => true);
     });
   }
   componentDidMount() {
@@ -297,7 +298,7 @@ class App extends React.Component {
   }
   _setNewRoot() {
     this.setState({
-      root: Object.assign({}, this._newRoot),
+      root: {...this._newRoot},
     });
   }
   _queueFolderFilterProcess() {
@@ -365,25 +366,17 @@ class App extends React.Component {
     return !tooSmall;
   }
   _handleCycleSortMode() {
-    this.setState((prevState) => {
-      return {
-        winState: Object.assign({}, prevState.winState, {
-          sortMode: sortModes.next(prevState.winState.sortMode),
-        }),
-      };
-    }, () => {
+    this.setState((prevState) => ({
+        winState: {...prevState.winState, sortMode: sortModes.next(prevState.winState.sortMode)},
+      }), () => {
       this._saveLayout();
       this._rerunFilter();
     });
   }
   _handleCycleGridMode() {
-    this.setState((prevState) => {
-      return {
-        winState: Object.assign({}, prevState.winState, {
-          gridMode: gridModes.next(prevState.winState.gridMode),
-        }),
-      };
-    }, () => {
+    this.setState((prevState) => ({
+        winState: {...prevState.winState, gridMode: gridModes.next(prevState.winState.gridMode)},
+      }), () => {
       this._saveLayout();
     });
   }
@@ -394,13 +387,9 @@ class App extends React.Component {
     this._viewerStateHolder.state = view ? view.getViewerState() : null;
   }
   _toggleUI() {
-    this.setState((prevState) => {
-      return {
-        winState: Object.assign({}, prevState.winState, {
-          showUI: (prevState.winState.showUI + 3) % 4,
-        }),
-      };
-    }, () => {
+    this.setState((prevState) => ({
+        winState: {...prevState.winState, showUI: (prevState.winState.showUI + 3) % 4},
+      }), () => {
       this._saveLayout();
     });
   }
@@ -433,24 +422,16 @@ class App extends React.Component {
   //    this.viewSplit.emit('scrollToImage', ...args);
   //  }
   _setThumbnailZoom(zoom) {
-    this.setState((prevState) => {
-      return {
-        winState: Object.assign({}, prevState.winState, {
-          thumbnailZoom: zoom,
-        }),
-      };
-    }, () => {
+    this.setState((prevState) => ({
+        winState: {...prevState.winState, thumbnailZoom: zoom},
+      }), () => {
       this._saveLayout();
     });
   }
   _handleRotate() {
-    this.setState((prevState) => {
-      return {
-        winState: Object.assign({}, prevState.winState, {
-          rotateMode: (prevState.winState.rotateMode + 1) % rotateModes.length,
-        }),
-      };
-    }, () => {
+    this.setState((prevState) => ({
+        winState: {...prevState.winState, rotateMode: (prevState.winState.rotateMode + 1) % rotateModes.length},
+      }), () => {
       this._saveLayout();
     });
   }
@@ -458,23 +439,19 @@ class App extends React.Component {
     this._thumberStream.send('refreshFolder', folderName);
   }
   _handleDeleteFolder(event, folderInfo) {
-    this.setState((prevState) => {
-      return {
+    this.setState((prevState) => ({
         contextFolderInfo: folderInfo,
         showDeleteFolderPrompt: prevState.prefs.misc.promptOnDeleteFolder,
-      };
-    });
+      }));
     if (!this.state.prefs.misc.promptOnDeleteFolder) {
       this._deleteFolder(folderInfo);
     }
   }
   _handleDeleteFile(event, fileInfo) {
-    this.setState((prevState) => {
-      return {
+    this.setState((prevState) => ({
         contextFileInfo: fileInfo,
         showDeleteFilePrompt: prevState.prefs.misc.promptOnDeleteFile,
-      };
-    });
+      }));
     if (!this.state.prefs.misc.promptOnDeleteFile) {
       this._deleteFile(fileInfo);
     }
@@ -485,13 +462,11 @@ class App extends React.Component {
     });
     const filename = this.state.contextFolderInfo.filename;
     if (!shell.moveItemToTrash(filename)) {
-      this.setState((prevState) => {
-        return {
+      this.setState((prevState) => ({
           showForceDelete: true,
           forceDeleteFilename: filename,
           forceDeleteIsFolder: !prevState.contextFolderInfo.archive,
-        };
-      });
+        }));
     }
   }
   _deleteFile() {
@@ -608,13 +583,9 @@ class App extends React.Component {
   }
   _handleSplitResize(event) {
     const {flex} = event.component.props;
-    this.setState((prevState) => {
-      return {
-        winState: Object.assign({}, prevState.winState, {
-          splitPosition: flex,
-        }),
-      };
-    }, () => {
+    this.setState((prevState) => ({
+        winState: {...prevState.winState, splitPosition: flex},
+      }), () => {
       this._saveLayout();
     });
   }
@@ -718,7 +689,8 @@ class App extends React.Component {
             file={this.state.contextFileInfo}
             eventBus={this._eventBus}
           />
-          { this.state.showDeleteFilePrompt
+          {
+            this.state.showDeleteFilePrompt
             ? (
               <OkayCancel
                 parent={this._container}
@@ -730,7 +702,8 @@ class App extends React.Component {
               )
             : ''
           }
-          { this.state.showDeleteFolderPrompt
+          {
+            this.state.showDeleteFolderPrompt
             ? (
               <OkayCancel
                 parent={this._container}
@@ -742,7 +715,8 @@ class App extends React.Component {
               )
             : ''
           }
-          { this.state.showForceDelete
+          {
+            this.state.showForceDelete
             ? (
               <OkayCancel
                 parent={this._container}

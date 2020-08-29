@@ -101,11 +101,11 @@ class Two {
     return twos;
   }
   dump() {
-    return Object.assign({
+    return {
       splitType: this.splitType,
       sliderPercent: this.sliderPercent,
-      children: this.children.map((child) => { return child.dump(); }),
-    });
+      children: this.children.map((child) => child.dump()),
+    };
   }
   _makeNode(config, twos) {
     const node = Yoga.Node.create(config);
@@ -324,9 +324,7 @@ class Two {
 }
 
 let g_twoCount = 0;
-Two.createId = () => {
-  return `two-${++g_twoCount}`;
-};
+Two.createId = () => `two-${++g_twoCount}`;
 
 Two.NONE = 0;
 Two.HORIZONTAL = 1;
@@ -425,11 +423,9 @@ class ViewSplit extends React.Component {
   }
   _bumpTreeVersion() {
     this._saveLayout();
-    this.setState((prevState) => {
-      return {
-        treeVersion: prevState.treeVersion + 1,
-      };
-    });
+    this.setState((prevState) => ({
+      treeVersion: prevState.treeVersion + 1,
+    }));
   }
   _registerVPair(vpair) {
     this._vpairs[vpair.props.twoId] = vpair;
@@ -497,11 +493,9 @@ class ViewSplit extends React.Component {
   }
   _bumpCurrentId() {
     this._saveLayout();
-    this.setState((prevState) => {
-      return {
-        currentId: prevState.currentId + 1,
-      };
-    });
+    this.setState((prevState) => ({
+      currentId: prevState.currentId + 1,
+    }));
   }
   _handleSliderMouseDown(e, id) {
     e.stopPropagation();

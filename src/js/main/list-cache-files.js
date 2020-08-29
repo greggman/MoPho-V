@@ -34,9 +34,7 @@ import fs from 'fs';
 import path from 'path';
 
 function listCacheFiles(userDataDir) {
-  const files = fs.readdirSync(userDataDir).filter((name) => {
-    return path.basename(name).startsWith('folder-') && name.endsWith('.json');
-  }).map((name) => {
+  const files = fs.readdirSync(userDataDir).filter((name) => path.basename(name).startsWith('folder-') && name.endsWith('.json')).map((name) => {
     const filename = path.join(userDataDir, name);
     try {
       const data = JSON.parse(fs.readFileSync(filename, {encoding: 'utf8'}));
@@ -54,13 +52,9 @@ function listCacheFiles(userDataDir) {
     }
   });
 
-  files.sort((a, b) => {
-    return a < b ? -1 : a > b ? 1 : 0;
-  });
+  files.sort((a, b) => (a < b ? -1 : (a > b ? 1 : 0)));
 
-  const results = files.map((file) => {
-    return JSON.stringify(file);
-  });
+  const results = files.map((file) => JSON.stringify(file));
 
   console.log('[\n', results.join(',\n'), '\n]');
 }

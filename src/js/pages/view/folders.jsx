@@ -44,7 +44,7 @@ function depthPrefix(depth) {
   depth = Math.max(0, depth);
   let prefix = s_depthCache[depth];
   if (!prefix) {
-    prefix = (new Array(depth)).fill(0).map(() => { return '  '; }).join('');
+    prefix = (new Array(depth)).fill(0).map(() => '  ').join('');
     s_depthCache[depth] = prefix;
   }
   return prefix;

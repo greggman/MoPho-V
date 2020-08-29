@@ -263,9 +263,7 @@ function stopHappyFunTimes() {
 }
 
 function getWindowInfo(webContents) {
-  const ndx = windows.findIndex((window) => {
-    return webContents === window.webContents;
-  });
+  const ndx = windows.findIndex((window) => webContents === window.webContents);
   const window = windows[ndx];
   return window ? windowInfosById[window.id] : {};
 }
@@ -320,15 +318,13 @@ function saveProgramState() {
   const progState = {
     version: s_progStatVersion,
     lastUpdateCheckDate: getUpdateCheckDate() || oldProgState && oldProgState.lastUpdateCheckDate,
-    windows: windows.map((window) => {
-      return {
-        maximized: window.isMaximized(),
-        minimized: window.isMinimized(),
-        fullscreen: window.isFullScreen(),
-        bounds: window.getBounds(),
-        state: windowInfosById[window.id].state,
-      };
-    }),
+    windows: windows.map((window) => ({
+      maximized: window.isMaximized(),
+      minimized: window.isMinimized(),
+      fullscreen: window.isFullScreen(),
+      bounds: window.getBounds(),
+      state: windowInfosById[window.id].state,
+    })),
   };
   fs.writeFileSync(progStateFilename, JSON.stringify(progState, null, 2));
 }

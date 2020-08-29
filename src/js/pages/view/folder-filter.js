@@ -52,9 +52,7 @@ class FolderFilter extends EventEmitter {
   }
   updateFiles(folders) {
     for (const [folderName, folder] of Object.entries(folders)) {
-      const ndx = this._pendingFolders.findIndex((pending) => {
-        return pending.folderName === folderName;
-      });
+      const ndx = this._pendingFolders.findIndex((pending) => pending.folderName === folderName);
       if (ndx >= 0) {
         this._pendingFolders.splice(ndx, 1);
       }

@@ -133,10 +133,8 @@ class Viewer extends React.Component {
       this._updateViewStateAfterMediaLoad();
     });
 
-    const createSetPlaybackRateFn = (rate) => {
-      return () => {
-        this._setPlaybackRate(rate);
-      };
+    const createSetPlaybackRateFn = (rate) => () => {
+      this._setPlaybackRate(rate);
     };
 
 
@@ -224,11 +222,9 @@ class Viewer extends React.Component {
     this.props.viewerState.filename = fileInfo.filename;
     this.props.viewerState.mimeType = fileInfo.type;
 
-    this.setState((prevState) => {
-      return {
-        id: prevState.id + 1,
-      };
-    });
+    this.setState((prevState) => ({
+      id: prevState.id + 1,
+    }));
   }
   @action _handleTimeUpdate() {
     const video = this._viewVideo;
@@ -241,11 +237,9 @@ class Viewer extends React.Component {
     videoState.time = video.currentTime;
   }
   _bumpId() {
-    this.setState((prevState) => {
-      return {
-        id: prevState.id + 1,
-      };
-    });
+    this.setState((prevState) => ({
+      id: prevState.id + 1,
+    }));
   }
   _getRotation() {
     return (this.props.viewerState.rotation + this._baseRotation) % 360;

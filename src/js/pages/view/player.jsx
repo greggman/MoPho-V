@@ -40,9 +40,7 @@ import {TimeUpdateEvent} from './viewer-events';
 
 const _pauseIcon = '❚❚';
 const _playIcon = '▶';
-const _padZero = (num, size) => {
-  return num.toString().padStart(size, '0');
-};
+const _padZero = (num, size) => num.toString().padStart(size, '0');
 
 @observer
 class Player extends React.Component {

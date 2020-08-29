@@ -214,77 +214,51 @@ const gridModes = new KeyHelper({
   'columns':   {
     icon: 'images/buttons/columns.svg',
     hint: 'columns',
-    helper: (width, options) => {
-      return new ColumnManager(width, options);
-    },
+    helper: (width, options) => new ColumnManager(width, options),
     render: renderNoFrame,
     getStyle: computeColumnStyle,
   },
   'grid-fit':  {
     icon: 'images/buttons/grid-fit.svg',
     hint: 'fit',
-    helper: (width, options) => {
-      return new ColumnManager(width, Object.assign({itemHeightRatio: 1}, options));
-    },
+    helper: (width, options) => new ColumnManager(width, ({itemHeightRatio: 1, ...options})),
     render: renderWithFrame,
-    getStyle: (props) => {
-      return computeFitStyle(1, props);
-    },
+    getStyle: (props) => computeFitStyle(1, props),
   },
   'grid-4x3':  {
     icon: 'images/buttons/grid-4-3.svg',
     hint: '4x3',
-    helper: (width, options) => {
-      return new ColumnManager(width, Object.assign({itemHeightRatio: 4 / 3}, options));
-    },
+    helper: (width, options) => new ColumnManager(width, ({itemHeightRatio: 4 / 3, ...options})),
     render: renderNoFrame,
-    getStyle: (props) => {
-      return computeGridStyle(4 / 3, props);
-    },
+    getStyle: (props) => computeGridStyle(4 / 3, props),
   },
   'grid-3x4':  {
     icon: 'images/buttons/grid-3-4.svg',
     hint: '3x4',
-    helper: (width, options) => {
-      return new ColumnManager(width, Object.assign({itemHeightRatio: 3 / 4}, options));
-    },
+    helper: (width, options) => new ColumnManager(width, ({itemHeightRatio: 3 / 4, ...options})),
     render: renderNoFrame,
-    getStyle: (props) => {
-      return computeGridStyle(3 / 4, props);
-    },
+    getStyle: (props) => computeGridStyle(3 / 4, props),
   },
   'grid-16x9': {
     icon: 'images/buttons/grid-16-9.svg',
     hint: '16x9',
-    helper: (width, options) => {
-      return new ColumnManager(width, Object.assign({itemHeightRatio: 16 / 9}, options));
-    },
+    helper: (width, options) => new ColumnManager(width, ({itemHeightRatio: 16 / 9, ...options})),
     render: renderNoFrame,
-    getStyle: (props) => {
-      return computeGridStyle(16 / 9, props);
-    },
+    getStyle: (props) => computeGridStyle(16 / 9, props),
   },
   'grid-9x16': {
     icon: 'images/buttons/grid-9-16.svg',
     hint: '9x16',
-    helper: (width, options) => {
-      return new ColumnManager(width, Object.assign({itemHeightRatio: 9 / 16}, options));
-    },
+    helper: (width, options) => new ColumnManager(width, ({itemHeightRatio: 9 / 16, ...options})),
     render: renderNoFrame,
-    getStyle: (props) => {
-      return computeGridStyle(9 / 16, props);
-    },
+    getStyle: (props) => computeGridStyle(9 / 16, props),
   },
   'grid-1x1':  {
     icon: 'images/buttons/grid-1-1.svg',
     hint: '1x1',
-    helper: (width, options) => {
-      return new ColumnManager(width, Object.assign({itemHeightRatio: 1}, options));
-    },
+    helper: (width, options) => new ColumnManager(width, ({itemHeightRatio: 1, ...options})),
     render: renderNoFrame,
-    getStyle: (props) => {
-      return computeGridStyle(1, props);
-    },
+    getStyle: (props) => computeGridStyle(1, props),
   },
 });
 
