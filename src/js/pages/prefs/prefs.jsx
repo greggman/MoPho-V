@@ -129,7 +129,7 @@ class BaseFolder extends React.Component {
           type="button"
           onClick={() => { props.setFolder(foldername, ndx); }}
         >
-        ...
+          ...
         </button>
         <button
           type="button"

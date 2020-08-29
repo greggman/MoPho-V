@@ -34,15 +34,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import React from 'react';
 import Modal from '../../lib/ui/modal';
 
-const Loading = (/* props */) => {
-  return (
-    <Modal>
-      <div className="msg">
-        ...loading...
-      </div>
-    </Modal>
-  );
-};
+const Loading = (/* props */) => (
+  <Modal>
+    <div className="msg">
+      ...loading...
+    </div>
+  </Modal>
+);
 
 export {
   Loading as default,

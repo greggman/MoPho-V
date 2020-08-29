@@ -34,19 +34,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import React from 'react';
 import Modal from '../../lib/ui/modal';
 
-const WaitForFiles = (props) => {
-  return (
-    <Modal>
-      <div className="msg">
-        <div><img src="images/logo.png" /></div>
-        <div>&nbsp;</div>
-        <div>... waiting for files ...</div>
-        <div>&nbsp;</div>
-        <div>Use <button type="button" onClick={props.onClick}>Preferences</button> to add folders</div>
-      </div>
-    </Modal>
-  );
-};
+const WaitForFiles = (props) => (
+  <Modal>
+    <div className="msg">
+      <div><img src="images/logo.png" /></div>
+      <div>&nbsp;</div>
+      <div>... waiting for files ...</div>
+      <div>&nbsp;</div>
+      <div>Use <button type="button" onClick={props.onClick}>Preferences</button> to add folders</div>
+    </div>
+  </Modal>
+);
 
 export {
   WaitForFiles as default,

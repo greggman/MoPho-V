@@ -305,7 +305,7 @@ class ImageGrids extends React.Component {
     this.props.saveScrollTop(e.target.scrollTop);
   }
   render() {
-    this._logger('imagegrids rendercount', ++g_imageGridsRenderCount);
+    this._logger('imagegrids render count', ++g_imageGridsRenderCount);
     g_renderCount = 0;
     // Is this a hack or is it ok?
     if (this.props.winState.gridMode !== this._gridMode) {
@@ -314,32 +314,30 @@ class ImageGrids extends React.Component {
     }
     const result = (
       <Measure client onResize={this._handleResize}>
-        {({ measureRef }) => {
-          return (
-            <div
-              className="imagegrids"
-              onScroll={this._handleScroll}
-              ref={(imagegrids) => {
-                if (imagegrids && imagegrids !== this._imagegrids) {
-                  this._imagegrids = imagegrids;
-                  measureRef(imagegrids);
-                }
-              }}
-            >
-              <ReactList
-                ref={(reactlist) => { this._reactList = reactlist; }}
-                itemRenderer={this._itemRenderer}
-                itemSizeGetter={this._itemSizeGetter}
-                length={this._getNumItems()}
-                type="variable"
-                zoom={this.props.winState.thumbnailZoom}
-              />
-            </div>
-          );
-        }}
+        {({ measureRef }) => (
+          <div
+            className="imagegrids"
+            onScroll={this._handleScroll}
+            ref={(imagegrids) => {
+              if (imagegrids && imagegrids !== this._imagegrids) {
+                this._imagegrids = imagegrids;
+                measureRef(imagegrids);
+              }
+            }}
+          >
+            <ReactList
+              ref={(reactList) => { this._reactList = reactList; }}
+              itemRenderer={this._itemRenderer}
+              itemSizeGetter={this._itemSizeGetter}
+              length={this._getNumItems()}
+              type="variable"
+              zoom={this.props.winState.thumbnailZoom}
+            />
+          </div>
+        )}
       </Measure>
     );
-    this._logger('rendercount', g_renderCount);
+    this._logger('render count', g_renderCount);
     return result;
   }
 }

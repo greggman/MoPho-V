@@ -622,16 +622,14 @@ class ViewSplit extends React.Component {
     });
     return (
       <Measure client onResize={this._handleResize}>
-        {({ measureRef }) => {
-          return (
-            <div
-              style={{position: 'relative', width: '100%', height: '100%'}}
-              ref={measureRef}
-            >
-              {views}
-            </div>
-          );
-        }}
+        {({ measureRef }) => (
+          <div
+            style={{position: 'relative', width: '100%', height: '100%'}}
+            ref={measureRef}
+          >
+            {views}
+          </div>
+        )}
       </Measure>
     );
   }

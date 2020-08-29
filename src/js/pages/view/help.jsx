@@ -35,21 +35,19 @@ import React from 'react';
 import {shell} from 'electron';  // eslint-disable-line
 import Modal from '../../lib/ui/modal';
 
-const Help = (props) => {
-  return (
-    <Modal>
-      <div className="fullscreen">
-        <webview
-          src="help.html"
-          nodeintegration="true"
-        />
-        <div>
-          <button type="button" onClick={props.onClose}>Ok</button>
-        </div>
+const Help = (props) => (
+  <Modal>
+    <div className="fullscreen">
+      <webview
+        src="help.html"
+        nodeintegration="true"
+      />
+      <div>
+        <button type="button" onClick={props.onClose}>Ok</button>
       </div>
-    </Modal>
-  );
-};
+    </div>
+  </Modal>
+);
 
 export {
   Help as default,
