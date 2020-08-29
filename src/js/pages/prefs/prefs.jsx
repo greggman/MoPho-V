@@ -79,7 +79,7 @@ class BaseFolder extends React.Component {
     this._checking = false;
     this._listenerManager = new ListenerManager();
   }
-  componentWillMount() {
+  componentDidMount() {
     const on = this._listenerManager.on.bind(this._listenerManager);
     on(document, 'visibilitychange', this._checkVisibility);
     this._checkExists();
