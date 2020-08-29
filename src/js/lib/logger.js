@@ -73,9 +73,7 @@ function makeLogFunc(baseName, subName) {
   const logger = process.type === 'renderer'
     ? makeBrowserLog(color, name)
     : makeTerminalLog(color, name);
-  logger.getPrefix = () => {
-    return name;
-  };
+  logger.getPrefix = () => name;
   logger.id = name;
   logger.throw = (...args) => {
     throw new Error(`${name}: ${[...args].join(' ')}`);

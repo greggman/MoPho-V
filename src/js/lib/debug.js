@@ -35,18 +35,14 @@ import makeLogFunc from './logger';
 
 const s_debugRE = ((debug) => {
   debug = debug || '-----';
-  const patterns = debug.split(',').map((pattern) => {
-    return pattern.replace(/\*/, '.*?') || '----';
-  });
+  const patterns = debug.split(',').map((pattern) => pattern.replace(/\*/, '.*?') || '----');
   const pattern = `^(${patterns.join('|')})$`;
   return new RegExp(pattern);
 })(process.env.DEBUG);
 
 function makeNoopFunc(name) {
   const noop = () => {};
-  noop.getPrefix = () => {
-    return name;
-  };
+  noop.getPrefix = () => name;
   noop.throw = (...args) => {
     throw new Error(`${name}: ${[...args].join()}`);
   };

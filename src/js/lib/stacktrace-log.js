@@ -39,9 +39,7 @@ function addStackTrace(v) {
   }
 }
 
-window.console.error = ((oldFn) => {
-  return (...args) => {
-    oldFn.apply(this, [...args].map(addStackTrace));
-  };
+window.console.error = ((oldFn) => (...args) => {
+  oldFn.apply(this, [...args].map(addStackTrace));
 })(window.console.error);
 

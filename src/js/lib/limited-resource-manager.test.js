@@ -123,9 +123,7 @@ describe('limitedResourceManager', () => {
     }
 
     function accessResourceFn(resource) {
-      return () => {
-        return resource.test();
-      };
+      return () => resource.test();
     }
   });
 });

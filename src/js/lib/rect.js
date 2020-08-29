@@ -55,7 +55,7 @@ function intersect(rect1, rect2) {
 
 // doesn't handle rects with width or height < 0
 function intersection(rect1, ...rects) {
-  const rect = Object.assign({}, rect1);
+  const rect = {...rect1};
   for (const other of [...rects]) {
     const rectRight = right(rect);
     const otherRight = right(other);
@@ -75,7 +75,7 @@ function intersection(rect1, ...rects) {
 
 // doesn't handle rects with width or height <= 0
 function union(rect1, ...rects) {
-  const rect = Object.assign({}, rect1);
+  const rect = {...rect1};
   for (const other of [...rects]) {
     const rectRight = right(rect);
     const otherRight = right(other);

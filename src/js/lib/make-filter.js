@@ -165,14 +165,14 @@ function makeCompositeFilter(filters) {
 const expressionPartsRE = /([!><=]+)(\d*(?:\.\d*|))(.*)/;
 const whitespaceRE = / \t\n/g;
 const expressionFnTable = {
-  '>':   (a, b) => { return a > b; },
-  '>=':  (a, b) => { return a >= b; },
-  '<':   (a, b) => { return a < b; },
-  '<=':  (a, b) => { return a <= b; },
-  '=':   (a, b) => { return a === b; },
-  '==':  (a, b) => { return a === b; },
-  '!=':  (a, b) => { return a !== b; },
-  '!==': (a, b) => { return a !== b; },
+  '>':   (a, b) => a > b,
+  '>=':  (a, b) => a >= b,
+  '<':   (a, b) => a < b,
+  '<=':  (a, b) => a <= b,
+  '=':   (a, b) => a === b,
+  '==':  (a, b) => a === b,
+  '!=':  (a, b) => a !== b,
+  '!==': (a, b) => a !== b,
 };
 const suffixMultiplierTable = {
   'b': 1,
@@ -227,9 +227,7 @@ function makeExpressionFn(str) {
 
   const amount = number * multiplier;
   return {
-    filter: (a) => {
-      return expressionFn(a, amount);
-    },
+    filter: (a) => expressionFn(a, amount),
   };
 }
 
@@ -239,9 +237,7 @@ function makeGlob(str) {
   str = str.toLowerCase();
   if (!globCharsRE.test(str)) {
     return {
-      filter: (v) => {
-        return v.indexOf(str) >= 0;
-      },
+      filter: (v) => v.indexOf(str) >= 0,
     };
   }
   let re;
@@ -256,9 +252,7 @@ function makeGlob(str) {
   }
 
   return {
-    filter: (v) => {
-      return re.test(v);
-    },
+    filter: (v) => re.test(v),
   };
 }
 
@@ -266,9 +260,7 @@ function makeGlobFilter(str) {
   const {error, filter} = makeGlob(str);
   return {
     error,
-    filter: (filename, fileInfo) => {
-      return filter(fileInfo.lowercaseName);
-    },
+    filter: (filename, fileInfo) => filter(fileInfo.lowercaseName),
   };
 }
 
@@ -276,9 +268,7 @@ function makeFolderFilter(str) {
   const {error, filter} = makeGlob(str);
   return {
     error,
-    filter: (filename, fileInfo) => {
-      return filter(fileInfo.folderName);
-    },
+    filter: (filename, fileInfo) => filter(fileInfo.folderName),
   };
 }
 
@@ -286,9 +276,7 @@ function makeFilenameFilter(str) {
   const {error, filter} = makeGlob(str);
   return {
     error,
-    filter: (filename, fileInfo) => {
-      return filter(fileInfo.baseName);
-    },
+    filter: (filename, fileInfo) => filter(fileInfo.baseName),
   };
 }
 
@@ -296,9 +284,7 @@ function makeTypeFilter(str) {
   const {error, filter} = makeGlob(str);
   return {
     error,
-    filter: (filename, fileInfo) => {
-      return filter(fileInfo.type);
-    },
+    filter: (filename, fileInfo) => filter(fileInfo.type),
   };
 }
 
@@ -328,9 +314,7 @@ function makeSizeFilter(str) {
   const {error, filter} = makeExpressionFn(str);
   return {
     error,
-    filter: (filename, fileInfo) => {
-      return fileInfo.size && filter(fileInfo.size);
-    },
+    filter: (filename, fileInfo) => fileInfo.size && filter(fileInfo.size),
   };
 }
 
@@ -391,9 +375,7 @@ function makeDateFilter(str) {
   }
   const amount = date.valueOf();
   return {
-    filter: (filename, fileInfo) => {
-      return expressionFn(fileInfo.mtime, amount);
-    },
+    filter: (filename, fileInfo) => expressionFn(fileInfo.mtime, amount),
   };
 }
 

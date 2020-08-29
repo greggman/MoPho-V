@@ -159,9 +159,7 @@ class SimpleFolderWatcher extends EventEmitter {
       if (err) {
         this.emit('error', `error ${err}: ${this._filePath}`);
       } else {
-        const validFileNames = fileNames.filter((fileName) => {
-          return this._filter(path.join(this._filePath, fileName));
-        });
+        const validFileNames = fileNames.filter((fileName) => this._filter(path.join(this._filePath, fileName)));
         // Check removed
         this._entries.forEach((state, entryPath) => {
           if (validFileNames.indexOf(entryPath) < 0) {

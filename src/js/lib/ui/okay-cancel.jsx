@@ -35,11 +35,11 @@ import React from 'react';
 import Modal from './modal';
 
 const OkayCancel = (props) => {
-  const { okay, cancel, msg, onOkay, onCancel, parent } = Object.assign({
-    okay: 'Okay',
+  const { okay, cancel, msg, onOkay, onCancel, parent } = {okay: 'Okay',
     cancel: 'Cancel',
     msg: 'Insert Message Here',
-  }, props);
+    ...props,
+  };
   return (
     <Modal parent={parent}>
       <div className="dialog">

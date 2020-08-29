@@ -61,10 +61,11 @@ const orientationInfo = [
 
 function getOrientationInfo(item, orientation) {
   const info = orientationInfo[(orientation || 1) - 1];
-  return Object.assign({
+  return {
     width: info.rotation ? item.height : item.width,
     height: info.rotation ? item.width : item.height,
-  }, info);
+    ...info,
+  };
 }
 
 export {

@@ -128,9 +128,7 @@ function getActualFilenameCaseInsensitiveImpl(filename) {
     // so it's the best we can do
     return filename;
   }
-  const matches = filenames.filter((name) => {
-    return lcFilename === name.toLowerCase();
-  });
+  const matches = filenames.filter((name) => lcFilename === name.toLowerCase());
   if (!matches.length) {
     throw new Error(`${filename} does not exist`);
   }
@@ -264,7 +262,7 @@ const getActualFilename = fsIsCaseSensitive
   : getActualFilenameCaseInsensitive;
 
 function removeChildFolders(folderNames) {
-  const fullNames = folderNames.map((name) => { return path.normalize(path.resolve(name)); });
+  const fullNames = folderNames.map((name) => path.normalize(path.resolve(name)));
   const filteredNames = [];
   for (const fullName of fullNames) {
     let parentExists = false;

@@ -42,15 +42,9 @@ function readDirTreeSync(filePath, options) {
 
   let filter = options.filter;
   if (filter === undefined) {
-    filter = () => {
-      return true;
-    };
+    filter = () => true;
   } else if (filter instanceof RegExp) {
-    filter = ((filt) => {
-      return (filename) => {
-        return filt.test(filename);
-      };
-    })(filter);
+    filter = ((filt) => (filename) => filt.test(filename))(filter);
   }
 
   function callFilter(filename) {
@@ -65,9 +59,7 @@ function readDirTreeSync(filePath, options) {
     try {
       const stat = fs.statSync(subdirFileName);
       if (stat.isDirectory()) {
-        subdirFilenames.push(readDirTreeSync(subdirFileName, options).map((subFileName) => {
-          return path.join(fileName, subFileName);
-        }));
+        subdirFilenames.push(readDirTreeSync(subdirFileName, options).map((subFileName) => path.join(fileName, subFileName)));
       }
       return true;
     } catch (e) {
@@ -124,9 +116,7 @@ function makeIgnoreFunc(ignore) {
 
 function makeIgnoreFilter(ignores) {
   if (!ignores) {
-    return () => {
-      return true;
-    };
+    return () => true;
   }
 
   const ignoreFuncs = ignores.map(makeIgnoreFunc);

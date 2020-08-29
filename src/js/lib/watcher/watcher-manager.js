@@ -121,7 +121,7 @@ class TreeWatcherDispatcher {
   }
   _emitStartEvent() {
     for (const folderWatcher of this._folderWatchers) {
-//      this._logger('emit', 'start');
+      //      this._logger('emit', 'start');
       folderWatcher.emit('start');
     }
   }

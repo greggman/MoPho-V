@@ -42,9 +42,7 @@ function getMods(e) {
 }
 
 function prepMods(mods) {
-  const chars = Array.prototype.map.call(mods.toLowerCase(), (c) => {
-    return c;
-  });
+  const chars = Array.prototype.map.call(mods.toLowerCase(), (c) => c);
   chars.sort();
   return chars.join('');
 }

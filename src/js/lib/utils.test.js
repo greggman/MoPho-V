@@ -36,7 +36,7 @@ import {assert} from 'chai';
 import * as utils from './utils';
 
 function prepPaths(paths) {
-  return paths.map((name) => { return path.normalize(path.resolve(name)); });
+  return paths.map((name) => path.normalize(path.resolve(name)));
 }
 
 describe('utils', () => {
