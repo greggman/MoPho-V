@@ -142,10 +142,11 @@ function createThumbnailMaker(options) {
       loaderHndl.release();
       return {
         release: release,
-        info: Object.assign({}, metaInfo, {
+        info: {
+          ...metaInfo,
           width: imgInfo.width,
           height: imgInfo.height,
-        }),
+        },
         canvas: thumbInfo.canvas,
       };
     } catch (e) {

@@ -87,9 +87,7 @@ import WatcherConsolidator from './watcher-consolidator';
 import FolderData from './folder-data';
 
 function arrayInANotB(a, b) {
-  return a.filter((elem) => {
-    return b.indexOf(elem) < 0;
-  });
+  return a.filter((elem) => b.indexOf(elem) < 0);
 }
 
 // This runs on the "server" and watches the filesystem
@@ -126,18 +124,12 @@ class ThumbnailManager extends EventEmitter {
     );
     this._emitUpdateFiles = _.throttle(this._emitUpdateFiles, 500);
     this._logger = debug('ThumbnailManager');
-    this._folderThumbnailPageMakerFn = (oldFiles, newFiles, baseFilename) => {
-      return createThumbnailsForFolder(oldFiles, newFiles, baseFilename, thumbnailPageMakerManager);
-    };
-    this._archiveThumbnailPageMakerFn = (filepath, baseFilename) => {
-      return createThumbnailsForArchive(filepath, baseFilename, thumbnailPageMakerManager);
-    };
+    this._folderThumbnailPageMakerFn = (oldFiles, newFiles, baseFilename) => createThumbnailsForFolder(oldFiles, newFiles, baseFilename, thumbnailPageMakerManager);
+    this._archiveThumbnailPageMakerFn = (filepath, baseFilename) => createThumbnailsForArchive(filepath, baseFilename, thumbnailPageMakerManager);
   }
 
   setFolders(dirs, deleteMetaDataOnRemovedFolders) {
-    this._baseFolderNames = dirs.map((folderPath) => {
-      return path.dirname(folderPath);
-    });
+    this._baseFolderNames = dirs.map((folderPath) => path.dirname(folderPath));
     const foldersToRemove = _.difference(this._rootFolderNames, dirs);
     foldersToRemove.forEach((folder) => {
       this._removeFolder(folder, deleteMetaDataOnRemovedFolders);
@@ -277,13 +269,9 @@ class ThumbnailManager extends EventEmitter {
     const newFiles = {};
     const files = folder.files;
     for (const [filename, fileInfo] of Object.entries(files)) {
-      newFiles[filename] = Object.assign({}, fileInfo, {
-        displayName: this._createDisplayPath(filename),
-      });
+      newFiles[filename] = {...fileInfo, displayName: this._createDisplayPath(filename)};
     }
-    folders[folderName] = Object.assign({}, folder, {
-      files: newFiles,
-    });
+    folders[folderName] = {...folder, files: newFiles};
     return folders;
   }
 

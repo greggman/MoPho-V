@@ -128,9 +128,10 @@ function createThumbnailPageMaker(options) {
               thumbnail.x, thumbnail.y, thumbnail.width, thumbnail.height,
               0, 0, thumbnail.width, thumbnail.height
             );
-            newFileInfos[filename] = Object.assign({}, info, {
+            newFileInfos[filename] = {
+              ...info,
               thumbnail: addImageToPages(pages, baseFilename, cacheSuffix, filename, info, ctx.canvas),
-            });
+            };
           });
           // not really sure what should happen here. Should I some how
           // store a map for urls to page filenames or just assume I can
@@ -157,17 +158,16 @@ function createThumbnailPageMaker(options) {
           // The observer must use the canvas IMMEDIATELY.
           try {
             thumbnailObserver(newInfo, thndl.canvas);
-            newFileInfos[filename] = Object.assign({}, newInfo, {
+            newFileInfos[filename] = {
+              ...newInfo,
               thumbnail: addImageToPages(pages, baseFilename, cacheSuffix, filename, newInfo, thndl.canvas),
-            });
+            };
           } finally {
             thndl.release();
           }
         })
         .catch(() => {
-          newFileInfos[filename] = Object.assign({
-            bad: true,
-          }, fileInfo);
+          newFileInfos[filename] = {bad: true, ...fileInfo};
         });
       return p;
     });

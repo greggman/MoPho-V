@@ -63,7 +63,7 @@ describe('NativeFolder', () => {
 
     const folderData = createFolderData(
       'root',
-      Object.assign({}, files, folders, archives),
+      {...files, ...folders, ...archives},
     );
     const thumbnailPageMaker = sinon.stub();
 

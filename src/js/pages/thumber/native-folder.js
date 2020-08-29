@@ -47,13 +47,15 @@ import {
 
 function filterFiles(files) {
   const filteredFiles = {};
-  Object.keys(files).filter((filename) => {
-    return files[filename].isDirectory ||
-           filters.isArchive(filename) ||
-           filters.isImageOrVideoExtension(filename);
-  }).forEach((filename) => {
-    filteredFiles[filename] = files[filename];
-  });
+  Object.keys(files)
+    .filter(
+      (filename) => files[filename].isDirectory ||
+      filters.isArchive(filename) ||
+      filters.isImageOrVideoExtension(filename)
+    )
+    .forEach((filename) => {
+      filteredFiles[filename] = files[filename];
+    });
   return filteredFiles;
 }
 
@@ -179,7 +181,7 @@ class NativeFolder extends EventEmitter {
     if (!this._newFiles) {
       return;
     }
-    const oldFiles = Object.assign({}, this._folderData.files);
+    const oldFiles = {...this._folderData.files};
     const newFiles = this._newFiles;
     this._newFiles = undefined;
     this._logger('processFiles:', newFiles);

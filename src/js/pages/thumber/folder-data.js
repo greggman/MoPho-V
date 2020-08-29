@@ -53,7 +53,7 @@ function convertVersion1To2OrThrow(data) {
       throw new Error('archives need new data from version 1');
     }
   }
-  return Object.assign({}, data, {version: 2});
+  return {...data, version: 2};
 }
 
 function convertVersion2To3OrThrow(data) {
@@ -66,7 +66,7 @@ function convertVersion2To3OrThrow(data) {
       });
     }
   }
-  return Object.assign({}, data, {version: 3});
+  return {...data, version: 3};
 }
 
 function convertVersion3To4OrThrow(data) {
@@ -77,13 +77,13 @@ function convertVersion3To4OrThrow(data) {
       throw new Error('bad thumbnail');
     }
   }
-  return Object.assign({}, data, {version: 4});
+  return {...data, version: 4};
 }
 
 function convertVersion4To5OrThrow(data, folderPath) {
   assert(data.version === 4);
   data.folderPath = folderPath;
-  return Object.assign({}, data, {version: 5});
+  return {...data, version: 5};
 }
 
 function convertVersion5To6OrThrow(data) {
@@ -91,7 +91,7 @@ function convertVersion5To6OrThrow(data) {
   if (!data.scannedTime) {
     data.scannedTime = Date.now();
   }
-  return Object.assign({}, data, {version: 6});
+  return {...data, version: 6};
 }
 
 const versionConverters = {

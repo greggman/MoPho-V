@@ -59,9 +59,7 @@ async function createThumbnailsForArchive(filepath, baseFilename, thumbnailPageM
     const blobInfos = {};
 
     // First get all the blobs
-    const blobs = await Promise.all(Object.values(archiveFiles).map(async (fileInfo) => {
-      return fileInfo.blob();
-    }));
+    const blobs = await Promise.all(Object.values(archiveFiles).map(async (fileInfo) => fileInfo.blob()));
 
     // Now get URLs for all the blobs. This way if one of the blobs
     // fails we'll have no objectURLs to discard. Otherwise if we just

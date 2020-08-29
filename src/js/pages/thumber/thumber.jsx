@@ -176,9 +176,8 @@ function start(args) {
     g.prefs = prefs;
     const isPrefs = !args._.length;
     const dirs = isPrefs ? prefs.folders : args._;
-    g.dirsToPrefixMap = Object.entries(utils.dirsToPrefixMap(dirs)).sort((a, b) => {
-      return Math.sign(b.length - a.length);
-    });
+    g.dirsToPrefixMap = Object.entries(utils.dirsToPrefixMap(dirs))
+      .sort((a, b) => Math.sign(b.length - a.length));
     g.thumbnailManager.setFolders(utils.removeChildFolders(utils.filterNonExistingDirs(dirs)), isPrefs);
 
     setupHFTServer(prefs);
