@@ -1,4 +1,4 @@
-# Developement
+# Development
 
 ## Setup
 
@@ -25,7 +25,7 @@ First off the code is a mess. If you feel like schooling me on how to cleaning t
 
 ### run tests with debugging
 
-    npm run unit-tests --inspect --inspect-brk [--grep=<testname>]
+    npm run unit-tests --inspect --inspect-brk [--grep=<test-name>]
 
 now go to [about:inspect](about:inspect) in chrome and click the link
 
@@ -145,10 +145,10 @@ metadata for every file and folder found during the scan.
 
 ## --delete-folder-data-if-no-files-for-archive
 
-If used with `--compore-folders-to-cache` then, if the metadata
+If used with `--compare-folders-to-cache` then, if the metadata
 for an archive shows zero files the metadata will be deleted
 which means the next time you run MoPho-V those archives
-will be rescanned.
+will be re-scanned.
 
 **Note:** there was a bug where archives were sometimes
 marked as scanned but had not actually been scanned. This 
@@ -160,8 +160,8 @@ this feature is probably not useful.
 This set the maximum number of parallel readdir calls. There's
 an assumption that lots of parallel calls would be slow. This
 option is mostly hear to easily test different values in
-different situations. This is also useful for debugging by s
-etting it to 1 and setting `--readdirs-throttle-duration`.
+different situations. This is also useful for debugging by
+setting it to 1 and setting `--readdirs-throttle-duration`.
 
 ## --readdirs-throttle-duration
 

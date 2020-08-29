@@ -53,13 +53,13 @@ const g_folderHeaderHeight = 20;
 
 // Should pass this down to imagegrid
 function computeFolderHeight(folder, gridMode, width, zoom, options) {
-  const cmgr = gridModes.value(gridMode).helper(width, options);
+  const manager = gridModes.value(gridMode).helper(width, options);
   folder.files.forEach((file) => {
     const info = file.info;
     const thumbnail = info.thumbnail;
-    /* const pos = */ cmgr.getPositionForElement(zoom(thumbnail.width), zoom(thumbnail.height));
+    /* const pos = */ manager.getPositionForElement(zoom(thumbnail.width), zoom(thumbnail.height));
   });
-  return cmgr.height;
+  return manager.height;
 }
 
 class ImageGrid extends React.Component {
@@ -101,7 +101,7 @@ class ImageGrid extends React.Component {
     } = this.props;
     let grid = '';
     const files = folder.files;
-    const cmgr = gridModes.value(gridMode).helper(width, {
+    const columnManager = gridModes.value(gridMode).helper(width, {
       padding: options.padding,
       columnWidth: zoom(options.columnWidth),
     }); // TODO: pass in
@@ -110,7 +110,7 @@ class ImageGrid extends React.Component {
       const info = file.info;
       const thumbnail = info.thumbnail;
       const id = `thumb-${info.filename}`;
-      const pos = cmgr.getPositionForElement(zoom(thumbnail.width), zoom(thumbnail.height));
+      const pos = columnManager.getPositionForElement(zoom(thumbnail.width), zoom(thumbnail.height));
       ++g_renderCount;
       return (
         <Thumbnail
@@ -130,7 +130,7 @@ class ImageGrid extends React.Component {
       );
     });
     const style = {
-      height: px(cmgr.height),
+      height: px(columnManager.height),
     };
     grid = (
       <div className="grid" style={style}>{images}</div>

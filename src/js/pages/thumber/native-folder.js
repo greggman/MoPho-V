@@ -130,7 +130,7 @@ class NativeFolder extends EventEmitter {
       this._logger('got thumbnails', files);
       this._folderData.addFiles(files);
     } catch (e) {
-      console.error(`could not make thumbails for: ${this._filename}`, e);
+      console.error(`could not make thumbnails for: ${this._filename}`, e);
     } finally {
       this._isMakingThumbnails = false;
       this._folderData.setScannedTime();
@@ -169,7 +169,7 @@ class NativeFolder extends EventEmitter {
     this._logger('updateFiles:', files);
     this._isChecking = false;
     this._sendImagesAndVideos();
-    // first filter out evertything we don't want
+    // first filter out everything we don't want
     this._newFiles = filterFiles(files);
     this._processFiles();
   }

@@ -38,7 +38,7 @@ import {cssArray} from '../../lib/css-utils';
 import KeyHelper from '../../lib/key-helper';
 
 const g_backslashRE = /\\/g;
-function prepForCSSURL(url) {
+function prepForCSSUrl(url) {
   return url.replace(g_backslashRE, '\\\\');
 }
 
@@ -101,7 +101,7 @@ function computeColumnStyle(props) {
     top: px(pos.y),
     width: px(zoom(width)),
     height: px(zoom(height)),
-    backgroundImage: `url(${prepForCSSURL(thumbnail.url)})`,
+    backgroundImage: `url(${prepForCSSUrl(thumbnail.url)})`,
     backgroundPositionX: px(zoom(-thumbnail.x * scale)),
     backgroundPositionY: px(zoom(-thumbnail.y * scale)),
     backgroundSize: `${px(zoom(thumbnailPageSize * scale))} ${px(zoom(thumbnailPageSize * scale))}`,
@@ -145,7 +145,7 @@ function computeGridStyle(displayAspect, props) {
     top: px(pos.y),
     width: px(zoom(width)),
     height: px(zoom(height)),
-    backgroundImage: `url(${prepForCSSURL(thumbnail.url)})`,
+    backgroundImage: `url(${prepForCSSUrl(thumbnail.url)})`,
     backgroundPositionX: px(zoom(bkX)),
     backgroundPositionY: px(zoom(bkY)),
     backgroundSize: `${px(zoom(bkWidth))} ${px(zoom(bkHeight))}`,
@@ -203,7 +203,7 @@ function computeFitStyle(displayAspect, props) {
     top: px(y),
     width: px(zoom(width)),
     height: px(zoom(height)),
-    backgroundImage: `url(${prepForCSSURL(thumbnail.url)})`,
+    backgroundImage: `url(${prepForCSSUrl(thumbnail.url)})`,
     backgroundPositionX: px(zoom(bkX)),
     backgroundPositionY: px(zoom(bkY)),
     backgroundSize: `${px(zoom(bkWidth))} ${px(zoom(bkHeight))}`,
