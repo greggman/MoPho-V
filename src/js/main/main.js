@@ -371,6 +371,7 @@ function createWindow(url, options) {
       contextIsolation: false,
       nodeIntegration: true,
       webviewTag: true,
+      enableRemoteModule: true,
     },
   });
 
@@ -432,6 +433,7 @@ function createOneOfAKindWindow(id, url, options) {
         contextIsolation: false,
         nodeIntegration: true,
         webviewTag: true,
+        enableRemoteModule: true,
       },
     });
 
