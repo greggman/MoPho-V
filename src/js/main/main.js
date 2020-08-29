@@ -382,6 +382,8 @@ function createWindow(url, options) {
     window.webContents.openDevTools();
   }
 
+  catchNavigation(window);
+
   window.on('close', saveProgramStateIfLastWindow);
   window.on('closed', makeCloseWindowHandler(window));
   windows.unshift(window);
@@ -391,6 +393,19 @@ function createWindow(url, options) {
   };
 
   return window;
+}
+
+function isSafeishURL(url) {
+  return url.startsWith('http:') || url.startsWith('https:');
+}
+
+function catchNavigation(window) {
+  window.webContents.on('will-navigate', (event, url) => {
+    event.preventDefault();
+    if (isSafeishURL(url)) {
+      shell.openExternal(url);
+    }
+  });
 }
 
 function makeHideInsteadOfCloseHandler(window) {
@@ -443,6 +458,8 @@ function createOneOfAKindWindow(id, url, options) {
       debug('openDevTools:', url);
       window.webContents.openDevTools();
     }
+
+    catchNavigation(window);
 
     if (options.hideInsteadOfClose) {
       window.on('close', makeHideInsteadOfCloseHandler(window));
