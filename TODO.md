@@ -4,10 +4,40 @@ TODO
 -- Just because I want to --
 ================================================================================
 
-[ ] Use File at a time Zip lib
+[X] Use File at a time Zip lib
 
     current zip lib (jszip) has to unzip entire zip before we get any data.
     This makes viewing slow.
+    
+    Switched to unzipit but now there's a new issue (see next) 
+
+[X] Unzip entire file
+
+    I switched to unzipit for the issue above BUT, the new issue
+    is switching between images in a single zip takes too long.
+    Instead it should first unzip the image that the user clicked
+    on and then start unzipping the rest of the images. My guess
+    is if there are 100 images and the user clicks on image 17
+    then it should unzip 17, followed by 18 to 100 and then
+    maybe 16->1 or 1 to 16. It seems like there is some higher
+    the zero chance the user will go backward so what heristic 
+    if any should be taking to decide to unzip 16 before say
+    image 40. Worse, of the top of my head the cooridination would
+    really suck. I mean at the moment no info is sent to the unzip
+    process except give me image somefile.zip/someimage17.jpg
+    so it just has to guess you probably want all the other images
+    in somefile.zip. Let's assume it starts unzipping 18 to 100.
+    Then the user presses back and wants image 16. It sounds like
+    a lot of coordination to tell the backend, STOP! unzipping
+    18 to 100 and start 16 to 1. As it is there are something line
+    8 layers between the unzipping code and the viewing code and
+    the unzipping code isn't organized at all to handle this.
+    I guess much more coordination and a very different architechture
+    would be required.
+    
+    The back end needs some kind of queue of requests and a way
+    to change priorities and remove requests. IIRC that's not
+    there now. Well, the queue is but the rest is not.
 
 [ ] Use File at a time Rar lib
 
@@ -17,7 +47,9 @@ TODO
 [ ] split at same location.
 
     In other words when you split a view both splits should look the same,
-    same scroll location.[ ] Fix delete on network
+    same scroll location.
+    
+[ ] Fix delete on network
 
 [ ] Allow saving current collection of panes, zoom, speed, loops,
 [ ] When sizing window keep left column same size (unless it won't fit)
@@ -90,7 +122,7 @@ TODO
 
         This is kind of a killer.
 
-    [ ] Issues
+    [ ] VR Issues
 
         *   no HTTPS so not sure what stuff Chrome is going to block :(
 
@@ -101,7 +133,7 @@ TODO
             mobile supports showing the thumbnails to multiple
             videos but will get there when we get there.
 
-        *   Suspect gifs are not supported
+        *   Suspect gifs are not supported in AFrame and they are certainly not supported by WebGL directly.
 
         *   Not sure about speed issues (bandwidth)
 
@@ -156,6 +188,14 @@ TODO
             is that you have to trust them. With a webpage it's semi-easy to
             just open the DevTools and see every network request they make to
             see if they are being evil and if you're being spied on.
+            
+    [ ] Use Desktop VR directly in Electron
+    
+        Originaly I got a daydream. I had no hope of running this app on
+        Daydream so having MoPho-V just serve to the browser made sense to
+        allow Daydream to view. But, ... since then I got desktop VR in which
+        case I should be able to use the built in VR support in Chromium/Electron
+        to make the app itself do something in VR.
 
 -- MVP --
 ================================================================================
@@ -300,14 +340,17 @@ TODO
 
     Idea: Use CSS animation that blank or subtle?
     but after 1 second shows a spinner?
+
 [ ] add at least one integration test (test that resizing works)
     just so there is a framework to start adding tests
+
 [ ] fix the scroll skip
 
     I'm pretty sure this just means the size of items passed
     to react-list are slightly off.
 
 [ ] profile scroll (as in fix the jank)
+
 [ ] Make up,down,left,right in ImageGrid navigate grid
 
     up/down should go to image above or below current image
@@ -348,6 +391,10 @@ TODO
     The issue right now is if images get inserted before the current index
     the index will be wrong. Next<->Prev should always go to the current image's
     next/prev.
+    
+    In other words, you're on image 100. You press right and it tries to display
+    image 101 but if 50 images were inserted before image 100 you're now actually
+    viewing image 150 but it goes to 101.
 
 [ ] fix archive filename encoding
 
@@ -357,7 +404,9 @@ TODO
 [ ] use different icon for rotate image vs rotate UI
 
 [ ] toggle full zoom of current pane
+
 [ ] add zoom reset
+
 [ ] try to keep same images on screen as size or rotation changes.
 
     I'm not sure how to do this. Like one idea would be to try to find
