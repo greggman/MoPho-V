@@ -44,9 +44,14 @@ class ArchiveFolder extends EventEmitter {
     this._folderData = options.folderData;
     this._fs = options.fs;
     this._thumbnailPageMakerFn = options.thumbnailPageMakerFn;
-    const stat = this._fs.statSync(filename);
-    const scannedTime = this._folderData.scannedTime;
-    this._needUpdate = !scannedTime || stat.mtimeMs > scannedTime;
+    try {
+      const stat = this._fs.statSync(filename);
+      const scannedTime = this._folderData.scannedTime;
+      this._needUpdate = !scannedTime || stat.mtimeMs > scannedTime;
+    }  catch (e) {
+      console.error('failed to stat archive', filename);
+      this._needUpdate = true;
+    }
     this._isMakingThumbnails = false;
 
     process.nextTick(() => {
@@ -89,7 +94,7 @@ class ArchiveFolder extends EventEmitter {
       this._logger('got thumbnails', files);
       this._folderData.addFiles(files);
     } catch (e) {
-      console.error(`could not make thumbails for: ${this._filename}`, e);
+      console.error(`could not make thumbnails for: ${this._filename}`, e);
     } finally {
       this._isMakingThumbnails = false;
       this._folderData.setScannedTime();
