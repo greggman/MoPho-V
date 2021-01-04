@@ -68,8 +68,6 @@ const modeInfo = {
   'cover':      { desc: 'cover',       image: 'images/stretch-both.svg', },
 };
 
-const playbackRates = [1, 0.66, 0.5, 0.33, 0.25, 3, 2, 1.5];
-
 @observer
 class Viewer extends React.Component {
   constructor(props) {
@@ -100,7 +98,7 @@ class Viewer extends React.Component {
     this.state = {
       width: 0,
       height: 0,
-      id: 0, // eslint-disable-line
+      id: 0,
       infoFlash: false,
       playerFlash: false,
     };
@@ -133,16 +131,10 @@ class Viewer extends React.Component {
       this._updateViewStateAfterMediaLoad();
     });
 
-    const createSetPlaybackRateFn = (rate) => () => {
-      this._setPlaybackRate(rate);
-    };
-
-
-    const cyclePlaybackSpeed = () => {
-      const rate = this.props.viewerState.videoState.playbackRate;
-      // works even if no match since result will be 0
-      const ndx = (playbackRates.indexOf(rate) + 1) % playbackRates.length;
-      this._setPlaybackRate(playbackRates[ndx]);
+    const createSetPlaybackRateFn = (rate) => {
+      return () => {
+        this._setPlaybackRate(rate);
+      };
     };
 
     const actionListener = new ActionListener();
@@ -169,7 +161,6 @@ class Viewer extends React.Component {
     actionListener.on('setPlaybackSpeed3', createSetPlaybackRateFn(0.5 )); // 3  0.5
     actionListener.on('setPlaybackSpeed4', createSetPlaybackRateFn(0.33)); // 4  0.33
     actionListener.on('setPlaybackSpeed5', createSetPlaybackRateFn(0.25)); // 5  0.25
-    actionListener.on('cyclePlaybackSpeed', cyclePlaybackSpeed); // 1  1
     actionListener.on('toggleSlideshow', (fe) => { this.toggleSlideshow(fe.domEvent); });
     actionListener.on('rotate', (fe) => { fe.stopPropagation(); this._rotate(fe.domEvent); });
     actionListener.on('changeStretchMode', (fe) => { this._changeStretchMode(fe.domEvent); });
@@ -222,9 +213,9 @@ class Viewer extends React.Component {
     this.props.viewerState.filename = fileInfo.filename;
     this.props.viewerState.mimeType = fileInfo.type;
 
-    this.setState((prevState) => ({
-      id: prevState.id + 1,
-    }));
+    this.setState({
+      id: this.state.id + 1,
+    });
   }
   @action _handleTimeUpdate() {
     const video = this._viewVideo;
@@ -237,12 +228,18 @@ class Viewer extends React.Component {
     videoState.time = video.currentTime;
   }
   _bumpId() {
-    this.setState((prevState) => ({
-      id: prevState.id + 1,
-    }));
+    this.setState({
+      id: this.state.id + 1,
+    });
   }
   _getRotation() {
-    return (this.props.viewerState.rotation + this._baseRotation) % 360;
+    return (this.props.viewerState.rotation % 4 * 90 + this._baseRotation) % 360;
+  }
+  _getFlip() {
+    return [
+      this.props.viewerState.rotation & 4 ? -1 : 1,
+      this.props.viewerState.rotation & 8 ? -1 : 1,
+    ];
   }
 
   _adjustSize(fileInfo, style) {
@@ -263,7 +260,7 @@ class Viewer extends React.Component {
   }
 
   @action _rotate() {
-    this.props.viewerState.rotation = (this.props.viewerState.rotation + 270) % 360;
+    this.props.viewerState.rotation = (this.props.viewerState.rotation + 1) % 8;
   }
 
   @action _zoom(z) {
@@ -377,7 +374,7 @@ class Viewer extends React.Component {
   }
 
   _isRotated90() {
-    return this._getRotation() / 90 % 2 === 1;
+    return this._getRotation() % 2 === 1;
   }
 
   _getDisplayDimensions() {
@@ -492,10 +489,10 @@ class Viewer extends React.Component {
     this._adjustToCenter(t, 'x', 'w', this.state.width,  scrollLeft);
     this._adjustToCenter(t, 'y', 'h', this.state.height, scrollTop);
     const translationPart = `translate(${px(t.x + scrollLeft)},${px(t.y + scrollTop)})`;
-
+    
     const scalePart = `scale(${Math.max(t.scale)})`;
     const rotatePart = `rotate(${this._getRotation()}deg)`;
-    const flipPart = `scale(${this._baseScale.join(',')})`;
+    const flipPart = `scale(${this._getFlip().map((s, i) => s * this._baseScale[i]).join(',')})`;
 
     style.transform = `${translationPart} ${rotatePart} ${scalePart} ${flipPart}`;
   }
@@ -627,47 +624,49 @@ class Viewer extends React.Component {
     videoClasses.addIf(this.state.playerFlash, 'flash');
     return (
       <Measure client onResize={this._handleResize}>
-        {({ measureRef }) => (
-          <div
-            style={viewElemStyle}
-            className="viewer"
-            ref={(viewer) => {
-              if (viewer && viewer !== this._viewerElem) {
-                this._viewerElem = viewer;
-                measureRef(viewer);
-              }
-            }}
-          >
-            <div className="back" onClick={() => { this.props.setCurrentView(); }}></div>
-            <div className="view-holder">
-              <div className="viewer-content">
-                <img style={imageStyle} className="viewer-img" draggable="false" alt="" />
-                <video style={videoStyle} className="viewer-video" autoPlay loop draggable="false"></video>
-              </div>
-              <div className={infoClasses}>{viewerState.filename}</div>
-              <div className="prev" onClick={this._gotoPrev}><img src="images/prev.svg" /></div>
-              <div className="next" onClick={this._gotoNext}><img src="images/next.svg" /></div>
-              <div className="ui">
-                <div className="stretch" onClick={this._changeStretchMode}>
-                  <img src={modeInfo[viewerState.stretchMode].image} />
+        {({ measureRef }) => {
+          return (
+            <div
+              style={viewElemStyle}
+              className="viewer"
+              ref={(viewer) => {
+                if (viewer && viewer !== this._viewerElem) {
+                  this._viewerElem = viewer;
+                  measureRef(viewer);
+                }
+              }}
+            >
+              <div className="back" onClick={() => { this.props.setCurrentView(); }}></div>
+              <div className="view-holder">
+                <div className="viewer-content">
+                  <img style={imageStyle} className="viewer-img" draggable="false" alt="" />
+                  <video style={videoStyle} className="viewer-video" autoPlay loop draggable="false"></video>
                 </div>
-                <div className="rotate" onClick={this._rotate}>
-                  <img src="images/rotate.svg" />
+                <div className={infoClasses}>{viewerState.filename}</div>
+                <div className="prev" onClick={this._gotoPrev}><img src="images/prev.svg" /></div>
+                <div className="next" onClick={this._gotoNext}><img src="images/next.svg" /></div>
+                <div className="ui">
+                  <div className="stretch" onClick={this._changeStretchMode}>
+                    <img src={modeInfo[viewerState.stretchMode].image} />
+                  </div>
+                  <div className="rotate" onClick={this._rotate}>
+                    <img src="images/rotate.svg" />
+                  </div>
+                  <div className="close" onClick={this._hideImage}>
+                    <img src="images/close.svg" />
+                  </div>
                 </div>
-                <div className="close" onClick={this._hideImage}>
-                  <img src="images/close.svg" />
+                <div className={videoClasses}>
+                  <Player
+                    videoState={viewerState.videoState}
+                    video={this._viewVideo}
+                    eventBus={this._eventBus}
+                  />
                 </div>
-              </div>
-              <div className={videoClasses}>
-                <Player
-                  videoState={viewerState.videoState}
-                  video={this._viewVideo}
-                  eventBus={this._eventBus}
-                />
               </div>
             </div>
-          </div>
-        )}
+          );
+        }}
       </Measure>
     );
   }
