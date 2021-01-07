@@ -38,6 +38,7 @@
         "jsx-a11y/media-has-caption": "off",
         "jsx-a11y/click-events-have-key-events": "off",
         "jsx-a11y/label-has-for": "off",
+        "jsx-a11y/accessible-emoji": "off",  // this is fucking stupid. accessibility software can look up the meaning of emoji. Gees people are stupid.
         "react/self-closing-comp": "off",
         "react/jsx-boolean-value": "off", // ["error", "always"],
         "object-curly-spacing": "off",    // ["error", "never"],
