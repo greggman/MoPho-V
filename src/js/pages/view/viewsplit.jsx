@@ -215,7 +215,7 @@ class Two {
     // we're the right child
     return parent.getNext();
   }
-  split(splitType) {
+  split(splitType, newSecond) {
     assert(this.splitType === Two.NONE, 'not already split');
     assert(this.children.length === 0, 'we have no children');
     // when we split we make a new copy of ourself,
@@ -224,9 +224,14 @@ class Two {
     this.id = Two.createId();  // we need a new id since our clone has our id
     this.splitType = splitType;
     this.sliderPercent = .5;
-    clone._setParent(this);
+    if (!newSecond) {
+      clone._setParent(this);
+    }
     const newSibling = new Two();
     newSibling._setParent(this);
+    if (newSecond) {
+      clone._setParent(this);
+    }
     return newSibling;
   }
   delete() {
@@ -341,6 +346,8 @@ class ViewSplit extends React.Component {
       '_setCurrentView',
       '_splitHorizontal',
       '_splitVertical',
+      '_splitHorizontalAlt',
+      '_splitVerticalAlt',
       '_deletePane',
       '_handleActions',
       '_registerVPair',
@@ -382,6 +389,8 @@ class ViewSplit extends React.Component {
     this._actionListener = new ActionListener();
     this._actionListener.on('splitHorizontal', this._splitHorizontal);
     this._actionListener.on('splitVertical', this._splitVertical);
+    this._actionListener.on('splitHorizontalAlt', this._splitHorizontalAlt);
+    this._actionListener.on('splitVerticalAlt', this._splitVerticalAlt);
     this._actionListener.on('deletePane', this._deletePane);
     this._actionListener.on('nextView', this._activateNextView);
     this._actionListener.on('prevView', this._activatePrevView);
@@ -433,19 +442,31 @@ class ViewSplit extends React.Component {
   _unregisterVPair(vpair) {
     delete this._vpairs[vpair.props.twoId];
   }
-  _splitHorizontal(forwardableEvent) {
+  _splitHorizontalImpl(forwardableEvent, newOnRight) {
     forwardableEvent.stopPropagation();
     const stateOfViewBeingSplit = this.getImagegridState();
-    const two = this._currentTwo.split(Two.HORIZONTAL);
+    const two = this._currentTwo.split(Two.HORIZONTAL, newOnRight);
+    two.initialState = stateOfViewBeingSplit;
+    this._bumpTreeVersion();
+  }
+  _splitHorizontal(forwardableEvent) {
+    this._splitHorizontalImpl(forwardableEvent, false);
+  }
+  _splitHorizontalAlt(forwardableEvent) {
+    this._splitHorizontalImpl(forwardableEvent, true);
+  }
+  _splitVerticalImpl(forwardableEvent, newOnBottom) {
+    forwardableEvent.stopPropagation();
+    const stateOfViewBeingSplit = this.getImagegridState();
+    const two = this._currentTwo.split(Two.VERTICAL, newOnBottom);
     two.initialState = stateOfViewBeingSplit;
     this._bumpTreeVersion();
   }
   _splitVertical(forwardableEvent) {
-    forwardableEvent.stopPropagation();
-    const stateOfViewBeingSplit = this.getImagegridState();
-    const two = this._currentTwo.split(Two.VERTICAL);
-    two.initialState = stateOfViewBeingSplit;
-    this._bumpTreeVersion();
+    this._splitVerticalImpl(forwardableEvent, false);
+  }
+  _splitVerticalAlt(forwardableEvent) {
+    this._splitVerticalImpl(forwardableEvent, true);
   }
   _deletePane(forwardableEvent) {
     forwardableEvent.stopPropagation();
