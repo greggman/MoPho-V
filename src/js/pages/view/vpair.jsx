@@ -60,6 +60,7 @@ class VPair extends React.Component {
     this._mediaManager = new MediaManagerClient();
     bind(
       this,
+      '_close',
       '_gotoNext',
       '_gotoPrev',
       '_gotoImage',
@@ -156,6 +157,10 @@ class VPair extends React.Component {
     this.setState({
       currentImageIndex: ndx,
     });
+  }
+  _close(e) {
+    e.stopPropagation();
+    this.props.closeView(this);
   }
   _gotoImage(event, ndx, folderNdx) {
     this._eventBus.dispatch(new ForwardableEvent('hide'));
@@ -258,6 +263,7 @@ class VPair extends React.Component {
             currentImageIndex={this.state.currentImageIndex}
           />
         )}
+        <div className="close" onClick={this._close}>❎</div>
         <div className="tick">◤</div>
         <div className="spacer"></div>
       </div>
