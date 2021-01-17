@@ -47,6 +47,7 @@ class FileContextMenu extends React.Component {
       '_handleOpen',
       '_handleDelete',
       '_handleRefreshFolder',
+      '_handleSyncFolderView',
     );
     this._logger = debug('FileContextMenu');
   }
@@ -76,6 +77,9 @@ class FileContextMenu extends React.Component {
     }
     return undefined;
   }
+  _handleSyncFolderView() {
+    this.props.eventBus.dispatch(new ForwardableEvent('scrollFolderViewToFile'), path.dirname(this.props.file.filename));
+  }
   render() {
     return (
       <ContextMenu
@@ -88,6 +92,9 @@ class FileContextMenu extends React.Component {
         {this._deleteMenuItem()}
         <MenuItem onClick={this._handleRefreshFolder}>
           Refresh
+        </MenuItem>
+        <MenuItem onClick={this._handleSyncFolderView}>
+          Sync Folder View
         </MenuItem>
       </ContextMenu>
     );

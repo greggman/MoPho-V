@@ -35,8 +35,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import path from 'path';
 import bind from '../../lib/bind';
+import debug from '../../lib/debug';
 import {getRotatedXY} from '../../lib/rotatehelper';
 import ForwardableEvent from '../../lib/forwardable-event';
+import ForwardableEventDispatcher from '../../lib/forwardable-event-dispatcher';
 import {cssArray} from '../../lib/css-utils';
 
 const s_depthCache = {};
@@ -68,12 +70,20 @@ class Folder extends React.Component {
       '_handleClick',
       '_handleContextMenu',
     );
+    this._ref = React.createRef();
   }
   _handleClick() {
     this.props.eventBus.dispatch(new ForwardableEvent('goToImage'), this.props.count, this.props.folderCount);
   }
   _handleContextMenu(event) {
     this.props.eventBus.dispatch(new ForwardableEvent('folderContextMenu', event), this.props.folder);
+  }
+  scrollIntoView() {
+    this._ref.current.scrollIntoView({
+      behavior: 'auto',
+      block: 'center',
+      inline: 'center',
+    });
   }
   render() {
     const {folder, prefs} = this.props;
@@ -91,7 +101,7 @@ class Folder extends React.Component {
         onClick={this._handleClick}
         onContextMenu={this._handleContextMenu}
       >
-        <div>{name} ({this.props.numFiles})</div>
+        <div ref={this._ref}>{name} ({this.props.numFiles})</div>
       </div>
     );
   }
@@ -110,10 +120,14 @@ Folder.propTypes = {
 class Folders extends React.Component {
   constructor(props) {
     super(props);
+    this._logger = debug('Folders');
     bind(
       this,
+      '_handleScrollFolderToViewFile',
       '_handleWheel',
     );
+    this._filenameToRef = new Map();
+    this.props.eventBus.on('scrollFolderViewToFile', this._handleScrollFolderToViewFile);
   }
   componentDidMount() {
     this.main.addEventListener('wheel', this._handleWheel, {passive: false});
@@ -121,18 +135,28 @@ class Folders extends React.Component {
   componentWillUnmount() {
     this.main.removeEventListener('wheel', this._handleWheel, {passive: false});
   }
+  _handleScrollFolderToViewFile(event, folderName) {
+    const ref = this._filenameToRef.get(folderName);
+    if (ref) {
+      ref.current.scrollIntoView();
+    }
+  }
   _handleWheel(e) {
     e.preventDefault();
     const pos = getRotatedXY(e, 'delta', this.props.rotateMode);
     this.main.scrollTop += pos.y;
   }
   renderFolder(root, dirName, count, folderCtx) {
+    this._filenameToRef.clear();
     const folders = root.folders.map((folder, ndx) => {
       const id = `folder-${folder.filename}`;
       const numFiles = folder.files.length;
+      const ref = React.createRef();
+      this._filenameToRef.set(folder.filename, ref);
       return (
         <Folder
           key={id}
+          ref={ref}
           folder={folder}
           numFiles={numFiles}
           count={ndx}
