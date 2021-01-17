@@ -697,11 +697,11 @@ div::-webkit-scrollbar-corner {
     background-clip: padding-box;
 }
 
-    .Resizer:hover {
+.Resizer:hover {
     transition: all 2s ease;
 }
 
-    .Resizer.horizontal {
+.Resizer.horizontal {
     height: 11px;
     margin: -5px 0;
     border-top: 5px solid rgba(255, 255, 255, 0);
