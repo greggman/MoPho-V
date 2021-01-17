@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import React from 'react';
 import {observable, action, toJS} from 'mobx';
 import {observer} from 'mobx-react';
+import ActionEvent from '../../lib/action-event';
 import bind from '../../lib/bind';
 import debug from '../../lib/debug';
 import ForwardableEventDispatcher from '../../lib/forwardable-event-dispatcher';
@@ -69,9 +70,13 @@ class VPair extends React.Component {
       '_setCurrentView',
       '_handleActions',
       '_viewCurrentIndex',
+      '_saveScrollTop',
+      '_splitUp',
+      '_splitDown',
+      '_splitLeft',
+      '_splitRight',
       '_startViewingImage',
       '_stopViewingImage',
-      '_saveScrollTop',
     );
 
     const videoState = observable({
@@ -160,7 +165,24 @@ class VPair extends React.Component {
   }
   _close(e) {
     e.stopPropagation();
-    this.props.closeView(this);
+    this.props.setCurrentView(this);
+    this._eventBus.dispatch(new ActionEvent({action: 'deletePane'}));
+  }
+  _splitLeft() {
+    this.props.setCurrentView(this);
+    this._eventBus.dispatch(new ActionEvent({action: 'splitVerticalAlt'}));
+  }
+  _splitRight() {
+    this.props.setCurrentView(this);
+    this._eventBus.dispatch(new ActionEvent({action: 'splitVertical'}));
+  }
+  _splitUp() {
+    this.props.setCurrentView(this);
+    this._eventBus.dispatch(new ActionEvent({action: 'splitHorizontalAlt'}));
+  }
+  _splitDown() {
+    this.props.setCurrentView(this);
+    this._eventBus.dispatch(new ActionEvent({action: 'splitHorizontal'}));
   }
   _gotoImage(event, ndx, folderNdx) {
     this._eventBus.dispatch(new ForwardableEvent('hide'));
@@ -264,6 +286,10 @@ class VPair extends React.Component {
           />
         )}
         <div className="close-vpair" onClick={this._close}>❎</div>
+        <div className="vpair-split-up" onClick={this._splitUp}>⬆</div>
+        <div className="vpair-split-down" onClick={this._splitDown}>⬇</div>
+        <div className="vpair-split-left" onClick={this._splitLeft}>⬅</div>
+        <div className="vpair-split-right" onClick={this._splitRight}>➡</div>
         <div className="tick">◤</div>
         <div className="spacer"></div>
       </div>

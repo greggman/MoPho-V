@@ -343,7 +343,6 @@ class ViewSplit extends React.Component {
     bind(
       this,
       '_handleResize',
-      '_closeView',
       '_setCurrentView',
       '_splitHorizontal',
       '_splitVertical',
@@ -516,10 +515,6 @@ class ViewSplit extends React.Component {
     assert(two);
     this._setCurrentVPairAndTwo(vpair, two);
   }
-  _closeView(vpair) {
-    this._setCurrentView(vpair);
-    this._deleteCurrentPane();
-  }
   _bumpCurrentId() {
     this._saveLayout();
     this.setState((prevState) => ({
@@ -616,7 +611,6 @@ class ViewSplit extends React.Component {
               actionListener={this._actionListener}
               registerVPair={this._registerVPair}
               unregisterVPair={this._unregisterVPair}
-              closeView={this._closeView}
             />
           </div>
         );
