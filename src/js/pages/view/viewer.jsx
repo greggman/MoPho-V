@@ -559,7 +559,7 @@ class Viewer extends React.Component {
       const videoState = this.props.viewerState.videoState;
       // we need this because we'll compare url to video.src and when applied to video src
       // some letters are escaped
-      const u = new URL(url);
+      const u = new URL(url, window.location.href);
       if (videoState.currentUrl !== u.href) {
         this.props.viewerState.videoState.loop = 0;
       }
