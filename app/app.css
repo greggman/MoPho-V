@@ -346,7 +346,7 @@ div::-webkit-scrollbar-corner {
     color: rgba(0,255,255,0.3);
     display: none;
 }
-.vpair .close {
+.vpair .close-vpair {
     position: absolute;
     left: 0;
     top: 0;
@@ -358,7 +358,7 @@ div::-webkit-scrollbar-corner {
     cursor: pointer;
     z-index: 2;
 }
-.vpair .close:hover {
+.vpair .close-vpair:hover {
     transition: opacity 0s linear;
     opacity: 0.2;
 }

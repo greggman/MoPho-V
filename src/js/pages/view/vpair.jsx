@@ -263,7 +263,7 @@ class VPair extends React.Component {
             currentImageIndex={this.state.currentImageIndex}
           />
         )}
-        <div className="close" onClick={this._close}>❎</div>
+        <div className="close-vpair" onClick={this._close}>❎</div>
         <div className="tick">◤</div>
         <div className="spacer"></div>
       </div>
