@@ -112,9 +112,11 @@ class VPair extends React.Component {
         stretchMode: 'constrain',
         zoom: 1,
         slideshow: false,
-        videoState: videoState,
       },
       ...initialViewerState,
+      ...{
+        videoState,
+      }
     }, {}, {deep: false});
 
     const imageGridState = {
@@ -149,7 +151,7 @@ class VPair extends React.Component {
     on(eventBus, 'hide', this._stopViewingImage);
     on(eventBus, 'goToImage', this._gotoImage);
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.registerVPair(this);
   }
   componentWillUnmount() {
