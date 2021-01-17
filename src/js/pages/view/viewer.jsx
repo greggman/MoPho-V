@@ -184,9 +184,15 @@ class Viewer extends React.Component {
     this.props.viewerState.videoState.playbackRate = rate;
   }
   @action _handleLoadedData() {
+    const {viewerState} = this.props;
+    const videoState = viewerState.videoState;
     const video = this._viewVideo;
     this._displayElem = video;
-    this.props.viewerState.videoState.duration = video.duration;
+    videoState.duration = video.duration;
+    if (videoState.loop === 2 && videoState.currentUrl === video.src) {
+      video.currentTime = videoState.loopStart;
+    }
+    videoState.currentUrl = video.src;
     this._updateViewStateAfterMediaLoad();
     this._play();
   }
@@ -489,7 +495,7 @@ class Viewer extends React.Component {
     this._adjustToCenter(t, 'x', 'w', this.state.width,  scrollLeft);
     this._adjustToCenter(t, 'y', 'h', this.state.height, scrollTop);
     const translationPart = `translate(${px(t.x + scrollLeft)},${px(t.y + scrollTop)})`;
-    
+
     const scalePart = `scale(${Math.max(t.scale)})`;
     const rotatePart = `rotate(${this._getRotation()}deg)`;
     const flipPart = `scale(${this._getFlip().map((s, i) => s * this._baseScale[i]).join(',')})`;
@@ -550,7 +556,13 @@ class Viewer extends React.Component {
     this._pendingFileInfo = fileInfo;
 
     if (filters.isMimeVideo(type)) {
-      this.props.viewerState.videoState.loop = 0;
+      const videoState = this.props.viewerState.videoState;
+      // we need this because we'll compare url to video.src and when applied to video src
+      // some letters are escaped
+      const u = new URL(url);
+      if (videoState.currentUrl !== u.href) {
+        this.props.viewerState.videoState.loop = 0;
+      }
       this._pause();
       this._loadVideo(url);
       // this.setState({
@@ -624,49 +636,47 @@ class Viewer extends React.Component {
     videoClasses.addIf(this.state.playerFlash, 'flash');
     return (
       <Measure client onResize={this._handleResize}>
-        {({ measureRef }) => {
-          return (
-            <div
-              style={viewElemStyle}
-              className="viewer"
-              ref={(viewer) => {
-                if (viewer && viewer !== this._viewerElem) {
-                  this._viewerElem = viewer;
-                  measureRef(viewer);
-                }
-              }}
-            >
-              <div className="back" onClick={() => { this.props.setCurrentView(); }}></div>
-              <div className="view-holder">
-                <div className="viewer-content">
-                  <img style={imageStyle} className="viewer-img" draggable="false" alt="" />
-                  <video style={videoStyle} className="viewer-video" autoPlay loop draggable="false"></video>
+        {({ measureRef }) => (
+          <div
+            style={viewElemStyle}
+            className="viewer"
+            ref={(viewer) => {
+              if (viewer && viewer !== this._viewerElem) {
+                this._viewerElem = viewer;
+                measureRef(viewer);
+              }
+            }}
+          >
+            <div className="back" onClick={() => { this.props.setCurrentView(); }}></div>
+            <div className="view-holder">
+              <div className="viewer-content">
+                <img style={imageStyle} className="viewer-img" draggable="false" alt="" />
+                <video style={videoStyle} className="viewer-video" autoPlay loop draggable="false"></video>
+              </div>
+              <div className={infoClasses}>{viewerState.filename}</div>
+              <div className="prev" onClick={this._gotoPrev}><img src="images/prev.svg" /></div>
+              <div className="next" onClick={this._gotoNext}><img src="images/next.svg" /></div>
+              <div className="ui">
+                <div className="stretch" onClick={this._changeStretchMode}>
+                  <img src={modeInfo[viewerState.stretchMode].image} />
                 </div>
-                <div className={infoClasses}>{viewerState.filename}</div>
-                <div className="prev" onClick={this._gotoPrev}><img src="images/prev.svg" /></div>
-                <div className="next" onClick={this._gotoNext}><img src="images/next.svg" /></div>
-                <div className="ui">
-                  <div className="stretch" onClick={this._changeStretchMode}>
-                    <img src={modeInfo[viewerState.stretchMode].image} />
-                  </div>
-                  <div className="rotate" onClick={this._rotate}>
-                    <img src="images/rotate.svg" />
-                  </div>
-                  <div className="close" onClick={this._hideImage}>
-                    <img src="images/close.svg" />
-                  </div>
+                <div className="rotate" onClick={this._rotate}>
+                  <img src="images/rotate.svg" />
                 </div>
-                <div className={videoClasses}>
-                  <Player
-                    videoState={viewerState.videoState}
-                    video={this._viewVideo}
-                    eventBus={this._eventBus}
-                  />
+                <div className="close" onClick={this._hideImage}>
+                  <img src="images/close.svg" />
                 </div>
               </div>
+              <div className={videoClasses}>
+                <Player
+                  videoState={viewerState.videoState}
+                  video={this._viewVideo}
+                  eventBus={this._eventBus}
+                />
+              </div>
             </div>
-          );
-        }}
+          </div>
+        )}
       </Measure>
     );
   }

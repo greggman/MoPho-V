@@ -97,6 +97,7 @@ class VPair extends React.Component {
         loop: 0,   // 0 no loop, 1 = start set, 2 = start and end set (looping)
         loopStart: 0,
         loopEnd: 1,
+        currentUrl: '',
       },
       ...initialVideoState,
     });
