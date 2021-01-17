@@ -69,34 +69,32 @@ class MediaManagerClient {
     );
 
     this._logger('registerMediaManager');
-    otherWindowIPC.createChannelStream('mediaManager')
-      .then((stream) => {
-        this._logger('got stream');
-        this._stream = stream;
-        stream.on('mediaStatus', this._handleMediaStatus);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    this._streamP = otherWindowIPC.createChannelStream('mediaManager');
+    this._streamP.then((stream) => {
+      this._logger('got stream');
+      this._stream = stream;
+      stream.on('mediaStatus', this._handleMediaStatus);
+    }).catch((err) => {
+      console.error(err);
+    });
   }
 
   requestMedia(info, callback) {
-    if (!this._stream) {
-      this._logger.throw('no stream');
-    }
     this._logger('requestMedia:', JSON.stringify(info));
-    if (info.archiveName) {
-      const requestId = ++this._msgId;
-      this._requests[requestId] = callback;
-      this._stream.send('getMediaStatus', requestId, info.filename);
-    } else {
-      process.nextTick(() => {
-        callback(undefined, {
-          url: urlFromFilename(info.filename),
-          type: info.type,
+    this._streamP.then(() => {
+      if (info.archiveName) {
+        const requestId = ++this._msgId;
+        this._requests[requestId] = callback;
+        this._stream.send('getMediaStatus', requestId, info.filename);
+      } else {
+        process.nextTick(() => {
+          callback(undefined, {
+            url: urlFromFilename(info.filename),
+            type: info.type,
+          });
         });
-      });
-    }
+      }
+    });
   }
 
   _handleMediaStatus(requestId, error, blobInfo) {

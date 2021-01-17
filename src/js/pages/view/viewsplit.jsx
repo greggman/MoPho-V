@@ -405,9 +405,18 @@ class ViewSplit extends React.Component {
   getEventBus() {
     return this._eventBus;
   }
+  // this is used so when we split a view the view can start in the same place
+  // as the split view.
+  getActiveViewState() {
+    return this._currentView.getState();
+  }
+  // this is used by the toolbar. I need a mobx reactive object to tweak so changes
+  // to the toolbar affect this view.
   getViewerState() {
     return this._currentView.getViewerState();
   }
+  // this is used by the toolbar. I need a mobx reactive object to tweak so changes
+  // to the toolbar affect this view.
   getImagegridState() {
     return this._currentView.getImagegridState();
   }
@@ -444,7 +453,7 @@ class ViewSplit extends React.Component {
   }
   _splitHorizontalImpl(forwardableEvent, newOnRight) {
     forwardableEvent.stopPropagation();
-    const stateOfViewBeingSplit = this.getImagegridState();
+    const stateOfViewBeingSplit = this.getActiveViewState();
     const two = this._currentTwo.split(Two.HORIZONTAL, newOnRight);
     two.initialState = stateOfViewBeingSplit;
     this._bumpTreeVersion();
@@ -457,7 +466,7 @@ class ViewSplit extends React.Component {
   }
   _splitVerticalImpl(forwardableEvent, newOnBottom) {
     forwardableEvent.stopPropagation();
-    const stateOfViewBeingSplit = this.getImagegridState();
+    const stateOfViewBeingSplit = this.getActiveViewState();
     const two = this._currentTwo.split(Two.VERTICAL, newOnBottom);
     two.initialState = stateOfViewBeingSplit;
     this._bumpTreeVersion();

@@ -79,39 +79,59 @@ class VPair extends React.Component {
       '_stopViewingImage',
     );
 
+    const {initialState: initialStates = {}} = props;
+    const {
+      viewerState: initialViewerState = {},
+      imagegridState: initialImagegridState = {},
+      state: initialState = {},
+    } = initialStates;
+    const {videoState: initialVideoState = {}} = initialViewerState;
+
     const videoState = observable({
-      playing: false,
-      time: 0,
-      duration: 1,
-      playbackRate: 1,
-      volume: 1,
-      loop: 0,   // 0 no loop, 1 = start set, 2 = start and end set (looping)
-      loopStart: 0,
-      loopEnd: 1,
+      ...{
+        playing: false,
+        time: 0,
+        duration: 1,
+        playbackRate: 1,
+        volume: 1,
+        loop: 0,   // 0 no loop, 1 = start set, 2 = start and end set (looping)
+        loopStart: 0,
+        loopEnd: 1,
+      },
+      ...initialVideoState,
     });
 
     this._viewerState = observable.object({
-      viewing: false,
-      mimeType: 'image',  // mimeType image, video
-      filename: '',
-      fileInfo: {},
-      duration: 1,
-      rotation: 0,
-      stretchMode: 'constrain',
-      zoom: 1,
-      slideshow: false,
-      videoState: videoState,
+      ...{
+        viewing: false,
+        mimeType: 'image',  // mimeType image, video
+        filename: '',
+        fileInfo: {},
+        duration: 1,
+        rotation: 0,
+        stretchMode: 'constrain',
+        zoom: 1,
+        slideshow: false,
+        videoState: videoState,
+      },
+      ...initialViewerState,
     }, {}, {deep: false});
 
-    const initialState = Object.assign(props.initialState ? toJS(props.initialState) : {
-      currentCollection: undefined,
-    });
+    const imageGridState = {
+      ...{
+        currentCollection: undefined,
+      },
+      ...initialImagegridState,
+    };
 
-    this._imagegridState = observable.object(initialState, {}, {deep: false});
+    this._imagegridState = observable.object(imageGridState, {}, {deep: false});
 
     this.state = {
-      currentImageIndex: -1,
-      gotoFolderNdx: -1,
+      ...{
+        currentImageIndex: -1,
+        gotoFolderNdx: -1,
+      },
+      ...initialState,
     };
     // should this be state? I don't want it to re-render!
     this._imagegridsScrollTop = 0;
@@ -137,9 +157,29 @@ class VPair extends React.Component {
     this._mediaManager.close();
     this._listenerManager.removeAll();
   }
+  // this is used so when we split a view the view can start in the same place
+  // as the split view.
+  getState() {
+    return {
+      viewerState: {
+        ...this._viewerState,
+        videoState: {...this._viewerState.videoState},
+      },
+      imagegridState: {
+        ...this._imagegridState,
+      },
+      state: {
+        ...this.state,
+      },
+    };
+  }
+  // this is used by the toolbar. I need a mobx reactive object to tweak so changes
+  // to the toolbar affect this view.
   getViewerState() {
     return this._viewerState;
   }
+  // this is used by the toolbar. I need a mobx reactive object to tweak so changes
+  // to the toolbar affect this view.
   getImagegridState() {
     return this._imagegridState;
   }
