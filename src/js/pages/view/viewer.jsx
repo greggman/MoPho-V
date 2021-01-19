@@ -93,6 +93,7 @@ class Viewer extends React.Component {
       '_hidePlayer',
       '_handleLoadedData',
       '_handleTimeUpdate',
+      '_handleWheel',
     );
 
     this.state = {
@@ -120,6 +121,7 @@ class Viewer extends React.Component {
     const video = this._viewVideo;
     on(video, 'loadeddata', this._handleLoadedData);
     on(video, 'timeupdate', this._handleTimeUpdate);
+    on(viewerElem, 'wheel', this._handleWheel);
 
     autorun(() => {
       video.volume = this.props.viewerState.videoState.volume;
@@ -228,6 +230,16 @@ class Viewer extends React.Component {
       }
     }
     videoState.time = video.currentTime;
+  }
+  _handleWheel(event) {
+    const delta = event.deltaX;
+    const threshold = 5;
+    const deltaRange = 100;
+    const maxCue = 0.2;  // secs
+    if (Math.abs(delta) > threshold) {
+      const amount = Math.sign(delta) * Math.abs(delta) - threshold;
+      this._cueOrNextPrev(amount / deltaRange * maxCue);
+    }
   }
   _bumpId() {
     this.setState(prevState => ({ id: prevState.id + 1 }));
