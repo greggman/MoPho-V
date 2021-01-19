@@ -29,7 +29,7 @@
         "no-multi-spaces": "off",         // ["error", { "ignoreEOLComments": true }],
         "no-underscore-dangle": "off",    // used for private members
         "react/no-multi-comp": "off",     // being fucking pendantic about intimately related class is stoopid
-        "no-bitwise": ["error", { "int32Hint": true }],
+        "no-bitwise": "off", //["error", { "int32Hint": true }],
         "no-mixed-operators": "off",      // What the fuck?
         "no-restricted-syntax": "off",    // serious FUCK OFF! ugh!
         "no-await-in-loop": "off",        // FUCK YOU MORE!
