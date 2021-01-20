@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import React from 'react';
+import _ from 'lodash';
 import {autorun, action} from 'mobx';
 import {observer} from 'mobx-react';
 import Measure from 'react-measure';
@@ -67,6 +68,36 @@ const modeInfo = {
   'stretch':    { desc: 'stretch',     image: 'images/stretch-both.svg', },
   'cover':      { desc: 'cover',       image: 'images/stretch-both.svg', },
 };
+
+function throttle(fn, timeout) {
+  let id;
+  let args;
+  let once;
+
+  const execute = () => {
+    id = undefined;
+    fn(...args);
+  };
+
+  const tFn = (...a) => {
+    args = a;
+    if (!id) {
+      const tm = once ? timeout : 0; 
+      once = true;
+      id = setTimeout(execute, tm);
+    }
+  };
+
+  tFn.cancel = () => {
+    if (id) {
+      clearTimeout(id);
+      id = undefined;
+      once = undefined;
+    }
+  };
+
+  return tFn;
+}
 
 @observer
 class Viewer extends React.Component {
@@ -108,9 +139,32 @@ class Viewer extends React.Component {
     this._eventBus = new ForwardableEventDispatcher();
     this._eventBus.debugId = this._logger.getPrefix();
 
+    {
+      let lastDeltaSign = 0;
+      let tickOk = false;
+      const tickHelper = throttle(() => { tickOk = true; }, 500, {trailing: true});
+      const unpressedHelper = _.debounce(() => { lastDeltaSign = 0; }, 50, {trailing: true});
+
+      this._processWheelTick = (delta) => {
+        const deltaSign = Math.sign(delta);
+        if (deltaSign !== lastDeltaSign) {
+          lastDeltaSign = deltaSign;
+          unpressedHelper.cancel();
+          tickHelper.cancel();
+        }
+        unpressedHelper();
+
+        const tick = tickOk;
+        tickOk = false;
+
+        tickHelper();
+
+        return lastDeltaSign ? tick : false;
+      };
+    }
+
     this._loadMediaIfNew();
   }
-
   componentDidMount() {
     const on = this._listenerManager.on.bind(this._listenerManager);
     const viewerElem = this._viewerElem;
@@ -231,14 +285,26 @@ class Viewer extends React.Component {
     }
     videoState.time = video.currentTime;
   }
+
   _handleWheel(event) {
     const delta = event.deltaX;
     const threshold = 5;
     const deltaRange = 100;
     const maxCue = 0.2;  // secs
+
+
     if (Math.abs(delta) > threshold) {
       const amount = Math.sign(delta) * Math.abs(delta) - threshold;
-      this._cueOrNextPrev(amount / deltaRange * maxCue);
+      const videoState = this.props.viewerState.videoState;
+      if (this._processWheelTick(amount)) {
+        const videoState = this.props.viewerState.videoState;
+        if (!videoState.playing) {
+          this._cueOrNextPrev(amount / deltaRange * maxCue);
+        }
+      }
+      if (videoState.playing) {
+        this._cueOrNextPrev(amount / deltaRange * maxCue);
+      }
     }
   }
   _bumpId() {
