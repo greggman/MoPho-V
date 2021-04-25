@@ -75,7 +75,7 @@ function deleteThumbnails(fs, files) {
 
 function getSeparateFilenames(files) {
   const allFilenames = Object.keys(files);
-  const folderNames = allFilenames.filter((filename) => files[filename].isDirectory);
+  const folderNames = allFilenames.filter((filename) => files[filename].isDirectory && !filters.isDotFile(filename));
   const fileNames = allFilenames.filter((filename) => !files[filename].isDirectory);
   const archiveNames = fileNames.filter(filters.isArchive);
   const imageAndVideoNames = fileNames.filter(filters.isImageOrVideoExtension);
