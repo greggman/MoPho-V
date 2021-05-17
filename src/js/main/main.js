@@ -476,10 +476,12 @@ function createThumber() {
   const size = 128;
 
   createOneOfAKindWindow('thumber', 'app/thumber.html', {
-    x: width - size - 20,
-    y: height - size - 20,
-    width: size,
-    height: size,
+    ...(isDevMode ? {} : {
+      x: width - size - 20,
+      y: height - size - 20,
+      width: size,
+      height: size,
+    }),
     frame: false,
     show: false,
     hideInsteadOfClose: true,
