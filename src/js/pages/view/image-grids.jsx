@@ -57,7 +57,7 @@ function computeFolderHeight(folder, gridMode, width, zoom, options) {
   folder.files.forEach((file) => {
     const info = file.info;
     const thumbnail = info.thumbnail;
-    /* const pos = */ manager.getPositionForElement(zoom(thumbnail.width), zoom(thumbnail.height));
+    /* const pos = */ manager.getPositionForElement(thumbnail.width, thumbnail.height);
   });
   return manager.height;
 }
@@ -103,14 +103,14 @@ class ImageGrid extends React.Component {
     const files = folder.files;
     const columnManager = gridModes.value(gridMode).helper(width, {
       padding: options.padding,
-      columnWidth: zoom(options.columnWidth),
+      minColumnWidth: zoom(options.columnWidth),
     }); // TODO: pass in
     const count = this.props.count;
     const images = files.map((file, ndx) => {
       const info = file.info;
       const thumbnail = info.thumbnail;
       const id = `thumb-${info.filename}`;
-      const pos = columnManager.getPositionForElement(zoom(thumbnail.width), zoom(thumbnail.height));
+      const pos = columnManager.getPositionForElement(thumbnail.width, thumbnail.height);
       ++g_renderCount;
       return (
         <Thumbnail
@@ -260,7 +260,7 @@ class ImageGrids extends React.Component {
         folder,
         height: computeFolderHeight(folder, gridMode, this._getWidth(), this._zoom, {
           padding: this.props.options.padding,
-          columnWidth: this._zoom(this.props.options.columnWidth),
+          minColumnWidth: this._zoom(this.props.options.columnWidth),
         }),
       };
     });

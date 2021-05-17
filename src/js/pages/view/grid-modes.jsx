@@ -47,12 +47,12 @@ class ColumnManager {
     this.columns = [];
     this.height = 0;
     this.padding = options.padding;
-    const numColumns = (totalWidth / options.columnWidth | 0) || 1;
+    const numColumns = (totalWidth / options.minColumnWidth | 0) || 1;
     this.columnWidth = totalWidth / numColumns | 0;
-    this.columnOffset = (this.columnWidth - options.columnWidth) / 2 | 0;
-    this.drawWidth = options.columnWidth - this.padding;
+    this.columnOffset = this.padding / 2;
+    this.drawWidth = this.columnWidth - this.padding;
     if (options.itemHeightRatio) {
-      this.itemHeight = options.columnWidth / options.itemHeightRatio;
+      this.itemHeight = this.columnWidth / options.itemHeightRatio;
     }
     for (let ii = 0; ii < numColumns; ++ii) {
       this.columns.push({
@@ -70,14 +70,16 @@ class ColumnManager {
     });
     return shortest;
   }
-  getPositionForElement(zoomedWidth, zoomedHeight) {
-    const scale =  this.drawWidth / zoomedWidth;
-    const drawHeight = zoomedHeight * scale;
+  getPositionForElement(thumbnailWidth, thumbnailHeight) {
+    const scale =  this.drawWidth / thumbnailWidth;
+    const drawHeight = thumbnailHeight * scale;
     const paddedHeight = (this.itemHeight || drawHeight) + this.padding;
     const column = this._getShortestColumn();
     const position = {
       x: this.columnWidth * column.ndx + this.columnOffset,
       y: column.bottom,
+      width: this.drawWidth,
+      height: drawHeight,
     };
     column.bottom += paddedHeight;
     this.height = Math.max(column.bottom - this.padding, this.height);
@@ -89,22 +91,19 @@ function computeColumnStyle(props) {
   const info = props.info;
   const pos = props.position;
   const thumbnail = info.thumbnail;
-  const zoom = props.zoom;
   const thumbnailPageSize = info.bad ? 150 : thumbnail.pageSize;
-
-  const width = props.options.columnWidth - props.options.padding;
+  const width = pos.width;
   const scale = width / thumbnail.width;
-  const height = thumbnail.height * scale;
 
   return {
     left: px(pos.x),
     top: px(pos.y),
-    width: px(zoom(width)),
-    height: px(zoom(height)),
+    width: px(pos.width),
+    height: px(pos.height),
     backgroundImage: `url(${prepForCSSUrl(thumbnail.url)})`,
-    backgroundPositionX: px(zoom(-thumbnail.x * scale)),
-    backgroundPositionY: px(zoom(-thumbnail.y * scale)),
-    backgroundSize: `${px(zoom(thumbnailPageSize * scale))} ${px(zoom(thumbnailPageSize * scale))}`,
+    backgroundPositionX: px(-thumbnail.x * scale),
+    backgroundPositionY: px(-thumbnail.y * scale),
+    backgroundSize: `${px(thumbnailPageSize * scale)} ${px(thumbnailPageSize * scale)}`,
   };
 }
 
@@ -116,7 +115,7 @@ function computeGridStyle(displayAspect, props) {
   const thumbnailPageSize = info.bad ? 150 : thumbnail.pageSize;
 
   const imageAspect = thumbnail.width / thumbnail.height;
-  const width  = props.options.columnWidth - props.options.padding;
+  const width  = pos.width;
   const height = width / displayAspect;
 
   let bkX;
@@ -143,8 +142,8 @@ function computeGridStyle(displayAspect, props) {
   return {
     left: px(pos.x),
     top: px(pos.y),
-    width: px(zoom(width)),
-    height: px(zoom(height)),
+    width: px(width),
+    height: px(height),
     backgroundImage: `url(${prepForCSSUrl(thumbnail.url)})`,
     backgroundPositionX: px(zoom(bkX)),
     backgroundPositionY: px(zoom(bkY)),
@@ -160,7 +159,7 @@ function computeFitStyle(displayAspect, props) {
   const thumbnailPageSize = info.bad ? 150 : thumbnail.pageSize;
 
   const imageAspect = thumbnail.width / thumbnail.height;
-  const areaWidth  = props.options.columnWidth - props.options.padding;
+  const areaWidth  = pos.width;
   const areaHeight = areaWidth / displayAspect;
 
   let bkX;
@@ -174,10 +173,10 @@ function computeFitStyle(displayAspect, props) {
 
   if (imageAspect > displayAspect) {
     // it's wider than the area
-    const shrink = areaWidth / thumbnail.width;
-    const thHeight = thumbnail.height * shrink;
+    const shrink = areaWidth / pos.width;
+    const thHeight = pos.height * shrink;
     x        = pos.x;
-    y        = pos.y + zoom(areaHeight - thHeight) / 2;
+    y        = pos.y + (areaHeight - thHeight) / 2;
     width    = areaWidth;
     height   = thHeight;
     bkX      = shrink * (-thumbnail.x);
@@ -186,9 +185,9 @@ function computeFitStyle(displayAspect, props) {
     bkHeight = shrink * thumbnailPageSize;
   } else {
     // it's taller than the area
-    const shrink = areaHeight / thumbnail.height;
-    const thWidth = thumbnail.width * shrink;
-    x        = pos.x + zoom(areaWidth - thWidth) / 2;
+    const shrink = areaHeight / pos.height;
+    const thWidth = pos.width * shrink;
+    x        = pos.x + (areaWidth - thWidth) / 2;
     y        = pos.y;
     width    = thWidth;
     height   = areaHeight;
@@ -201,8 +200,8 @@ function computeFitStyle(displayAspect, props) {
   return {
     left: px(x),
     top: px(y),
-    width: px(zoom(width)),
-    height: px(zoom(height)),
+    width: px(width),
+    height: px(height),
     backgroundImage: `url(${prepForCSSUrl(thumbnail.url)})`,
     backgroundPositionX: px(zoom(bkX)),
     backgroundPositionY: px(zoom(bkY)),
@@ -292,13 +291,11 @@ function renderWithFrame(props, onClick, onContextMenu) {
   const baseType = `mime-${info.type.split('/')[0]}`;
   const mimeType = `mime-${info.type.replace(s_slashRE, '-')}`;
   const className = cssArray('thumbnail', baseType, mimeType);
-  const width  = props.options.columnWidth - props.options.padding;
-  const zoom = props.zoom;
   const frameStyle = {
     left: px(pos.x),
     top: px(pos.y),
-    width: px(zoom(width)),
-    height: px(zoom(width)),
+    width: px(pos.width),
+    height: px(pos.width),
   };
   return (
     <div>
