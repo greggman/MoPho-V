@@ -51,7 +51,7 @@ function filterFiles(files) {
     .filter(
       (filename) => files[filename].isDirectory ||
       filters.isArchive(filename) ||
-      filters.isImageOrVideoExtension(filename)
+      filters.isMediaExtension(filename)
     )
     .forEach((filename) => {
       filteredFiles[filename] = files[filename];

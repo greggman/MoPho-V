@@ -87,7 +87,7 @@ function compareFoldersToCache(baseFolders, options) {
     } else {
       const dataFiles = dataFolder.files;
       for (const filename of Object.keys(files)) {
-        if (filters.isImageOrVideoExtension(filename)) {
+        if (filters.isMediaExtension(filename)) {
           const fileInfo = dataFiles[filename];
           if (!fileInfo) {
             console.error('no entry for:', filename);

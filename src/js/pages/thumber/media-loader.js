@@ -31,9 +31,11 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import path from 'path';
 import * as filters from '../../lib/filters';
 import createLogger from '../../lib/debug';
 import { urlFromFilename } from '../../lib/utils';
+import { createImageFromString } from '../../lib/string-image';
 
 let g_id = 0;
 
@@ -131,6 +133,8 @@ function createMediaLoader(options) {
     if (filters.isMimeVideo(type)) {
       video.src = url;
       video.load();
+    } else if (filters.isMimeAudio(type)) {
+      image.src = createImageFromString(path.basename(filename));
     } else {
       image.src = url;
     }

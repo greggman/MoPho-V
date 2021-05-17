@@ -48,6 +48,7 @@ import * as filters from '../../lib/filters';
 import {CSSArray} from '../../lib/css-utils';
 import {px, euclideanModulo} from '../../lib/utils';
 import {getOrientationInfo} from '../../lib/rotatehelper';
+import { createImageFromString } from '../../lib/string-image';
 
 let s_viewerCount = 0;
 
@@ -82,7 +83,7 @@ function throttle(fn, timeout) {
   const tFn = (...a) => {
     args = a;
     if (!id) {
-      const tm = once ? timeout : 0; 
+      const tm = once ? timeout : 0;
       once = true;
       id = setTimeout(execute, tm);
     }
@@ -627,7 +628,7 @@ class Viewer extends React.Component {
     const { url, type } = good ? mediaInfo : { url: 'images/bad.png', type: 'image/png'};
     this._pendingFileInfo = fileInfo;
 
-    if (filters.isMimeVideo(type)) {
+    if (filters.isMimeVideo(type) || filters.isMimeAudio(type)) {
       const videoState = this.props.viewerState.videoState;
       // we need this because we'll compare url to video.src and when applied to video src
       // some letters are escaped
@@ -641,7 +642,11 @@ class Viewer extends React.Component {
       //   playerFlash: true,
       // });
       // setTimeout(this._hidePlayer, 1000);
-    } else {
+    }
+    if (filters.isMimeAudio(type)) {
+      this._viewImg.src = createImageFromString(fileInfo.baseName);
+    }
+    if (filters.isMimeImage(type)) {
       this._viewImg.src = url;
       this._pause();
     }
@@ -684,15 +689,17 @@ class Viewer extends React.Component {
     this._loadMediaIfNew();
     const viewerState = this.props.viewerState;
     const isVideo = filters.isMimeVideo(viewerState.mimeType);
+    const isAudio = filters.isMimeAudio(viewerState.mimeType);
+    const isVideoOrAudio = isVideo || isAudio;
     const isImage = filters.isMimeImage(viewerState.mimeType);
     const imageStyle = {
-      display: isImage ? 'inline-block' : 'none',
+      display: (isImage || isAudio) ? 'inline-block' : 'none',
       width: px()
     };
     const videoStyle = {
-      display: isVideo ? 'inline-block' : 'none',
+      display: (isVideoOrAudio) ? 'inline-block' : 'none',
     };
-    const elemStyle = isImage ? imageStyle : videoStyle;
+    const elemStyle = isVideo ? videoStyle : imageStyle;
     const viewElemStyle = {
       display: 'none', // this.state.viewElemDisplay,
     };
@@ -704,7 +711,7 @@ class Viewer extends React.Component {
     const infoClasses = new CSSArray('info');
     infoClasses.addIf(this.state.infoFlash, 'flash');
     const videoClasses = new CSSArray('pspot');
-    videoClasses.addIf(!isVideo, 'hide');
+    videoClasses.addIf(!isVideoOrAudio, 'hide');
     videoClasses.addIf(this.state.playerFlash, 'flash');
     return (
       <Measure client onResize={this._handleResize}>

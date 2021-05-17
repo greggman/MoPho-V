@@ -39,7 +39,7 @@ function getImagesAndVideos(files) {
   const imagesAndVideos = {};
   filenames.forEach((filename) => {
     const fileInfo = files[filename];
-    if (!fileInfo.isDirectory && fileInfo.type && filters.isMimeImageOrVideo(fileInfo.type)) {
+    if (!fileInfo.isDirectory && fileInfo.type && filters.isMimeMedia(fileInfo.type)) {
       imagesAndVideos[filename] = fileInfo;
     }
   });
@@ -78,7 +78,7 @@ function getSeparateFilenames(files) {
   const folderNames = allFilenames.filter((filename) => files[filename].isDirectory && !filters.isDotFile(filename));
   const fileNames = allFilenames.filter((filename) => !files[filename].isDirectory);
   const archiveNames = fileNames.filter(filters.isArchive);
-  const imageAndVideoNames = fileNames.filter(filters.isImageOrVideoExtension);
+  const imageAndVideoNames = fileNames.filter(filters.isMediaExtension);
   return {
     imagesAndVideos: imageAndVideoNames,
     folders: folderNames,

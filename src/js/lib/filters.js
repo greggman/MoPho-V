@@ -42,6 +42,12 @@ const imageExtensions = {
   '.svg': true,
 };
 
+const audioExtensions = {
+  '.mp3': true,
+  '.ogg': true,
+  '.wav': true,
+};
+
 const videoExtensions = {
   '.webm': true,
   '.mkv': true,
@@ -72,8 +78,12 @@ function isVideoExtension(filename) {
   return !isDotFile(filename) && videoExtensions[path.extname(filename).toLowerCase()];
 }
 
-function isImageOrVideoExtension(filename) {
-  return isImageExtension(filename) || isVideoExtension(filename);
+function isAudioExtension(filename) {
+  return !isDotFile(filename) && audioExtensions[path.extname(filename).toLowerCase()];
+}
+
+function isMediaExtension(filename) {
+  return isImageExtension(filename) || isVideoExtension(filename) || isAudioExtension(filename);
 }
 
 function isGif(filename) {
@@ -93,7 +103,7 @@ function isArchive(filename) {
 }
 
 function isMimeVideo(mimeType) {
-  return mimeType.substring(0, 6) === 'video/';
+  return mimeType.startsWith('video/');
 }
 
 function isMimeJpeg(mimeType) {
@@ -101,37 +111,43 @@ function isMimeJpeg(mimeType) {
 }
 
 function isMimeSvg(mimeType) {
-  return mimeType.substring(0, 9) === 'image/svg';
+  return mimeType.startsWith('image/svg');
 }
 
 function isMimeImage(mimeType) {
-  return mimeType.substring(0, 6) === 'image/';
+  return mimeType.startsWith('image/');
+}
+
+function isMimeAudio(mimeType) {
+  return mimeType.startsWith('audio/');
 }
 
 function isMimeGif(mimeType) {
   return mimeType === 'image/gif';
 }
 
-function isMimeImageOrVideo(mimeType) {
-  return isMimeVideo(mimeType) || isMimeImage(mimeType);
+function isMimeMedia(mimeType) {
+  return isMimeVideo(mimeType) || isMimeImage(mimeType) || isMimeAudio(mimeType);
 }
 
 function isArchiveFilenameWeCareAbout(filename) {
-  return isImageOrVideoExtension(filename)
+  return isMediaExtension(filename)
       && filename.indexOf('__MACOS') < 0;   // hacky I know ...
 }
 
 export {
+  isAudioExtension,
   isArchive,
   isArchiveFilenameWeCareAbout,
   isDotFile,
   isGif,
   isImageExtension,
-  isImageOrVideoExtension,
+  isMediaExtension,
   isMimeGif,
   isMimeJpeg,
   isMimeImage,
-  isMimeImageOrVideo,
+  isMimeAudio,
+  isMimeMedia,
   isMimeSvg,
   isMimeVideo,
   isRar,
