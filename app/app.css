@@ -200,7 +200,7 @@ div::-webkit-scrollbar-track {
 div::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0.25);
 }
 
 div::-webkit-scrollbar-thumb {
