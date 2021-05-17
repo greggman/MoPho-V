@@ -58,6 +58,8 @@ import {checkPassword} from '../../lib/password-utils';
 import stacktraceLog from '../../lib/stacktrace-log'; // eslint-disable-line
 import '../../lib/title';
 
+const isDevMode = process.env.NODE_ENV === 'development';
+
 const {windowTrackerIsAnyWindowFullScreen} = remote.require('./out/js/lib/remote-helpers');
 
 function start(args) {
@@ -72,7 +74,7 @@ function start(args) {
     thumbCtx: document.querySelector('canvas').getContext('2d'),
     visible: false,
     window: remote.getCurrentWindow(),
-    hideTimeoutDuration: 5000,  // 5 seconds
+    hideTimeoutDuration: isDevMode ? 5000000000 : 5000,  // 5 seconds
   };
 
   const hide = _.debounce(() => {
