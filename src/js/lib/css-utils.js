@@ -86,9 +86,14 @@ function cssArray(...args) {
   return new CSSArray(...args);
 }
 
+function hsl(h, s, l) {
+  return `hsl(${h * 360 | 0}, ${s * 100 | 0}%, ${l * 100 | 0}%)`;
+}
+
 export {
   addClass,
   removeClass,
   CSSArray,
   cssArray,
+  hsl,
 };
